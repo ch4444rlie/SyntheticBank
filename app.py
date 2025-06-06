@@ -1,7 +1,5 @@
 import streamlit as st
 import pandas as pd
-import json
-import ollama
 from faker import Faker
 from datetime import datetime, timedelta
 import random
@@ -16,25 +14,17 @@ def generate_bank_statement(num_transactions, account_holder, transaction_types=
     start_date = datetime.now() - timedelta(days=90)
     dates = [start_date + timedelta(days=random.randint(0, 90)) for _ in range(num_transactions)]
 
-    # Generate descriptions with Mistral (batched)
-    prompt = f"""
-    Generate {num_transactions} realistic bank transaction descriptions in JSON format.
-    Each should have 'description', 'category', and 'amount'.
-    Bias toward categories: {', '.join(transaction_types)}.
-    Example: [
-        {{"description": "Grocery purchase at Whole Foods", "category": "Groceries", "amount": -45.67}},
-        {{"description": "Salary from Acme Corp", "category": "Deposit", "amount": 2000.00}}
-    ]
-    """
-    response = ollama.generate(model="mistral:7b-instruct-v0.3-q4_0", prompt=prompt)
-    transactions = json.loads(response['response'])
+    # Generate descriptions with Faker
+    descriptions = [fake.company() + f" {random.choice(transaction_types)}" for _ in range(num_transactions)]
+    categories = [random.choice(transaction_types) for _ in range(num_transactions)]
+    amounts = [round(random.uniform(-1000, 1000), 2) for _ in range(num_transactions)]
 
     # Create DataFrame
     data = {
         "Date": [d.strftime("%Y-%m-%d") for d in dates],
-        "Description": [t["description"] for t in transactions[:num_transactions]],
-        "Category": [t["category"] for t in transactions[:num_transactions]],
-        "Amount": [t["amount"] for t in transactions[:num_transactions]],
+        "Description": descriptions,
+        "Category": categories,
+        "Amount": amounts,
         "Balance": [0] * num_transactions,
         "Account Holder": [account_holder] * num_transactions,
         "Account Number": [fake.bban() for _ in range(num_transactions)]
@@ -57,22 +47,24 @@ user_input = st.text_area("Describe the bank statement (e.g., '20 transactions f
 generate_button = st.button("Generate Statement")
 
 if generate_button and user_input:
-    # Parse user input with Mistral
-    prompt = f"""
-    Parse this request into JSON with 'account_holder', 'num_transactions', and 'categories'.
-    Example: {{"account_holder": "Alice", "num_transactions": 20, "categories": ["Groceries", "Bills"]}}
-    Request: "{user_input}"
-    """
-    response = ollama.generate(model="mistral:7b-instruct-v0.3-q4_0", prompt=prompt)
-    params = json.loads(response['response'])
-
-    # Extract parameters
-    account_holder = params.get("account_holder", "John Doe")
-    num_transactions = params.get("num_transactions", 10)
-    categories = params.get("categories", ["Purchase", "Deposit", "Withdrawal"])
+    # Simple parsing of user input (basic, without Mistral)
+    params = {"account_holder": "John Doe", "num_transactions": 10, "categories": ["Purchase", "Deposit", "Withdrawal"]}
+    if "for" in user_input:
+        account_holder = user_input.split("for")[1].split(",")[0].strip()
+        params["account_holder"] = account_holder
+    if "transactions" in user_input:
+        num = int(user_input.split("transactions")[0].strip())
+        params["num_transactions"] = num
+    if "mostly" in user_input:
+        categories = user_input.split("mostly")[1].strip().split(" and ")
+        params["categories"] = categories
 
     # Generate statement
-    statement = generate_bank_statement(num_transactions, account_holder, categories)
+    statement = generate_bank_statement(
+        params["num_transactions"],
+        params["account_holder"],
+        params["categories"]
+    )
     
     # Display preview
     st.write("### Bank Statement Preview")
