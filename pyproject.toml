@@ -6,14 +6,18 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "faker>=37.3.0",
+    "fuzzywuzzy>=0.18.0",
     "ipykernel>=6.29.5",
     "jupyter>=1.1.1",
     "notebook>=7.4.3",
     "numpy>=2.2.6",
     "ollama>=0.5.1",
     "pandas>=2.3.0",
+    "pillow>=11.2.1",
     "pydantic>=2.11.5",
+    "pytesseract>=0.3.13",
     "reportlab>=4.4.1",
     "streamlit>=1.45.1",
+    "tqdm>=4.67.1",
     "typing>=3.10.0.0",
 ]
