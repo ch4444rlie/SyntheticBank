@@ -14,13 +14,13 @@ This project generates **synthetic bank statements** to support innovation in fi
 This project is structured around three key challenges in generating high-quality synthetic bank statements:
 
 1. **Leveraging LLMs for Realistic Descriptions** (Version 1)  
-   We use Large Language Models (LLMs) to generate realistic transaction descriptions that mimic real-world banking patterns (e.g., "Grocery Store Purchase - Whole Foods" or "ATM Withdrawal - Main St"). LLMs are fine-tuned to produce contextually appropriate and varied descriptions to enhance the authenticity of synthetic data.
+   Large Language Models (LLMs) can generate realistic transaction descriptions that mimic real-world banking patterns (e.g., "Grocery Store Purchase - Whole Foods" or "ATM Withdrawal - Main St") enhancing the authenticity of synthetic data.
 
 2. **Formatting for Realism** (Version 2)  
-   The output is formatted to closely resemble real bank statements, including layout, fonts, and structure. We aim to replicate the visual and structural elements of actual bank statements to ensure compatibility with real-world applications and testing scenarios.
+   The output is formatted to closely resemble real bank statements, including layout, fonts, and structure. Version 2 aim to mimic structural elements of actual bank statements.
 
 3. **Streamlining Diverse Data Generation** (Version 3)  
-   To capture a wide range of banking scenarios, we streamline the generation process to produce diverse datasets (e.g., varying account types, transaction frequencies, and customer profiles). This ensures the synthetic data is robust and representative of real-world use cases.
+   To capture a wide range of banking scenarios, this version incorporates a variety of bank statements and logos to increase the realism of the synthetic bank statements.
 
 ## Current Pipeline
 
