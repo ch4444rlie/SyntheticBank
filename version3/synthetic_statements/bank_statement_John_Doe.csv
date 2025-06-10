@@ -1,13 +1,13 @@
 Date,Description,Category,Amount,Balance,Account Holder,Transaction ID
-2025-03-27,Refund Item Returned,Refunds,447.38,1447.38,John Doe,LCTX30740270675904
-2025-03-28,Refund Item Return Adjus,Refunds,430.61,1877.99,John Doe,WCXY80655083096152
-2025-03-30,Birthday Flowers Purchase,Gifts,311.37,2189.36,John Doe,BBNQ98359557562869
-2025-04-08,Refund Item Return Adjus,Refunds,960.97,3150.33,John Doe,FDMI15784840878488
-2025-04-20,Investment Income Receive,Investment Income,325.23,3475.56,John Doe,ITTA48549747796574
-2025-04-24,Rent Charge [location],Rent,-446.67,3028.89,John Doe,YWHV68773869491890
-2025-05-04,Loan Repayment Instalment,Loan Repayments,-31.52,2997.37,John Doe,ADWW47291338632505
-2025-05-17,Rent Payment Due,Rent,-499.34,2498.0299999999997,John Doe,OXQT66174257312507
-2025-05-26,Employee Salary Deposit,Salary,288.5,2786.5299999999997,John Doe,JTUO94296740616689
-2025-06-07,Loan Repayment Instalment,Loan Repayments,-312.04,2474.49,John Doe,QHDI10183009568254
-2025-06-08,Monthly Subscription Fee,Subscriptions,-224.2,2250.29,John Doe,QYRH91493234255385
-2025-06-08,Payroll Direct Deposit,Deposits,326.04,2576.33,John Doe,XAXN57041102552853
+2025-03-15,Tax Refund Deposit,Tax Refund,539.74,1539.74,John Doe,WVRZ02611609408439
+2025-03-16,Client Invoice Payment,Client Payment,339.64,1879.38,John Doe,IPDT99090639989427
+2025-03-23,Cash Deposit Transaction,Cash Deposit,738.09,2617.4700000000003,John Doe,OAIH95192059144614
+2025-03-23,Loan Repayment Installment,Loan Repayment,-497.83,2119.6400000000003,John Doe,WGDX27579464252503
+2025-04-07,Monthly Rent Payment,Rent Payment,-477.88,1641.7600000000002,John Doe,JDAO74135536750980
+2025-04-23,Monthly Rent Payment,Rent Payment,-182.1,1459.66,John Doe,XVAX28609305555825
+2025-04-29,Client Invoice Payment,Client Payment,878.66,2338.32,John Doe,IQVK45004659741740
+2025-05-21,Insurance Premium Bill,Insurance Bill,-294.95,2043.3700000000001,John Doe,XKFH14366966222968
+2025-06-02,Monthly Subscription Fee,Subscription Fee,-84.99,1958.38,John Doe,SNHW11060456520827
+2025-06-05,Monthly Subscription Fee,Subscription Fee,-295.45,1662.93,John Doe,KZOQ71368742527146
+2025-06-06,Gift Received Deposit,Gift Received,585.97,2248.9,John Doe,NWXL35634479908062
+2025-06-08,Monthly Subscription Fee,Subscription Fee,-330.58,1918.3200000000002,John Doe,DHCM82469754389039
