@@ -1,0 +1,7 @@
+Detected Bank: chase
+Detected Layout:
+CHECKING SUMMARY: []
+DEPOSITS AND ADDITIONS: []
+WITHDRAWALS: []
+DAILY ENDING BALANCE: []
+Detected Placeholders:
