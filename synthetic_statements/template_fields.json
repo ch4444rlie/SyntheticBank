@@ -1,0 +1,89 @@
+{
+  "fields": [
+    {
+      "name": "account_holder",
+      "is_mutable": true,
+      "description": "Name of the account holder"
+    },
+    {
+      "name": "account_holder_address",
+      "is_mutable": true,
+      "description": "Address of the account holder"
+    },
+    {
+      "name": "account_number",
+      "is_mutable": true,
+      "description": "Account number"
+    },
+    {
+      "name": "statement_period",
+      "is_mutable": true,
+      "description": "Statement date range"
+    },
+    {
+      "name": "summary",
+      "is_mutable": true,
+      "description": "Checking summary data (beginning balance, counts, totals)"
+    },
+    {
+      "name": "deposits",
+      "is_mutable": true,
+      "description": "List of deposit transactions"
+    },
+    {
+      "name": "withdrawals",
+      "is_mutable": true,
+      "description": "List of withdrawal transactions"
+    },
+    {
+      "name": "daily_balances",
+      "is_mutable": true,
+      "description": "Daily ending balances"
+    },
+    {
+      "name": "logo_path",
+      "is_mutable": true,
+      "description": "Path to the bank logo"
+    },
+    {
+      "name": "bank_name",
+      "is_mutable": false,
+      "description": "Name of the bank (JPMorgan Chase)"
+    },
+    {
+      "name": "bank_address",
+      "is_mutable": false,
+      "description": "Bank address"
+    },
+    {
+      "name": "checking_summary_header",
+      "is_mutable": false,
+      "description": "Header for checking summary"
+    },
+    {
+      "name": "deposits_header",
+      "is_mutable": false,
+      "description": "Header for deposits section"
+    },
+    {
+      "name": "withdrawals_header",
+      "is_mutable": false,
+      "description": "Header for withdrawals section"
+    },
+    {
+      "name": "daily_balance_header",
+      "is_mutable": false,
+      "description": "Header for daily balance section"
+    },
+    {
+      "name": "customer_service",
+      "is_mutable": false,
+      "description": "Customer service contact information"
+    },
+    {
+      "name": "footnotes",
+      "is_mutable": false,
+      "description": "Footnotes and disclosures"
+    }
+  ]
+}

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Chase Bank Statement</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      font-size: 9px;
+    }
+    .header-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+    }
+    .header-table td {
+      vertical-align: top;
+      padding: 5px;
+    }
+    .customer-service {
+      text-align: right;
+      margin-top: 10px;
+    }
+    .cs-box {
+      display: inline-block;
+      text-align: left;
+    }
+    .cs-header {
+      text-transform: uppercase;
+      font-weight: bold;
+      font-size: 9px;
+      border-top: 3px solid #000;
+      border-bottom: 3px solid #000;
+      padding: 2px 6px;
+      margin: 0;
+    }
+    .cs-content {
+      margin-top: 6px;
+      line-height: 1;
+      padding-left: 6px;
+      text-align: left;
+    }
+    .date-range {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .account-number {
+      margin-bottom: 10px;
+    }
+    .section-divider {
+      position: relative;
+      margin: 30px 0 0;
+    }
+    .section-header {
+      display: inline-block;
+      border: 1px solid #000;
+      padding: 4px 8px;
+      margin-top: -1px;
+      background: #fff;
+      position: relative;
+      z-index: 1;
+    }
+    .section-header h2 {
+      margin: 0;
+      font-size: 11px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    .section-divider::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      border-top: 1px solid #000;
+      transform: translateY(-50%);
+      z-index: 0;
+    }
+    .summary-table {
+      width: 50%;
+      border-collapse: collapse;
+      margin-left: 0;
+      margin-bottom: 30px;
+    }
+    .summary-table th,
+    .summary-table td {
+      border: none;
+      padding: 1px;
+      text-align: left;
+    }
+    .summary-table th:nth-child(1),
+    .summary-table td:nth-child(1) {
+      text-align: left;
+      width: 40%;
+    }
+    .summary-table th:nth-child(2),
+    .summary-table td:nth-child(2) {
+      text-align: left;
+      width: 30%;
+      padding-left: 25px;
+    }
+    .summary-table th:nth-child(3),
+    .summary-table td:nth-child(3) {
+      text-align: left;
+      width: 30%;
+      padding-left: 25px;
+    }
+    .summary-table th {
+      font-weight: bold;
+    }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+      table-layout: fixed;
+    }
+    .data-table th,
+    .data-table td {
+      border: none;
+      padding: 4px;
+    }
+    .data-table tr.date-row td {
+      border-bottom: 1px solid #000;
+    }
+    .data-table th:nth-child(1),
+    .data-table td:nth-child(1) { width: 15%; text-align: left; }
+    .data-table th:nth-child(2),
+    .data-table td:nth-child(2) { width: 70%; text-align: left; }
+    .data-table th:nth-child(3),
+    .data-table td:nth-child(3) { width: 15%; text-align: right; }
+    .balance-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+      table-layout: fixed;
+    }
+    .balance-table th,
+    .balance-table td {
+      border: none;
+      padding: 4px;
+    }
+    .balance-table th:nth-child(1),
+    .balance-table td:nth-child(1) { width: 50%; text-align: left; }
+    .balance-table th:nth-child(2),
+    .balance-table td:nth-child(2) { width: 50%; text-align: left; }
+    .footnotes {
+      margin-top: 30px;
+      font-size: 7px;
+      line-height: 1;
+    }
+    .footnotes h3 {
+      font-size: 9px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <!-- HEADER -->
+  <table class="header-table">
+    <tr>
+      <td>
+        {% if logo_path %}
+        <img src="{{ logo_path }}" alt="Chase Logo" width="100"><br>
+        {% endif %}
+        JPMorgan Chase Bank, N.A.<br>
+        PO Box 659754<br>
+        San Antonio, TX 78265-9754
+      </td>
+      <td class="customer-service">
+        <div class="date-range">{{ statement_period }}</div>
+        <div class="account-number">{{ account_number }}</div>
+        <div class="cs-box">
+          <div class="cs-header">Customer Service Information</div>
+          <div class="cs-content">
+            Web site: chase.com<br>
+            Service Center: 1-800-242-7338<br>
+            Hearing Impaired: 1-800-242-7383<br>
+            Para Espanol: 1-888-622-4273<br>
+            International Calls: 1-713-262-1679
+          </div>
+        </div>
+      </td>
+    </tr>
+  </table>
+
+  <!-- PAYEE INFO -->
+  <div>
+    <strong>
+      {{ account_holder }}<br>
+      {{ account_holder_address }}
+    </strong>
+  </div>
+
+  <!-- CHECKING SUMMARY -->
+  <div class="section-divider">
+    <div class="section-header"><h2>Checking Summary</h2></div>
+  </div>
+  <table class="summary-table">
+    <tr>
+      <th></th>
+      <th>Instances</th>
+      <th>Amount</th>
+    </tr>
+    <tr>
+      <td>Beginning Balance</td>
+      <td>–</td>
+      <td>{{ summary.beginning_balance }}</td>
+    </tr>
+    <tr>
+      <td>Deposits and Additions</td>
+      <td>{{ summary.deposits_count }}</td>
+      <td>{{ summary.deposits_total }}</td>
+    </tr>
+    <tr>
+      <td>Electronic Withdrawals</td>
+      <td>{{ summary.withdrawals_count }}</td>
+      <td>{{ summary.withdrawals_total }}</td>
+    </tr>
+    <tr>
+      <td>Ending Balance</td>
+      <td>{{ summary.transactions_count }}</td>
+      <td>{{ summary.ending_balance }}</td>
+    </tr>
+  </table>
+  <p>
+    Your monthly service fee was waived because you maintained an average checking balance of $7,500.00
+    or a minimum checking balance of $5,000.00 or more during the statement period.
+  </p>
+
+  <!-- DEPOSITS AND ADDITIONS -->
+  {% if deposits %}
+  <div class="section-divider">
+    <div class="section-header"><h2>Deposits and Additions</h2></div>
+  </div>
+  <table class="data-table">
+    <tr>
+      <th>Date</th>
+      <th>Description</th>
+      <th>Amount</th>
+    </tr>
+    {% for deposit in deposits %}
+    <tr class="date-row">
+      <td>{{ deposit.date }}</td>
+      <td>{{ deposit.description }}</td>
+      <td>{{ deposit.amount }}</td>
+    </tr>
+    {% endfor %}
+    <tr>
+      <td colspan="2"><strong>Total Deposits and Additions</strong></td>
+      <td style="text-align: right;">{{ summary.deposits_total }}</td>
+    </tr>
+  </table>
+  {% endif %}
+
+  <!-- WITHDRAWALS -->
+  {% if withdrawals %}
+  <div class="section-divider">
+    <div class="section-header"><h2>Withdrawals</h2></div>
+  </div>
+  <table class="data-table">
+    <tr>
+      <th>Date</th>
+      <th>Description</th>
+      <th>Amount</th>
+    </tr>
+    {% for withdrawal in withdrawals %}
+    <tr class="date-row">
+      <td>{{ withdrawal.date }}</td>
+      <td>{{ withdrawal.description }}</td>
+      <td>{{ withdrawal.amount }}</td>
+    </tr>
+    {% endfor %}
+    <tr>
+      <td colspan="2"><strong>Total Electronic Withdrawals</strong></td>
+      <td style="text-align: right;">{{ summary.withdrawals_total }}</td>
+    </tr>
+  </table>
+  {% endif %}
+
+  <!-- DAILY ENDING BALANCE -->
+  <div class="section-divider">
+    <div class="section-header"><h2>Daily Ending Balance</h2></div>
+  </div>
+  <table class="balance-table">
+    <tr>
+      <th>Date</th>
+      <th>Amount</th>
+    </tr>
+    {% for balance in daily_balances %}
+    <tr>
+      <td>{{ balance.date }}</td>
+      <td>{{ balance.amount }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+
+  <!-- FOOTNOTES AND DISCLOSURES -->
+  <div class="footnotes">
+    <h3>Footnotes and Disclosures</h3>
+    <p><strong>1. Privacy Notice:</strong> For details on how we protect your personal information, see our U.S. Consumer Privacy Notice at chase.com.</p>
+    <p><strong>2. Fees and Adjustments:</strong> This statement may include fees or adjustments. For specific charge details, contact Customer Service at 1-800-242-7338. Transactions may be pending until finalized.</p>
+    <p><strong>3. Statement Access:</strong> Access up to 7 years of statements online at chase.com or via the Chase Mobile® app under ‘Statements & Documents.’ Paper statements may stop after enrolling in paperless delivery.</p>
+    <p><strong>4. Regulatory Compliance:</strong> This statement complies with federal regulations. Visit chase.com/disclosures for more information.</p>
+  </div>
+</body>
+</html>

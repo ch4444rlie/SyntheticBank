@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Chase Bank Statement</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      font-size: 12px;
+    }
+
+    /* Header & Payee */
+    .header-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+    }
+    .header-table td {
+      vertical-align: top;
+      padding: 5px;
+    }
+
+    /* Keep Customer Service top-right */
+    .customer-service {
+      text-align: right;
+      margin-top: 10px;
+    }
+    /* Container for the header */
+    .cs-box {
+      display: inline-block;
+      text-align: left;
+    }
+    .cs-header {
+      text-transform: uppercase;
+      font-weight: bold;
+      font-size: 12px;
+      border-top: 3px solid #000;
+      border-bottom: 3px solid #000;
+      padding: 2px 6px;
+      margin: 0;
+    }
+    /* reverted: align content under header flush left */
+    .cs-content {
+      margin-top: 6px;
+      line-height: 1.2;
+      padding-left: 6px;
+      text-align: left;
+    }
+
+    /* Section titles */
+    .section-divider {
+      position: relative;
+      margin: 30px 0 0;
+    }
+    .section-header {
+      display: inline-block;
+      border: 1px solid #000;
+      padding: 4px 8px;
+      margin-top: -1px;
+      background: #fff;
+      position: relative;
+      z-index: 1;
+    }
+    .section-header h2 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    .section-divider::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 0; /* Aligns with the left edge of the container */
+      right: 0; /* Extends to the right edge of the page */
+      border-top: 1px solid #000;
+      transform: translateY(-50%);
+      z-index: 0;
+    }
+
+    /* CHECKING SUMMARY – adjusted to shift Instances and Amount right */
+    .summary-table {
+      width: 50%;
+      border-collapse: collapse;
+      margin-left: 0;
+      margin-bottom: 30px;
+    }
+    .summary-table th,
+    .summary-table td {
+      border: none;
+      padding: 2px;
+      text-align: left;
+    }
+    .summary-table th:nth-child(1),
+    .summary-table td:nth-child(1) {
+      text-align: left;
+      width: 40%;
+    }
+    .summary-table th:nth-child(2),
+    .summary-table td:nth-child(2) {
+      text-align: left;
+      width: 30%;
+      padding-left: 25px;
+    }
+    .summary-table th:nth-child(3),
+    .summary-table td:nth-child(3) {
+      text-align: left;
+      width: 30%;
+      padding-left: 25px;
+    }
+    .summary-table th {
+      font-weight: bold;
+    }
+
+    /* DEPOSITS AND ADDITIONS & WITHDRAWALS – custom borders & alignment */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+      table-layout: fixed;
+    }
+    .data-table th,
+    .data-table td {
+      border: none;
+      padding: 6px;
+    }
+    .data-table tr.date-row td {
+      border-bottom: 1px solid #000;
+    }
+    .data-table th:nth-child(1),
+    .data-table td:nth-child(1) { width: 15%; text-align: left; }
+    .data-table th:nth-child(2),
+    .data-table td:nth-child(2) { width: 70%; text-align: left; }
+    .data-table th:nth-child(3),
+    .data-table td:nth-child(3) { width: 15%; text-align: right; }
+
+    /* DAILY ENDING BALANCE – unchanged */
+    .balance-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+      table-layout: fixed;
+    }
+    .balance-table th,
+    .balance-table td {
+      border: none;
+      padding: 6px;
+    }
+    .balance-table th:nth-child(1),
+    .balance-table td:nth-child(1) { width: 50%; text-align: left; }
+    .balance-table th:nth-child(2),
+    .balance-table td:nth-child(2) { width: 50%; text-align: left; }
+
+    /* Footnotes and Disclosures */
+    .footnotes {
+      margin-top: 30px;
+      font-size: 10px;
+      line-height: 1.5;
+    }
+    .footnotes h3 {
+      font-size: 12px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <table class="header-table">
+    <tr>
+      <td>
+        <img src="Sample_Logos/chase_bank_logo.png" alt="Chase Logo" width="100"><br>
+        JPMorgan Chase Bank, N.A.<br>
+        PO Box 659754<br>
+        San Antonio, TX 78265-9754
+      </td>
+      <td class="customer-service">
+        <div class="cs-box">
+          <div class="cs-header">Customer Service Information</div>
+          <div class="cs-content">
+            Web site: chase.com<br>
+            Service Center: 1-800-242-7338<br>
+            Hearing Impaired: 1-800-242-7383<br>
+            Para Espanol: 1-888-622-4273<br>
+            International Calls: 1-713-262-1679
+          </div>
+        </div>
+      </td>
+    </tr>
+  </table>
+
+  <!-- PAYEE INFO -->
+  <div>
+    <strong>
+      HUSTLIN 4 A LIVIN ENT, INC.<br>
+      2124 N. CARROLL AVE SUITE 9<br>
+      DALLAS TX, 75204
+    </strong>
+  </div>
+
+  <!-- CHECKING SUMMARY -->
+  <div class="section-divider">
+    <div class="section-header"><h2>Checking Summary</h2></div>
+  </div>
+  <table class="summary-table">
+    <tr>
+      <th></th>
+      <th>Instances</th>
+      <th>Amount</th>
+    </tr>
+    <tr>
+      <td>Beginning Balance</td>
+      <td>–</td>
+      <td>$15,050.80</td>
+    </tr>
+    <tr>
+      <td>Deposits and Additions</td>
+      <td>2</td>
+      <td>$130.00</td>
+    </tr>
+    <tr>
+      <td>Electronic Withdrawals</td>
+      <td>2</td>
+      <td>$356.04</td>
+    </tr>
+    <tr>
+      <td>Ending Balance</td>
+      <td>4</td>
+      <td>$14,824.76</td>
+    </tr>
+  </table>
+  <p>
+    Your monthly service fee was waived because you maintained an average checking balance of $7,500.00
+    or a minimum checking balance of $5,000.00 or more during the statement period.
+  </p>
+
+  <!-- DEPOSITS AND ADDITIONS -->
+  <div class="section-divider">
+    <div class="section-header"><h2>Deposits and Additions</h2></div>
+  </div>
+  <table class="data-table">
+    <tr>
+      <th>Date</th>
+      <th>Description</th>
+      <th>Amount</th>
+    </tr>
+    <tr class="date-row">
+      <td>09/15</td>
+      <td>ATM Check Deposit</td>
+      <td>$125.00</td>
+    </tr>
+    <tr class="date-row">
+      <td>09/15</td>
+      <td>ATM Cash Deposit</td>
+      <td>$5.00</td>
+    </tr>
+    <tr>
+      <td colspan="2"><strong>Total Deposits and Additions</strong></td>
+      <td style="text-align: right;">$130.00</td>
+    </tr>
+  </table>
+
+  <!-- WITHDRAWALS -->
+  <div class="section-divider">
+    <div class="section-header"><h2>Withdrawals</h2></div>
+  </div>
+  <table class="data-table">
+    <tr>
+      <th>Date</th>
+      <th>Description</th>
+      <th>Amount</th>
+    </tr>
+    <tr class="date-row">
+      <td>09/30</td>
+      <td>Qwest 8002441111 Telephone 200836041998 18 CCID ID: 9c00273801</td>
+      <td>$249.96</td>
+    </tr>
+    <tr class="date-row">
+      <td>09/30</td>
+      <td>Qwest 8002441111 Telephone 2008364628111 CCID ID: 9c00273801</td>
+      <td>$106.08</td>
+    </tr>
+    <tr>
+      <td colspan="2"><strong>Total Electronic Withdrawals</strong></td>
+      <td style="text-align: right;">$356.04</td>
+    </tr>
+  </table>
+
+  <!-- DAILY ENDING BALANCE -->
+  <div class="section-divider">
+    <div class="section-header"><h2>Daily Ending Balance</h2></div>
+  </div>
+  <table class="balance-table">
+    <tr>
+      <th>Date</th>
+      <th>Amount</th>
+    </tr>
+    <tr>
+      <td>09/15</td>
+      <td>$15,180.80</td>
+    </tr>
+    <tr>
+      <td>09/30</td>
+      <td>$14,824.76</td>
+    </tr>
+  </table>
+
+  <!-- FOOTNOTES AND DISCLOSURES -->
+  <div class="footnotes">
+    <h3>Footnotes and Disclosures</h3>
+    <p><strong>1. Privacy Notice:</strong> For details on how we protect your personal information, see our U.S. Consumer Privacy Notice at chase.com.</p>
+    <p><strong>2. Fees and Adjustments:</strong> This statement may include fees or adjustments. For specific charge details, contact Customer Service at 1-800-242-7338. Transactions may be pending until finalized.</p>
+    <p><strong>3. Statement Access:</strong> Access up to 7 years of statements online at chase.com or via the Chase Mobile® app under ‘Statements & Documents.’ Paper statements may stop after enrolling in paperless delivery.</p>
+    <p><strong>4. Regulatory Compliance:</strong> This statement complies with federal regulations. Visit chase.com/disclosures for more information.</p>
+  </div>
+
+</body>
+</html>
