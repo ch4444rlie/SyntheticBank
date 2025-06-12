@@ -157,33 +157,33 @@
   </style>
 </head>
 <body>
-  <!-- HEADER -->
-  <table class="header-table">
-    <tr>
-      <td>
-        {% if logo_path %}
-        <img src="{{ logo_path }}" alt="Chase Logo" width="100"><br>
-        {% endif %}
-        JPMorgan Chase Bank, N.A.<br>
-        PO Box 659754<br>
-        San Antonio, TX 78265-9754
-      </td>
-      <td class="customer-service">
-        <div class="date-range">{{ statement_period }}</div>
-        <div class="account-number">{{ account_number }}</div>
-        <div class="cs-box">
-          <div class="cs-header">Customer Service Information</div>
-          <div class="cs-content">
-            Web site: chase.com<br>
-            Service Center: 1-800-242-7338<br>
-            Hearing Impaired: 1-800-242-7383<br>
-            Para Espanol: 1-888-622-4273<br>
-            International Calls: 1-713-262-1679
-          </div>
+<!-- HEADER -->
+<table class="header-table">
+  <tr>
+    <td>
+      {% if logo_path %}
+      <img src="{{ logo_path }}" alt="Chase Logo" width="100"><br>
+      {% endif %}
+      JPMorgan Chase Bank, N.A.<br>
+      PO Box 659754<br>
+      San Antonio, TX 78265-9754
+    </td>
+    <td class="customer-service">
+      <div class="date-range">{{ statement_period }}</div>
+      <div class="account-number">Account Number: {{ account_number }}</div>
+      <div class="cs-box">
+        <div class="cs-header">Customer Service Information</div>
+        <div class="cs-content">
+          Web site: <span style="margin-left: 100px;">chase.com</span><br>
+          Service Center: <span style="margin-left: 56px;">1-800-242-7338</span><br>
+          Hearing Impaired: <span style="margin-left: 48px;">1-800-242-7383</span><br>
+          Para Espanol: <span style="margin-left: 64px;">1-888-622-4273</span><br>
+          International Calls: <span style="margin-left: 44px;">1-713-262-1679</span>
         </div>
-      </td>
-    </tr>
-  </table>
+      </div>
+    </td>
+  </tr>
+</table>
 
   <!-- PAYEE INFO -->
   <div>
@@ -193,10 +193,13 @@
     </strong>
   </div>
 
-  <!-- CHECKING SUMMARY -->
-  <div class="section-divider">
-    <div class="section-header"><h2>Checking Summary</h2></div>
+<!-- CHECKING SUMMARY -->
+<div class="section-divider">
+  <div style="position: relative; text-align: center; margin-bottom: -10px; z-index: 1; left: -10%; transform: translateX(-50%);">
+    Chase Business Select Checking
   </div>
+  <div class="section-header"><h2>Checking Summary</h2></div>
+</div>
   <table class="summary-table">
     <tr>
       <th></th>
