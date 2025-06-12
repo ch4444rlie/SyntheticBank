@@ -4,17 +4,10 @@
   <meta charset="UTF-8">
   <title>Chase Bank Statement – Variation</title>
   <style>
-    :root {
-      --font-size: 10px;
-      --section-bg: #f9f9f9;
-      --header-bg: #002663;
-      --header-color: #ffffff;
-      --border-color: #333333;
-    }
     body {
       font-family: Arial, sans-serif;
       margin: 30px;
-      font-size: var(--font-size);
+      font-size: 10px;
       background: #fff;
       color: #000;
     }
@@ -22,8 +15,8 @@
       width: 100%;
       border-collapse: collapse;
       margin-bottom: 20px;
-      background: var(--header-bg);
-      color: var(--header-color);
+      background: #002663; /* Dark blue header */
+      color: #ffffff;
     }
     .header-table td {
       vertical-align: top;
@@ -38,14 +31,14 @@
     .cs-box {
       display: inline-block;
       text-align: left;
-      background: var(--section-bg);
+      background: #f9f9f9;
       padding: 4px;
     }
     .cs-header {
       text-transform: uppercase;
       font-weight: bold;
-      font-size: var(--font-size);
-      border-bottom: 2px solid var(--header-color);
+      font-size: 10px;
+      border-bottom: 2px solid #ffffff;
       margin-bottom: 4px;
     }
     .cs-content {
@@ -58,21 +51,19 @@
     .account-number {
       margin-bottom: 8px;
     }
-
     .section {
       margin-top: 25px;
     }
     .section-header {
-      background: var(--section-bg);
+      background: #f9f9f9;
       padding: 6px 10px;
-      border: 1px solid var(--border-color);
+      border: 1px solid #333333;
       display: inline-block;
-      font-size: var(--font-size);
+      font-size: 10px;
       font-weight: bold;
       text-transform: uppercase;
       margin-bottom: 6px;
     }
-
     table {
       width: 100%;
       border-collapse: collapse;
@@ -80,35 +71,31 @@
     }
     th, td {
       padding: 4px 6px;
-      border-bottom: 1px solid var(--border-color);
+      border-bottom: 1px solid #333333;
       text-align: left;
     }
     th {
-      background: var(--header-bg);
-      color: var(--header-color);
+      background: #002663; /* Dark blue for table headers */
+      color: #ffffff;
       text-transform: uppercase;
-      font-size: var(--font-size);
+      font-size: 10px;
     }
-
     .summary-table {
       width: 45%;
       float: right;
       margin-left: 10px;
     }
     .summary-table td, .summary-table th {
-      border: 1px solid var(--border-color);
+      border: 1px solid #333333;
     }
-
     .data-table th:nth-child(3),
     .balance-table td:nth-child(2) {
       text-align: right;
     }
-
     .balance-table td {
       border: none;
       padding: 4px 6px;
     }
-
     .footnotes {
       clear: both;
       margin-top: 30px;
@@ -136,8 +123,8 @@
         <div>PO Box 659754, San Antonio, TX 78265-9754</div>
       </td>
       <td class="customer-service">
-        <div class="date-range">May 16, 2025 through June 08, 2025</div>
-        <div class="account-number">Account Number: HYXE62241021330</div>
+        <div class="date-range">May 17, 2025 through June 12, 2025</div>
+        <div class="account-number">Account Number: TCDJ30192275916</div>
         <div class="cs-box">
           <div class="cs-header">Customer Service Information</div>
           <div class="cs-content">
@@ -155,8 +142,8 @@
   <!-- PAYEE INFO -->
   <div>
     <strong>
-      BATES-GREEN<br>
-      4304 Robert Rue<br>Patricktown, MP 69836
+      HERNANDEZ-PEREZ<br>
+      5257 Harris Heights Apt. 108<br>Soliston, VA 09066
     </strong>
   </div>
 
@@ -172,22 +159,22 @@
       <tr>
         <td>Beginning Balance</td>
         <td>–</td>
-        <td>$18,984.66</td>
+        <td>$8,344.99</td>
       </tr>
       <tr>
         <td>Deposits and Additions</td>
-        <td>2</td>
-        <td>$861.37</td>
+        <td>3</td>
+        <td>$1,461.50</td>
       </tr>
       <tr>
         <td>Electronic Withdrawals</td>
-        <td>2</td>
-        <td>$560.74</td>
+        <td>3</td>
+        <td>$615.85</td>
       </tr>
       <tr>
         <td>Ending Balance</td>
-        <td>4</td>
-        <td>$19,285.29</td>
+        <td>6</td>
+        <td>$9,190.64</td>
       </tr>
     </table>
     <p>Your monthly service fee was waived because you maintained an average checking balance of $7,500.00 or a minimum checking balance of $5,000.00 or more during the statement period.</p>
@@ -205,20 +192,26 @@
       </tr>
       
       <tr class="date-row">
-        <td>06/05</td>
-        <td>Monthly Salary Deposit</td>
-        <td>$333.84</td>
+        <td>05/17</td>
+        <td>Client Payment Software</td>
+        <td>$431.41</td>
       </tr>
       
       <tr class="date-row">
-        <td>06/08</td>
-        <td>Monthly Salary Deposit</td>
-        <td>$527.53</td>
+        <td>06/05</td>
+        <td>Tax Refund Credit</td>
+        <td>$858.02</td>
+      </tr>
+      
+      <tr class="date-row">
+        <td>06/10</td>
+        <td>Cash Deposited To Account</td>
+        <td>$172.07</td>
       </tr>
       
       <tr>
         <td colspan="2"><strong>Total Deposits and Additions</strong></td>
-        <td style="text-align:right">$861.37</td>
+        <td style="text-align:right">$1,461.50</td>
       </tr>
     </table>
   </div>
@@ -236,20 +229,26 @@
       </tr>
       
       <tr class="date-row">
-        <td>05/16</td>
-        <td>Apartment Rent Payment</td>
-        <td>$490.75</td>
+        <td>05/18</td>
+        <td>Grocery Shopping Expense</td>
+        <td>$378.12</td>
       </tr>
       
       <tr class="date-row">
-        <td>05/30</td>
-        <td>Groceries Milk Bread &</td>
-        <td>$69.99</td>
+        <td>06/05</td>
+        <td>Electricity Bill Payment</td>
+        <td>$209.63</td>
+      </tr>
+      
+      <tr class="date-row">
+        <td>06/12</td>
+        <td>Milk & Eggs Purchased</td>
+        <td>$28.10</td>
       </tr>
       
       <tr>
         <td colspan="2"><strong>Total Electronic Withdrawals</strong></td>
-        <td style="text-align:right">$560.74</td>
+        <td style="text-align:right">$615.85</td>
       </tr>
     </table>
   </div>
@@ -265,23 +264,28 @@
       </tr>
       
       <tr>
-        <td>05/16</td>
-        <td>$12,462.61</td>
+        <td>05/17</td>
+        <td>9532.59</td>
       </tr>
       
       <tr>
-        <td>05/30</td>
-        <td>$12,392.62</td>
+        <td>05/18</td>
+        <td>9154.470000000001</td>
       </tr>
       
       <tr>
         <td>06/05</td>
-        <td>$12,726.46</td>
+        <td>9802.86</td>
       </tr>
       
       <tr>
-        <td>06/08</td>
-        <td>$13,253.99</td>
+        <td>06/10</td>
+        <td>9974.93</td>
+      </tr>
+      
+      <tr>
+        <td>06/12</td>
+        <td>9946.83</td>
       </tr>
       
     </table>

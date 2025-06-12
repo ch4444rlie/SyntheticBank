@@ -4,123 +4,109 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chase Bank Statement</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <style>
-    .card { transition: all 0.3s ease; }
-    .card:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); }
-    .toggle-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
-    .toggle-content.open { max-height: 1000px; }
+    body { background-color: #f3f4f6; font-family: Arial, sans-serif; color: #1f2937; margin: 0; padding: 20px; }
+    .container { max-width: 1024px; margin: 0 auto; }
+    .card { background-color: #ffffff; padding: 20px; margin-bottom: 20px; border: 1px solid #e5e7eb; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .header { display: flex; justify-content: space-between; align-items: flex-start; }
+    .header div:last-child { text-align: right; }
+    .header p { margin: 5px 0; }
+    .header .blue-text { color: #3b82f6; font-weight: bold; }
+    .payee p { margin: 5px 0; }
+    .summary h2, .transactions h2, .balance h2, .footnotes h3 { color: #3b82f6; font-size: 18px; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; }
+    .summary div { margin: 10px 0; }
+    .summary p { margin: 5px 0; }
+    .transactions div { border-bottom: 1px solid #e5e7eb; padding: 10px 0; }
+    .transactions .green-text { color: #10b981; font-weight: bold; }
+    .transactions .red-text { color: #ef4444; font-weight: bold; }
+    .balance div { border-bottom: 1px solid #e5e7eb; padding: 10px 0; }
+    .footnotes p { margin: 5px 0; }
   </style>
 </head>
-<body class="bg-gray-100 font-sans text-gray-800">
-  <div class="container mx-auto p-6 max-w-4xl">
+<body>
+  <div class="container">
     <!-- HEADER -->
-    <div class="flex justify-between items-start mb-8 bg-white p-6 rounded-lg shadow-md card">
+    <div class="card header">
       <div>
         {% if logo_path %}
-        <img src="{{ logo_path }}" alt="Chase Logo" class="w-32 mb-4">
+        <img src="{{ logo_path }}" alt="Chase Logo" style="width: 128px; margin-bottom: 10px;">
         {% endif %}
-        <p class="font-bold">JPMorgan Chase Bank, N.A.</p>
+        <p>JPMorgan Chase Bank, N.A.</p>
         <p>PO Box 659754, San Antonio, TX 78265-9754</p>
       </div>
-      <div class="text-right">
-        <p class="font-bold text-blue-600">{{ statement_period }}</p>
+      <div>
+        <p class="blue-text">{{ statement_period }}</p>
         <p>Account Number: {{ account_number }}</p>
-        <div class="mt-4 text-sm">
-          <p class="font-bold uppercase bg-blue-600 text-white px-4 py-1 rounded">Customer Service</p>
-          <p class="mt-2">chase.com | 1-800-242-7338</p>
+        <div style="margin-top: 10px;">
+          <p style="font-weight: bold; background-color: #3b82f6; color: #ffffff; padding: 5px 10px; border-radius: 4px;">Customer Service</p>
+          <p style="margin-top: 5px;">chase.com | 1-800-242-7338</p>
           <p>Español: 1-888-622-4273 | International: 1-713-262-1679</p>
         </div>
       </div>
     </div>
 
     <!-- PAYEE INFO -->
-    <div class="mb-8 bg-white p-6 rounded-lg shadow-md card">
-      <p class="font-bold">{{ account_holder }}</p>
+    <div class="card payee">
+      <p><strong>{{ account_holder }}</strong></p>
       <p>{{ account_holder_address }}</p>
     </div>
 
     <!-- CHECKING SUMMARY -->
-    <div class="mb-8 bg-white p-6 rounded-lg shadow-md card">
-      <h2 class="text-lg font-bold text-blue-600 uppercase mb-4">Checking Summary</h2>
-      <p class="text-center text-sm mb-2">Chase Business Select Checking</p>
-      <div class="grid grid-cols-2 gap-4">
-        <div>
-          <p class="font-bold">Beginning Balance</p>
-          <p>{{ summary.beginning_balance }}</p>
-        </div>
-        <div>
-          <p class="font-bold">Deposits and Additions</p>
-          <p>{{ summary.deposits_count }} instances | {{ summary.deposits_total }}</p>
-        </div>
-        <div>
-          <p class="font-bold">Electronic Withdrawals</p>
-          <p>{{ summary.withdrawals_count }} instances | {{ summary.withdrawals_total }}</p>
-        </div>
-        <div>
-          <p class="font-bold">Ending Balance</p>
-          <p>{{ summary.transactions_count }} transactions | {{ summary.ending_balance }}</p>
-        </div>
+    <div class="card summary">
+      <h2>Checking Summary</h2>
+      <p style="text-align: center; font-size: 12px; margin-bottom: 10px;">Chase Business Select Checking</p>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+        <div><p style="font-weight: bold;">Beginning Balance</p><p>{{ summary.beginning_balance }}</p></div>
+        <div><p style="font-weight: bold;">Deposits and Additions</p><p>{{ summary.deposits_count }} instances | {{ summary.deposits_total }}</p></div>
+        <div><p style="font-weight: bold;">Electronic Withdrawals</p><p>{{ summary.withdrawals_count }} instances | {{ summary.withdrawals_total }}</p></div>
+        <div><p style="font-weight: bold;">Ending Balance</p><p>{{ summary.transactions_count }} transactions | {{ summary.ending_balance }}</p></div>
       </div>
-      <p class="text-sm mt-4">{% if show_fee_waiver %}Your monthly service fee was waived due to an average balance of $7,500.00 or a minimum balance of $5,000.00.{% endif %}</p>
+      <p style="font-size: 12px; margin-top: 10px;">{% if show_fee_waiver %}Your monthly service fee was waived due to an average balance of $7,500.00 or a minimum balance of $5,000.00.{% endif %}</p>
     </div>
 
     <!-- TRANSACTIONS -->
     {% if deposits or withdrawals %}
-    <div class="mb-8 bg-white p-6 rounded-lg shadow-md card">
-      <h2 class="text-lg font-bold text-blue-600 uppercase mb-4 cursor-pointer toggle-header">Transactions</h2>
-      <div class="toggle-content">
-        <div class="grid grid-cols-1 gap-4">
-          {% for deposit in deposits %}
-          <div class="border-b border-gray-200 py-2">
-            <p class="font-bold text-green-600">{{ deposit.date }} - Deposit</p>
-            <p>{{ deposit.description }} | {{ deposit.amount }}</p>
-          </div>
-          {% endfor %}
-          {% for withdrawal in withdrawals %}
-          <div class="border-b border-gray-200 py-2">
-            <p class="font-bold text-red-600">{{ withdrawal.date }} - Withdrawal</p>
-            <p>{{ withdrawal.description }} | {{ withdrawal.amount }}</p>
-          </div>
-          {% endfor %}
+    <div class="card transactions">
+      <h2>Transactions</h2>
+      <div>
+        {% for deposit in deposits %}
+        <div>
+          <p class="green-text">{{ deposit.date }} - Deposit</p>
+          <p>{{ deposit.description }} | {{ deposit.amount }}</p>
         </div>
-        <p class="font-bold mt-4">Total Deposits: {{ summary.deposits_total }}</p>
-        <p class="font-bold">Total Withdrawals: {{ summary.withdrawals_total }}</p>
+        {% endfor %}
+        {% for withdrawal in withdrawals %}
+        <div>
+          <p class="red-text">{{ withdrawal.date }} - Withdrawal</p>
+          <p>{{ withdrawal.description }} | {{ withdrawal.amount }}</p>
+        </div>
+        {% endfor %}
       </div>
+      <p style="font-weight: bold; margin-top: 10px;">Total Deposits: {{ summary.deposits_total }}</p>
+      <p style="font-weight: bold;">Total Withdrawals: {{ summary.withdrawals_total }}</p>
     </div>
     {% endif %}
 
     <!-- DAILY BALANCE -->
-    <div class="mb-8 bg-white p-6 rounded-lg shadow-md card">
-      <h2 class="text-lg font-bold text-blue-600 uppercase mb-4 cursor-pointer toggle-header">Daily Ending Balance</h2>
-      <div class="toggle-content">
-        <div class="grid grid-cols-2 gap-4">
-          {% for balance in daily_balances %}
-          <div class="border-b border-gray-200 py-2">
-            <p>{{ balance.date }} | {{ balance.amount }}</p>
-          </div>
-          {% endfor %}
+    <div class="card balance">
+      <h2>Daily Ending Balance</h2>
+      <div>
+        {% for balance in daily_balances %}
+        <div>
+          <p>{{ balance.date }} | {{ balance.amount }}</p>
         </div>
+        {% endfor %}
       </div>
     </div>
 
     <!-- FOOTNOTES -->
-    <div class="bg-white p-6 rounded-lg shadow-md card text-sm">
-      <h3 class="text-lg font-bold text-blue-600 uppercase mb-4">Footnotes and Disclosures</h3>
+    <div class="card footnotes">
+      <h3>Footnotes and Disclosures</h3>
       <p><strong>Privacy Notice:</strong> See chase.com for our U.S. Consumer Privacy Notice.</p>
       <p><strong>Fees:</strong> Contact 1-800-242-7338 for fee details. Transactions may be pending.</p>
       <p><strong>Statements:</strong> Access 7 years of statements at chase.com or Chase Mobile® app.</p>
       <p><strong>Compliance:</strong> See chase.com/disclosures for regulatory details.</p>
     </div>
   </div>
-
-  <script>
-    document.querySelectorAll('.toggle-header').forEach(header => {
-      header.addEventListener('click', () => {
-        const content = header.nextElementSibling;
-        content.classList.toggle('open');
-      });
-    });
-  </script>
 </body>
 </html>

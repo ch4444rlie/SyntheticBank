@@ -1,21 +1,6 @@
 {
   "fields": [
     {
-      "name": "logo_path",
-      "is_mutable": false,
-      "description": "Path of the bank logo"
-    },
-    {
-      "name": "statement_period",
-      "is_mutable": true,
-      "description": "The period covered by the statement"
-    },
-    {
-      "name": "account_number",
-      "is_mutable": false,
-      "description": "The account number associated with this statement"
-    },
-    {
       "name": "account_holder",
       "is_mutable": true,
       "description": "Name of the account holder"
@@ -26,89 +11,79 @@
       "description": "Address of the account holder"
     },
     {
-      "name": "summary.beginning_balance",
-      "is_mutable": false,
-      "description": "The beginning balance for the statement period"
-    },
-    {
-      "name": "summary.deposits_count",
-      "is_mutable": false,
-      "description": "The number of deposits made during the statement period"
-    },
-    {
-      "name": "summary.deposits_total",
-      "is_mutable": false,
-      "description": "Total amount of all deposits made during the statement period"
-    },
-    {
-      "name": "summary.withdrawals_count",
-      "is_mutable": false,
-      "description": "The number of withdrawals made during the statement period"
-    },
-    {
-      "name": "summary.withdrawals_total",
-      "is_mutable": false,
-      "description": "Total amount of all withdrawals made during the statement period"
-    },
-    {
-      "name": "summary.transactions_count",
-      "is_mutable": false,
-      "description": "The total number of transactions made during the statement period"
-    },
-    {
-      "name": "summary.ending_balance",
-      "is_mutable": false,
-      "description": "The ending balance for the statement period"
-    },
-    {
-      "name": "deposit.date",
-      "is_mutable": false,
-      "description": "Date of a deposit transaction"
-    },
-    {
-      "name": "deposit.description",
+      "name": "account_number",
       "is_mutable": true,
-      "description": "Description or reason for the deposit"
+      "description": "Account number"
     },
     {
-      "name": "deposit.amount",
+      "name": "statement_period",
       "is_mutable": true,
-      "description": "Amount of a deposit transaction"
+      "description": "Statement date range"
     },
     {
-      "name": "summary.deposits_total",
-      "is_mutable": false,
-      "description": "Total amount of all deposits made during the statement period (calculated value)"
-    },
-    {
-      "name": "withdrawal.date",
-      "is_mutable": false,
-      "description": "Date of a withdrawal transaction"
-    },
-    {
-      "name": "withdrawal.description",
+      "name": "summary",
       "is_mutable": true,
-      "description": "Description or reason for the withdrawal"
+      "description": "Checking summary data (beginning balance, counts, totals)"
     },
     {
-      "name": "withdrawal.amount",
+      "name": "deposits",
       "is_mutable": true,
-      "description": "Amount of a withdrawal transaction"
+      "description": "List of deposit transactions"
     },
     {
-      "name": "summary.withdrawals_total",
-      "is_mutable": false,
-      "description": "Total amount of all withdrawals made during the statement period (calculated value)"
+      "name": "withdrawals",
+      "is_mutable": true,
+      "description": "List of withdrawal transactions"
     },
     {
-      "name": "balance.date",
-      "is_mutable": false,
-      "description": "Date of a balance update"
+      "name": "daily_balances",
+      "is_mutable": true,
+      "description": "Daily ending balances"
     },
     {
-      "name": "balance.amount",
+      "name": "logo_path",
+      "is_mutable": true,
+      "description": "Path to the bank logo"
+    },
+    {
+      "name": "bank_name",
       "is_mutable": false,
-      "description": "Amount of the balance at the specified date"
+      "description": "Name of the bank (JPMorgan Chase)"
+    },
+    {
+      "name": "bank_address",
+      "is_mutable": false,
+      "description": "Bank address"
+    },
+    {
+      "name": "checking_summary_header",
+      "is_mutable": false,
+      "description": "Header for checking summary"
+    },
+    {
+      "name": "deposits_header",
+      "is_mutable": false,
+      "description": "Header for deposits section"
+    },
+    {
+      "name": "withdrawals_header",
+      "is_mutable": false,
+      "description": "Header for withdrawals section"
+    },
+    {
+      "name": "daily_balance_header",
+      "is_mutable": false,
+      "description": "Header for daily balance section"
+    },
+    {
+      "name": "customer_service",
+      "is_mutable": false,
+      "description": "Customer service contact information"
+    },
+    {
+      "name": "footnotes",
+      "is_mutable": false,
+      "description": "Footnotes and disclosures"
     }
   ]
 }
