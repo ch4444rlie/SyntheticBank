@@ -57,10 +57,12 @@ See [pyproject.toml](https://github.com/ch4444rlie/SynthDat/blob/master/pyprojec
 - Optional: Access to an LLM (Mistral via Ollama) for transaction descriptions
 
 ## Getting Started
-
 ### Prerequisites
 - Install Python 3.13+.
-- Install `wkhtmltopdf` and ensure it’s accessible in your system PATH (default path in code: `C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe`).
+- Install wkhtmltopdf and ensure it’s accessible in your system PATH (default path in code: `C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe`).
 - Install dependencies: `pip install -r requirements.txt`.
-- Place the Chase logo (`chase_bank_logo.png`) in the `sample_logos/` directory.
-- Place the HTML template (`chase_final.html`) in the `templates/` directory.
+- Place the logo in the `sample_logos/` directory.
+- Place the HTML template in the `templates/` directory.
+
+### Running the Project
+To run the synthetic bank statement generator yourself, locate the Jupyter Notebook `final_chase_generator.ipynb` in the repository. Follow the instructions within the notebook to execute the cells and generate synthetic statements. Ensure all prerequisites are met before running.
