@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Chase Bank Statement – Variation</title>
+  <style>
+    :root {
+      --font-size: 10px;
+      --section-bg: #f9f9f9;
+      --header-bg: #002663;
+      --header-color: #ffffff;
+      --border-color: #333333;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+      font-size: var(--font-size);
+      background: #fff;
+      color: #000;
+    }
+    .header-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      background: var(--header-bg);
+      color: var(--header-color);
+    }
+    .header-table td {
+      vertical-align: top;
+      padding: 8px;
+    }
+    .header-logo {
+      width: 120px;
+    }
+    .customer-service {
+      text-align: right;
+    }
+    .cs-box {
+      display: inline-block;
+      text-align: left;
+      background: var(--section-bg);
+      padding: 4px;
+    }
+    .cs-header {
+      text-transform: uppercase;
+      font-weight: bold;
+      font-size: var(--font-size);
+      border-bottom: 2px solid var(--header-color);
+      margin-bottom: 4px;
+    }
+    .cs-content {
+      line-height: 1.2;
+    }
+    .date-range {
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+    .account-number {
+      margin-bottom: 8px;
+    }
+
+    .section {
+      margin-top: 25px;
+    }
+    .section-header {
+      background: var(--section-bg);
+      padding: 6px 10px;
+      border: 1px solid var(--border-color);
+      display: inline-block;
+      font-size: var(--font-size);
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    th, td {
+      padding: 4px 6px;
+      border-bottom: 1px solid var(--border-color);
+      text-align: left;
+    }
+    th {
+      background: var(--header-bg);
+      color: var(--header-color);
+      text-transform: uppercase;
+      font-size: var(--font-size);
+    }
+
+    .summary-table {
+      width: 45%;
+      float: right;
+      margin-left: 10px;
+    }
+    .summary-table td, .summary-table th {
+      border: 1px solid var(--border-color);
+    }
+
+    .data-table th:nth-child(3),
+    .balance-table td:nth-child(2) {
+      text-align: right;
+    }
+
+    .balance-table td {
+      border: none;
+      padding: 4px 6px;
+    }
+
+    .footnotes {
+      clear: both;
+      margin-top: 30px;
+      font-size: 7px;
+      line-height: 1.2;
+    }
+    .footnotes h3 {
+      font-size: 9px;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+  </style>
+</head>
+<body>
+  <!-- HEADER -->
+  <table class="header-table">
+    <tr>
+      <td class="header-logo">
+        {% if logo_path %}
+        <img src="{{ logo_path }}" alt="Chase Logo" width="120">
+        {% endif %}
+      </td>
+      <td>
+        <div>JPMorgan Chase Bank, N.A.</div>
+        <div>PO Box 659754, San Antonio, TX 78265-9754</div>
+      </td>
+      <td class="customer-service">
+        <div class="date-range">{{ statement_period }}</div>
+        <div class="account-number">Account Number: {{ account_number }}</div>
+        <div class="cs-box">
+          <div class="cs-header">Customer Service Information</div>
+          <div class="cs-content">
+            Web site: chase.com<br>
+            Service Center: 1-800-242-7338<br>
+            Hearing Impaired: 1-800-242-7383<br>
+            Para Español: 1-888-622-4273<br>
+            International Calls: 1-713-262-1679
+          </div>
+        </div>
+      </td>
+    </tr>
+  </table>
+
+  <!-- PAYEE INFO -->
+  <div>
+    <strong>
+      {{ account_holder }}<br>
+      {{ account_holder_address }}
+    </strong>
+  </div>
+
+  <!-- CHECKING SUMMARY -->
+  <div class="section">
+    <div class="section-header">Checking Summary</div>
+    <table class="summary-table">
+      <tr>
+        <th></th>
+        <th>Instances</th>
+        <th>Amount</th>
+      </tr>
+      <tr>
+        <td>Beginning Balance</td>
+        <td>–</td>
+        <td>{{ summary.beginning_balance }}</td>
+      </tr>
+      <tr>
+        <td>Deposits and Additions</td>
+        <td>{{ summary.deposits_count }}</td>
+        <td>{{ summary.deposits_total }}</td>
+      </tr>
+      <tr>
+        <td>Electronic Withdrawals</td>
+        <td>{{ summary.withdrawals_count }}</td>
+        <td>{{ summary.withdrawals_total }}</td>
+      </tr>
+      <tr>
+        <td>Ending Balance</td>
+        <td>{{ summary.transactions_count }}</td>
+        <td>{{ summary.ending_balance }}</td>
+      </tr>
+    </table>
+    <p>Your monthly service fee was waived because you maintained an average checking balance of $7,500.00 or a minimum checking balance of $5,000.00 or more during the statement period.</p>
+  </div>
+
+  <!-- DEPOSITS AND ADDITIONS -->
+  {% if deposits %}
+  <div class="section">
+    <div class="section-header">Deposits and Additions</div>
+    <table class="data-table">
+      <tr>
+        <th>Date</th>
+        <th>Description</th>
+        <th>Amount</th>
+      </tr>
+      {% for deposit in deposits %}
+      <tr class="date-row">
+        <td>{{ deposit.date }}</td>
+        <td>{{ deposit.description }}</td>
+        <td>{{ deposit.amount }}</td>
+      </tr>
+      {% endfor %}
+      <tr>
+        <td colspan="2"><strong>Total Deposits and Additions</strong></td>
+        <td style="text-align:right">{{ summary.deposits_total }}</td>
+      </tr>
+    </table>
+  </div>
+  {% endif %}
+
+  <!-- WITHDRAWALS -->
+  {% if withdrawals %}
+  <div class="section">
+    <div class="section-header">Withdrawals</div>
+    <table class="data-table">
+      <tr>
+        <th>Date</th>
+        <th>Description</th>
+        <th>Amount</th>
+      </tr>
+      {% for w in withdrawals %}
+      <tr class="date-row">
+        <td>{{ w.date }}</td>
+        <td>{{ w.description }}</td>
+        <td>{{ w.amount }}</td>
+      </tr>
+      {% endfor %}
+      <tr>
+        <td colspan="2"><strong>Total Electronic Withdrawals</strong></td>
+        <td style="text-align:right">{{ summary.withdrawals_total }}</td>
+      </tr>
+    </table>
+  </div>
+  {% endif %}
+
+  <!-- DAILY ENDING BALANCE -->
+  <div class="section">
+    <div class="section-header">Daily Ending Balance</div>
+    <table class="balance-table">
+      <tr>
+        <th>Date</th>
+        <th>Amount</th>
+      </tr>
+      {% for b in daily_balances %}
+      <tr>
+        <td>{{ b.date }}</td>
+        <td>{{ b.amount }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+
+  <!-- FOOTNOTES AND DISCLOSURES -->
+  <div class="footnotes">
+    <h3>Footnotes and Disclosures</h3>
+    <p><strong>1. Privacy Notice:</strong> For details on how we protect your personal information, see our U.S. Consumer Privacy Notice at chase.com.</p>
+    <p><strong>2. Fees and Adjustments:</strong> This statement may include fees or adjustments. For specific charge details, contact Customer Service at 1-800-242-7338. Transactions may be pending until finalized.</p>
+    <p><strong>3. Statement Access:</strong> Access up to 7 years of statements online at chase.com or via the Chase Mobile® app under ‘Statements & Documents.’ Paper statements may stop after enrolling in paperless delivery.</p>
+    <p><strong>4. Regulatory Compliance:</strong> This statement complies with federal regulations. Visit chase.com/disclosures for more information.</p>
+  </div>
+</body>
+</html>
