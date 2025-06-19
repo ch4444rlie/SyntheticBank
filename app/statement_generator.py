@@ -24,7 +24,7 @@ for directory in [SAMPLE_STATEMENT_DIR, SAMPLE_LOGOS_DIR, SYNTHETIC_STAT_DIR, TE
 BANK_CONFIG = {
     "chase": {"logo": "chase_bank_logo.png", "templates": ["chase_mail_style.html", "chase_website_style.html", "chase_app_style.html"]},
     "citibank": {"logo": "citibank_logo.png", "templates": ["citibank_classic_template.html", "citibank_website_style.html", "citibank_app_style.html"]},
-    "wellsfargo": {"logo": "wellsfargo_logo.png", "templates": ["wells_fargo_complete_advantage_checking.html", "wells_fargo_app_style.html", "wells_fargo_web_style.html"]},
+    "wellsfargo": {"logo": "wellsfargo_logo.png", "templates": ["wells_fargo_classic.html", "wells_fargo_app.html", "wells_fargo_web.html"]},
     "pnc": {"logo": "pnc_logo.png", "templates": ["pnc_main.html"]}
 }
 
