@@ -10,6 +10,7 @@ import pandas as pd
 from pydantic import BaseModel, Field
 from typing import List
 from jinja2 import Environment, FileSystemLoader
+import pdfkit
 
 fake = Faker()
 
@@ -114,7 +115,7 @@ def identify_template_fields(template_path: str) -> StatementFields:
     
     return statement_fields
 
-def generate_populated_html(df: pd.DataFrame, account_holder: str, template_dir: str, output_dir: str, template_name: str) -> str:
+def generate_populated_html_and_pdf(df: pd.DataFrame, account_holder: str, template_dir: str, output_dir: str, template_name: str) -> tuple[str, str]:
     env = Environment(loader=FileSystemLoader(template_dir))
     
     initial_balance = round(random.uniform(1000, 20000), 2)
@@ -181,10 +182,29 @@ def generate_populated_html(df: pd.DataFrame, account_holder: str, template_dir:
     
     template = env.get_template(template_name)
     html_filename = os.path.join(output_dir, f"bank_statement_{account_holder.replace(' ', '_')}_{os.path.splitext(template_name)[0]}.html")
+    pdf_filename = os.path.join(output_dir, f"bank_statement_{account_holder.replace(' ', '_')}_{os.path.splitext(template_name)[0]}.pdf")
     
     rendered_html = template.render(**template_data)
     
     with open(html_filename, 'w') as f:
         f.write(rendered_html)
     
-    return html_filename
+    wkhtmltopdf_path = os.environ.get("WKHTMLTOPDF_PATH", "/usr/bin/wkhtmltopdf")
+    config = pdfkit.configuration(wkhtmltopdf=wkhtmltopdf_path)
+    options = {
+        "enable-local-file-access": "",
+        "page-size": "Letter",
+        "margin-top": "0.75in",
+        "margin-right": "0.75in",
+        "margin-bottom": "0.75in",
+        "margin-left": "0.75in",
+        "encoding": "UTF-8",
+        "disable-javascript": "",
+        "image-dpi": "300"
+    }
+    try:
+        pdfkit.from_string(rendered_html, pdf_filename, configuration=config, options=options)
+    except OSError as e:
+        raise Exception(f"PDF generation failed: {e}")
+    
+    return html_filename, pdf_filenames
