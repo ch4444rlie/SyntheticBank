@@ -24,11 +24,12 @@ if not template_files:
     st.error(f"No HTML templates found for {selected_bank} in the templates directory. Please contact the app administrator.")
     st.stop()
 template_name = st.selectbox("Select Template Style", template_files)
-account_holder = st.text_input("Account Holder Name", value=fake.company().upper())
 
 if st.button("Generate Statement"):
     with st.spinner(f"Generating {selected_bank.capitalize()} statement..."):
         try:
+            # Generate account holder name internally
+            account_holder = fake.company().upper()
             df = generate_bank_statement(num_transactions, account_holder)
             csv_filename = os.path.join(SYNTHETIC_STAT_DIR, f"bank_statement_{account_holder.replace(' ', '_')}_{selected_bank}.csv")
             df.to_csv(csv_filename, index=False)
@@ -36,7 +37,7 @@ if st.button("Generate Statement"):
             template_path = os.path.join(TEMPLATES_DIR, template_name)
             statement_fields = identify_template_fields(template_path)
             
-            results = generate_populated_html_and_pdf(df, account_holder, selected_bank, TEMPLATES_DIR, SYNTHETIC_STAT_DIR, template_name)  # Pass template_name
+            results = generate_populated_html_and_pdf(df, account_holder, selected_bank, TEMPLATES_DIR, SYNTHETIC_STAT_DIR, template_name)
             for html_file, pdf_file in results:
                 st.success(f"Statement generated successfully for {selected_bank.capitalize()}!")
                 st.write(f"CSV saved as: {csv_filename}")
