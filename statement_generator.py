@@ -13,12 +13,11 @@ import pdfkit
 
 fake = Faker()
 
-SAMPLE_STATEMENT_DIR = "sample_statements"
 SAMPLE_LOGOS_DIR = "sample_logos"
 SYNTHETIC_STAT_DIR = "synthetic_statements"
 TEMPLATES_DIR = "templates"
 
-for directory in [SAMPLE_STATEMENT_DIR, SAMPLE_LOGOS_DIR, SYNTHETIC_STAT_DIR, TEMPLATES_DIR]:
+for directory in [SAMPLE_LOGOS_DIR, SYNTHETIC_STAT_DIR, TEMPLATES_DIR]:
     os.makedirs(directory, exist_ok=True)
 
 BANK_CONFIG = {
