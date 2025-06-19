@@ -1,0 +1,104 @@
+{
+  "fields": [
+    {
+      "name": "account_holder",
+      "is_mutable": true,
+      "description": "Name of the account holder"
+    },
+    {
+      "name": "client_number",
+      "is_mutable": true,
+      "description": "Client identification number"
+    },
+    {
+      "name": "date_of_birth",
+      "is_mutable": true,
+      "description": "Customer's date of birth"
+    },
+    {
+      "name": "customer_account_number",
+      "is_mutable": true,
+      "description": "Customer's account number"
+    },
+    {
+      "name": "customer_iban",
+      "is_mutable": true,
+      "description": "Customer's IBAN"
+    },
+    {
+      "name": "customer_bank_name",
+      "is_mutable": true,
+      "description": "Name of the customer's bank"
+    },
+    {
+      "name": "statement_period",
+      "is_mutable": true,
+      "description": "Statement date range"
+    },
+    {
+      "name": "statement_date",
+      "is_mutable": true,
+      "description": "Date the statement was created"
+    },
+    {
+      "name": "opening_balance_debit",
+      "is_mutable": true,
+      "description": "Opening balance debit amount"
+    },
+    {
+      "name": "opening_balance_credit",
+      "is_mutable": true,
+      "description": "Opening balance credit amount"
+    },
+    {
+      "name": "opening_balance",
+      "is_mutable": true,
+      "description": "Opening balance total"
+    },
+    {
+      "name": "transactions",
+      "is_mutable": true,
+      "description": "List of transaction details"
+    },
+    {
+      "name": "total_debit",
+      "is_mutable": true,
+      "description": "Total debit amount"
+    },
+    {
+      "name": "total_credit",
+      "is_mutable": true,
+      "description": "Total credit amount"
+    },
+    {
+      "name": "total",
+      "is_mutable": true,
+      "description": "Total balance"
+    },
+    {
+      "name": "bank_name",
+      "is_mutable": false,
+      "description": "Name of the bank (Citibank)"
+    },
+    {
+      "name": "bank_address",
+      "is_mutable": false,
+      "description": "Bank address"
+    },
+    {
+      "name": "table_headers",
+      "is_mutable": false,
+      "description": "Headers for transaction table"
+    },
+    {
+      "name": "customer_service",
+      "is_mutable": false,
+      "description": "Customer service contact information"
+    },
+    {
+      "name": "footnotes",
+      "is_mutable": false,
+      "description": "Footnotes and disclosures"
+    }
+  ]
+}

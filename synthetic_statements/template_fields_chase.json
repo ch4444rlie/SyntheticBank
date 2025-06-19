@@ -1,0 +1,104 @@
+{
+  "fields": [
+    {
+      "name": "logo_path",
+      "is_mutable": false,
+      "description": "Path to the logo image on the statement"
+    },
+    {
+      "name": "statement_period",
+      "is_mutable": true,
+      "description": "Period covered by the bank statement (e.g., January 1 - March 31)"
+    },
+    {
+      "name": "account_number",
+      "is_mutable": false,
+      "description": "Unique number identifying the customer's account with Chase Bank"
+    },
+    {
+      "name": "account_holder",
+      "is_mutable": true,
+      "description": "Name of the individual or entity holding the account at Chase Bank"
+    },
+    {
+      "name": "account_holder_address",
+      "is_mutable": true,
+      "description": "Address associated with the account holder at Chase Bank"
+    },
+    {
+      "name": "summary.beginning_balance",
+      "is_mutable": false,
+      "description": "The balance of the account at the start of the statement period"
+    },
+    {
+      "name": "summary.deposits_count",
+      "is_mutable": false,
+      "description": "Number of deposits made to the account during the statement period"
+    },
+    {
+      "name": "summary.deposits_total",
+      "is_mutable": false,
+      "description": "Total amount deposited into the account during the statement period"
+    },
+    {
+      "name": "summary.withdrawals_count",
+      "is_mutable": false,
+      "description": "Number of withdrawals made from the account during the statement period"
+    },
+    {
+      "name": "summary.withdrawals_total",
+      "is_mutable": false,
+      "description": "Total amount withdrawn from the account during the statement period"
+    },
+    {
+      "name": "summary.transactions_count",
+      "is_mutable": false,
+      "description": "Total number of transactions made on the account during the statement period"
+    },
+    {
+      "name": "summary.ending_balance",
+      "is_mutable": false,
+      "description": "The balance of the account at the end of the statement period"
+    },
+    {
+      "name": "deposit.date",
+      "is_mutable": false,
+      "description": "Date when a deposit was made to the account"
+    },
+    {
+      "name": "deposit.description",
+      "is_mutable": true,
+      "description": "Description or reason for the deposit transaction"
+    },
+    {
+      "name": "deposit.amount",
+      "is_mutable": false,
+      "description": "Amount of the deposit transaction"
+    },
+    {
+      "name": "withdrawal.date",
+      "is_mutable": false,
+      "description": "Date when a withdrawal was made from the account"
+    },
+    {
+      "name": "withdrawal.description",
+      "is_mutable": true,
+      "description": "Description or reason for the withdrawal transaction"
+    },
+    {
+      "name": "withdrawal.amount",
+      "is_mutable": false,
+      "description": "Amount of the withdrawal transaction"
+    },
+    {
+      "name": "balance.date",
+      "is_mutable": false,
+      "description": "Date when a balance was recorded for the account"
+    },
+    {
+      "name": "balance.amount",
+      "is_mutable": false,
+      "description": "The amount of the recorded balance for the account on the given date"
+    }
+  ]
+}
