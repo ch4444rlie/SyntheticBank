@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Wells Fargo – Web Statement</title>
+<style>
+    /* Reset & defaults */
+    * { margin: 0; padding: 0; font-family: Arial, sans-serif; }
+    body { background-color: #F0F4F8; color: #333; font-size: 12px; line-height: 1.5; padding: 20px; }
+
+    /* Header */
+    .header { background-color: #C62828; color: #fff; padding: 15px; text-align: right; }
+    .header img { height: 40px; vertical-align: middle; margin-left: 10px; }
+
+    /* Sidebar and Main */
+    .container { overflow: hidden; margin-top: 20px; }
+    .sidebar { float: left; width: 30%; background-color: #fff; border: 1px solid #ddd; padding: 15px; margin-right: 2%; }
+    .main-content { float: right; width: 65%; background-color: #fff; border: 1px solid #ddd; padding: 15px; }
+
+    /* Info blocks */
+    .info-section { margin-bottom: 10px; }
+    .info-section b { display: block; color: #C62828; margin-bottom: 5px; }
+    .info-section span { display: block; margin-bottom: 3px; }
+
+    /* Transactions */
+    h2 { color: #C62828; margin-bottom: 10px; font-size: 16px; }
+    .meta { text-align: right; margin-bottom: 10px; font-weight: bold; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { padding: 8px; border: 1px solid #ddd; }
+    th { background-color: #FFCDD2; color: #C62828; text-align: left; }
+    .num { text-align: right; }
+    .highlight { background-color: #FFCDD2; font-weight: bold; }
+    tr:last-child td { border-bottom: none; }
+
+    /* Notice */
+    .notice { text-align: center; margin: 20px 0; font-size: 11px; color: #666; }
+
+    /* Footer */
+    .footer { clear: both; margin-top: 20px; padding: 15px; background-color: #F0F4F8; font-size: 10px; color: #666; text-align: justify; }
+    .footer hr { border: 0; height: 1px; background: #C62828; margin: 10px 0; }
+    .footer p:last-child { text-align: right; }
+
+    /* Print-specific fallbacks */
+    @media print {
+        body { padding: 0; }
+        .header { padding: 10px; }
+        .container { margin-top: 10px; }
+        .sidebar { float: left; width: 30%; }
+        .main-content { float: right; width: 65%; }
+        table { page-break-inside: auto; }
+        tr { page-break-inside: avoid; page-break-after: auto; }
+    }
+</style>
+</head>
+<body>
+
+<div class="header">
+    Wells Fargo Online <img src="{{logo_path}}" alt="Wells Fargo logo">
+</div>
+
+<div class="container">
+    <div class="sidebar">
+        <div class="info-section">
+            <b>Account Details</b>
+            <span>Account Holder: {{account_holder}}</span>
+            <span>Address: {{account_holder_address}}</span>
+            <span>Account Number: {{account_number}}</span>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <h2>Transaction History</h2>
+        <div class="meta">
+            <span>{{statement_period}}</span>
+            <span>Created on {{statement_date}}</span>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:15%;">Date</th>
+                    <th>Description</th>
+                    <th style="width:15%;" class="num">Deposits</th>
+                    <th style="width:15%;" class="num">Withdrawals</th>
+                    <th style="width:15%;" class="num">Balance</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="highlight">
+                    <td></td><td>Opening Balance</td>
+                    <td class="num"></td>
+                    <td class="num"></td>
+                    <td class="num">{{summary.beginning_balance}}</td>
+                </tr>
+                {% for transaction in transactions %}
+                <tr>
+                    <td>{{ transaction.date }}</td>
+                    <td>{{ transaction.description }}</td>
+                    <td class="num">{{ transaction.deposits_credits }}</td>
+                    <td class="num">{{ transaction.withdrawals_debits }}</td>
+                    <td class="num">{{ transaction.ending_balance }}</td>
+                </tr>
+                {% endfor %}
+                <tr class="highlight">
+                    <td></td><td>Total</td>
+                    <td class="num">{{summary.deposits_total}}</td>
+                    <td class="num">{{summary.withdrawals_total}}</td>
+                    <td class="num">{{summary.ending_balance}}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p class="notice">
+            This statement is for informational purposes only. Refer to your official statement for legal records.
+        </p>
+    </div>
+</div>
+
+<div class="footer">
+    <hr>
+    <p>Wells Fargo Bank, N.A. is a member of the Wells Fargo family of companies. © 2025 Wells Fargo Bank, N.A. All rights reserved. Member FDIC.</p>
+    <p>Wells Fargo</p>
+</div>
+
+</body>
+</html>

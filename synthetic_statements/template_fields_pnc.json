@@ -48,7 +48,7 @@
     {
       "name": "bank_name",
       "is_mutable": false,
-      "description": "Name of the bank (JPMorgan Chase)"
+      "description": "Name of the bank (Pnc)"
     },
     {
       "name": "bank_address",

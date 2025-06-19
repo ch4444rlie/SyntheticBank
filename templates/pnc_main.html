@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>PNC Access Checking Statement</title>
+<style>
+/* ─── RESET & BASE ───────────────────────────────────────────── */
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.45;color:#000;}
+h1{font-size:22px;margin-bottom:4px;}
+h2{font-size:15px;margin:14px 0 6px;}
+h3{font-size:13px;margin:10px 0 4px;}
+.small{font-size:10.5px;}
+hr.rule{border:none;border-top:1px solid #000;margin:14px 0;}
+.flex{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;}
+.section{padding:0 6%;}
+.logo{height:42px;}
+/* tables */
+table{width:100%;border-collapse:collapse;font-size:11.5px;}
+th{background:#d9d9d9;text-align:left;font-weight:700;padding:4px;}
+td{padding:4px 6px;vertical-align:top;}
+td.num{text-align:right;}
+td.center{text-align:center;}
+tbody tr:last-child td{border-bottom:none;}
+th,td{border-bottom:1px solid #666;}
+/* two-column summary blocks */
+.summary-row{display:flex;gap:32px;flex-wrap:wrap;}
+.summary-block{flex:1 1 260px;}
+/* indented bullet list in contact box */
+.info-right ul{margin-left:14px;list-style-type:disc;}
+.info-right li{margin-bottom:3px;}
+</style>
+</head>
+<body>
+
+<!-- ─── PAGE HEADER ──────────────────────────────────────────── -->
+<section class="section flex" style="padding-top:24px;">
+  <div>
+      <h1>PNC Access Checking Statement</h1>
+      <span class="small">PNC Bank</span>
+  </div>
+  <img src="{{logo_path}}" alt="PNC Bank" class="logo">
+</section>
+
+<hr class="rule">
+
+<!-- ─── CUSTOMER BLOCK vs CONTACT BLOCK ───────────────────────── -->
+<section class="section flex" style="margin-bottom:8px;">
+  <!-- customer / period -->
+  <div class="info-left">
+      <b>For the period {{statement_period}}</b><br><br>
+      {{account_holder_address}}
+  </div>
+
+  <!-- bank contact / service info -->
+  <div class="info-right small" style="max-width:280px;">
+      <p><b>Primary account number:</b> {{account_number}}</p>
+      <p>Page 1 of {{total_pages}}</p>
+      <p>Number of enclosures: 0</p>
+
+      <ul>
+          <li>For 24-hour banking or transaction / interest-rate information, sign on to PNC Bank Online Banking at pnc.com</li>
+          <li>Customer service: <b>1-888-PNC-BANK</b></li>
+          <li>Monday-Friday 7 AM – 10 PM ET<br>Saturday & Sunday 8 AM – 5 PM ET</li>
+          <li>Spanish: <b>1-866-HOLA-PNC</b></li>
+          <li>Moving? Contact us: <b>1-888-PNC-BANK</b></li>
+          <li>Write: Customer Service<br>PO Box 609<br>Pittsburgh, PA 15230-9738</li>
+          <li>TTY (hearing-impaired): <b>1-800-531-1648</b></li>
+          <li>Visit us at pnc.com</li>
+      </ul>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- ─── IMPORTANT ACCOUNT INFORMATION (all paragraphs) ─────────── -->
+<section class="section small">
+  <h2>Important Account Information</h2>
+
+  <p>Between May 1, 2025, and September 30, 2025, PNC will be removing the option to print mini statements at PNC ATMs. 
+     Please use other channels and options such as Online Banking, Mobile Banking, Voice Banking and Branch Banking 
+     to access your account information.</p><br>
+
+  <p>PNC Express Funds provides an option for immediate availability on approved checks deposited through Branch 
+     Banking, PNC ATM, or Mobile Banking, subject to cut-off times. <b>Effective June 22, 2025</b>, the cost of utilizing 
+     PNC Express Funds will increase from 2.00 % of the check amount over $100 to 2.50 %. The cost for each check 
+     amount between $25 and $100 will remain $2.00.</p><br>
+
+  <p>If you have any questions, please feel free to visit your local PNC Branch or Solution Center or call 
+     the PNC Customer Care Center at <b>1-888-762-2265</b>.</p><br>
+
+  <p>Effective June 22, 2025, the definition of qualifying direct deposits will be updated as follows:
+     <br><br>
+     <em>Qualifying direct deposit is defined as a recurring direct deposit of a paycheck, pension, Social Security, 
+     or other regular income electronically deposited by an employer or outside agency into the Spend account of a 
+     Virtual Wallet<span style="white-space:nowrap;"> …</span></em>
+  </p><br>
+
+  <p>Effective June 16, 2025, we are changing the “Large Dollar Deposits” and “Special Rules for New Account Holders” 
+     sections of the Funds Availability Policy for Consumer Accounts. This change increases the amount of availability 
+     of a deposit from $125 to $400 on the first business day after the business day of your deposit. All other 
+     information in your Agreement continues to apply.</p><br>
+
+  <p>Effective June 22, 2025, the cost of Non-Client Check Cashing will increase from 2.00 % of the check amount over $100 
+     to 2.50 %. The cost for each check amount between $25 and $100 will remain $2.00.</p>
+</section>
+
+<hr class="rule">
+
+<!-- ─── ACCOUNT SUMMARY ────────────────────────────────────────── -->
+<section class="section">
+  <h2>Virtual Wallet Spend Account Summary</h2>
+  <table>
+      <tr><td><b>Account number:</b></td><td>{{account_number}}</td></tr>
+      <tr><td><b>Overdraft Protection Provided By:</b></td><td>{{summary.overdraft_protection1}}<br>{{summary.overdraft_protection2}}</td></tr>
+      <tr><td><b>Overdraft Coverage</b></td><td>Your account is currently <b>{{summary.overdraft_status}}</b>.</td></tr>
+      <tr><td colspan="2">{{account_holder_address}}</td></tr>
+  </table>
+</section>
+
+<hr class="rule">
+
+<!-- ─── BALANCE + TRANSACTION + INTEREST SUMMARIES ─────────────── -->
+<section class="section summary-row">
+
+  <!-- Balance summary -->
+  <div class="summary-block">
+      <h3>Balance Summary</h3>
+      <table>
+          <tr><td>Beginning balance</td><td class="num">{{summary.beginning_balance}}</td></tr>
+          <tr><td>Deposits and other additions</td><td class="num">{{summary.deposits_total}}</td></tr>
+          <tr><td>Checks and other deductions</td><td class="num">{{summary.withdrawals_total}}</td></tr>
+          <tr><td>Ending balance</td><td class="num">{{summary.ending_balance}}</td></tr>
+          <tr><td>Average monthly balance</td><td class="num">{{summary.average_balance}}</td></tr>
+          <tr><td>Charges and fees</td><td class="num">{{summary.fees}}</td></tr>
+      </table>
+  </div>
+
+  <!-- Transaction summary -->
+  <div class="summary-block">
+      <h3>Transaction Summary</h3>
+      <table>
+          <tr><td>Checks paid/written</td><td class="center">{{summary.checks_written}}</td></tr>
+          <tr><td>Check card POS transactions</td><td class="center">{{summary.pos_transactions}}</td></tr>
+          <tr><td>Check card/virtual POS PIN txn</td><td class="center">{{summary.pos_pin_transactions}}</td></tr>
+          <tr><td>Total ATM transactions</td><td class="center">{{summary.total_atm_transactions}}</td></tr>
+          <tr><td>PNC Bank ATM transactions</td><td class="center">{{summary.pnc_atm_transactions}}</td></tr>
+          <tr><td>Other Bank ATM transactions</td><td class="center">{{summary.other_atm_transactions}}</td></tr>
+      </table>
+  </div>
+
+  <!-- Interest summary -->
+  <div class="summary-block">
+      <h3>Interest Summary</h3>
+      <table>
+          <tr><td>Annual Percentage Yield Earned (APYE)</td><td class="num">{{summary.apy_earned}}</td></tr>
+          <tr><td>Number of days in statement period</td><td class="num">{{summary.days_in_period}}</td></tr>
+          <tr><td>Average collected balance for APYE</td><td class="num">{{summary.average_collected_balance}}</td></tr>
+          <tr><td>Interest paid this period</td><td class="num">{{summary.interest_paid_period}}</td></tr>
+      </table>
+      <p class="small" style="margin-top:6px;">
+          As of {{statement_period}}, a total of {{summary.interest_paid_ytd}} in interest was paid this year.
+      </p>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- ─── ACTIVITY DETAIL ─────────────────────────────────────────── -->
+<section class="section">
+  <h2>Activity Detail</h2>
+
+  <!-- Deposits & other additions -->
+  <h3>Deposits and Other Additions</h3>
+  <table>
+      <thead>
+          <tr>
+              <th style="width:12%;">Date</th>
+              <th style="width:18%;" class="num">Amount</th>
+              <th>Description</th>
+          </tr>
+      </thead>
+      <tbody>
+          {% for transaction in transactions if transaction.type == 'deposit' %}
+          <tr>
+              <td>{{ transaction.date }}</td>
+              <td class="num">{{ transaction.amount }}</td>
+              <td>{{ transaction.description }}</td>
+          </tr>
+          {% endfor %}
+      </tbody>
+  </table>
+  <p class="small" style="margin-top:4px;">
+      There {% if transactions|selectattr('type', 'equalto', 'deposit')|list|length == 1 %}is 1 deposit{% else %}are {{ transactions|selectattr('type', 'equalto', 'deposit')|list|length }} deposits{% endif %} totaling {{summary.deposits_total}}.
+  </p>
+
+  <!-- Online & electronic deductions -->
+  <h3 style="margin-top:18px;">Online and Electronic Banking Deductions</h3>
+  <table>
+      <thead>
+          <tr>
+              <th style="width:12%;">Date</th>
+              <th style="width:18%;" class="num">Amount</th>
+              <th>Description</th>
+          </tr>
+      </thead>
+      <tbody>
+          {% for transaction in transactions if transaction.type == 'electronic' %}
+          <tr>
+              <td>{{ transaction.date }}</td>
+              <td class="num">{{ transaction.amount }}</td>
+              <td>{{ transaction.description }}</td>
+          </tr>
+          {% endfor %}
+      </tbody>
+  </table>
+  <p class="small" style="margin-top:4px;">
+      There {% if transactions|selectattr('type', 'equalto', 'electronic')|list|length == 1 %}is 1 electronic transaction{% else %}are {{ transactions|selectattr('type', 'equalto', 'electronic')|list|length }} electronic transactions{% endif %} totaling {{summary.withdrawals_total}}.
+  </p>
+
+  <!-- Other deductions -->
+  <h3 style="margin-top:18px;">Other Deductions</h3>
+  <table>
+      <thead>
+          <tr>
+              <th style="width:12%;">Date</th>
+              <th style="width:18%;" class="num">Amount</th>
+              <th>Description</th>
+          </tr>
+      </thead>
+      <tbody>
+          {% for transaction in transactions if transaction.type == 'other' %}
+          <tr>
+              <td>{{ transaction.date }}</td>
+              <td class="num">{{ transaction.amount }}</td>
+              <td>{{ transaction.description }}</td>
+          </tr>
+          {% endfor %}
+      </tbody>
+  </table>
+  <p class="small" style="margin-top:4px;">
+      There {% if transactions|selectattr('type', 'equalto', 'other')|list|length == 1 %}is 1 other deduction{% else %}are {{ transactions|selectattr('type', 'equalto', 'other')|list|length }} other deductions{% endif %} totaling {{summary.fees}}.
+  </p>
+
+  <!-- Daily balance detail -->
+  <h3 style="margin-top:18px;">Daily Balance Detail</h3>
+  <table>
+      <thead>
+          <tr>
+              <th style="width:12%;">Date</th>
+              <th style="width:18%;" class="num">Balance</th>
+              <th style="width:12%;">Date</th>
+              <th style="width:18%;" class="num">Balance</th>
+              <th style="width:12%;">Date</th>
+              <th style="width:18%;" class="num">Balance</th>
+          </tr>
+      </thead>
+      <tbody>
+          {% for row in daily_balances %}
+          <tr>
+              <td>{{row.date1}}</td><td class="num">{{row.bal1}}</td>
+              <td>{{row.date2}}</td><td class="num">{{row.bal2}}</td>
+              <td>{{row.date3}}</td><td class="num">{{row.bal3}}</td>
+          </tr>
+          {% endfor %}
+      </tbody>
+  </table>
+</section>
+
+<hr class="rule">
+
+<!-- ─── FOOTER ──────────────────────────────────────────────────── -->
+<footer class="section small">
+  Page {{current_page}} of {{total_pages}} — Member FDIC • Equal Housing Lender
+</footer>
+
+</body>
+</html>

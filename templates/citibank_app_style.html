@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Citibank Statement – App View</title>
+<style>
+    :root{
+        --brand:#0066c1;
+        --bg:#ffffff;
+        --muted:#757575;
+        --card:#f2f6fb;
+    }
+    /* Reset & base */
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+         background:var(--bg);color:#000;font-size:15px;line-height:1.5;}
+
+    /* Header app-bar */
+    .appbar{background:var(--brand);color:#fff;padding:14px 20px;display:flex;align-items:center;gap:8px;}
+    .appbar img{height:32px;margin-left:auto;}
+
+    /* Container */
+    .wrapper{max-width:480px;margin:0 auto;padding:16px;}
+
+    /* Card */
+    .card{background:var(--card);border-radius:12px;padding:20px;margin-bottom:20px;}
+
+    /* Headings */
+    .card h3{font-size:17px;margin-bottom:12px;color:var(--brand);}
+
+    /* Info list */
+    .info-list{list-style:none;margin:0;padding:0;}
+    .info-list li{margin:4px 0;}
+    .label{color:var(--muted);font-weight:600;margin-right:4px;}
+
+    /* Transactions */
+    .txn-head, .txn-row{display:grid;grid-template-columns:90px 1fr 70px;}
+    .txn-head{font-weight:600;color:var(--brand);margin-bottom:6px;}
+    .txn-row{padding:8px 0;border-bottom:1px solid #e1e6ef;font-size:14px;}
+    .txn-row:last-child{border-bottom:none;}
+    .num{text-align:right;}
+    .highlight{font-weight:600;background:rgba(0,102,193,.08);border-radius:8px;padding:10px;}
+
+    /* Notice */
+    .notice{font-size:12px;text-align:center;margin:20px 0;color:var(--muted);}
+
+    /* Footer mini */
+    footer{font-size:11px;color:var(--muted);text-align:center;padding:24px 12px 32px;}
+</style>
+</head>
+<body>
+
+<!-- App bar -->
+<div class="appbar">
+    <strong>Statement</strong>
+    <img src="{{ logo_path }}" alt="Citibank">
+</div>
+
+<div class="wrapper">
+
+    <!-- Account card -->
+    <div class="card">
+        <h3>Account</h3>
+        <ul class="info-list">
+            <li><span class="label">Holder:</span>{{ account_holder }}</li>
+            <li><span class="label">Account #:</span>{{ customer_account_number }}</li>
+            <li><span class="label">IBAN:</span>{{ customer_iban }}</li>
+            <li><span class="label">Bank:</span>{{ customer_bank_name }}</li>
+        </ul>
+    </div>
+
+    <!-- Period card -->
+    <div class="card">
+        <h3>Period</h3>
+        <ul class="info-list">
+            <li>{{ statement_period }}</li>
+            <li>Generated: {{ statement_date }}</li>
+        </ul>
+    </div>
+
+    <!-- Transactions card -->
+    <div class="card">
+        <h3>Transactions</h3>
+
+        <!-- header row -->
+        <div class="txn-head">
+            <div>Date</div><div>Description</div><div class="num">Amount</div>
+        </div>
+
+        <!-- opening balance -->
+        <div class="txn-row highlight">
+            <div></div><div>Opening balance</div>
+            <div class="num">{{ opening_balance }}</div>
+        </div>
+
+        <!-- loop -->
+        {% for transaction in transactions %}
+        <div class="txn-row">
+            <div>{{ transaction.date }}</div>
+            <div>{{ transaction.description }}</div>
+            <div class="num">
+                {% if transaction.debit %}-{{ transaction.debit }}{% else %}+{{ transaction.credit }}{% endif %}
+            </div>
+        </div>
+        {% endfor %}
+
+        <!-- total -->
+        <div class="txn-row highlight">
+            <div></div><div>Total</div>
+            <div class="num">{{ total }}</div>
+        </div>
+    </div>
+
+    <p class="notice">
+        This printout is for information purposes only. Your regular account statement of assets takes precedence.
+    </p>
+</div>
+
+<footer>
+    © 2021 Citibank UK Limited – Calls may be monitored or recorded for training and service quality purposes.
+</footer>
+</body>
+</html>
