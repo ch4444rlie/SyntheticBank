@@ -24,7 +24,7 @@ for directory in [SAMPLE_STATEMENT_DIR, SAMPLE_LOGOS_DIR, SYNTHETIC_STAT_DIR, TE
 BANK_CONFIG = {
     "chase": {"logo": "chase_bank_logo.png", "templates": ["chase_mail_style.html", "chase_website_style.html", "chase_app_style.html"]},
     "citibank": {"logo": "citibank_logo.png", "templates": ["citibank_classic_template.html", "citibank_website_style.html", "citibank_app_style.html"]},
-    "wellsfargo": {"logo": "wellsfargo_logo.png", "templates": ["wells_fargo_classic.html", "wells_fargo_app.html", "wells_fargo_web.html"]},
+    "wellsfargo": {"logo": "wellsfargo_logo.png", "templates": ["wells_fargo_complete_advantage_checking.html", "wells_fargo_app_style.html", "wells_fargo_web_style.html"]},
     "pnc": {"logo": "pnc_logo.png", "templates": ["pnc_main.html"]}
 }
 
@@ -134,7 +134,7 @@ def generate_populated_html_and_pdf(df: pd.DataFrame, account_holder: str, bank:
     
     min_date = datetime.strptime(min(df['Date']), "%m/%d").replace(year=2025).strftime("%B %d")
     max_date = datetime.strptime(max(df['Date']), "%m/%d").replace(year=2025).strftime("%B %d")
-    statement_date = datetime.now().strftime("%B %d, %Y at %I:%M %p %Z")  # e.g., June 19, 2025 at 03:09 PM CDT
+    statement_date = datetime.now().strftime("%B %d, %Y at %I:%M %p %Z")  # e.g., June 19, 2025 at 03:54 PM CDT
     
     address = fake.address().replace('\n', '<br>')[:100]
     account_holder = account_holder[:50]
@@ -302,7 +302,7 @@ def generate_populated_html_and_pdf(df: pd.DataFrame, account_holder: str, bank:
         with open(html_filename, 'w', encoding='utf-8') as f:
             f.write(rendered_html)
         
-        wkhtmltopdf_path = os.environ.get("WKHTMLTOPDF_PATH", "C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
+        wkhtmltopdf_path = os.environ.get("WKHTMLTOPDF_PATH", "/usr/bin/wkhtmltopdf")  # Linux path for Streamlit Cloud
         config = pdfkit.configuration(wkhtmltopdf=wkhtmltopdf_path)
         options = {
             "enable-local-file-access": "",
