@@ -88,9 +88,9 @@ This project addresses three key challenges:
 
 ## Demo and Full Capabilities
 ### Try the Demo
-A public demo is available on Streamlit Cloud: [**Synthetic Bank Statement Demo**](https://syntheticbank-xutpjbpmddrzxd8tg2hgsw.streamlit.app/)
-- Generate HTML statements with 3–12 transactions and select from 10 templates.
-- Download HTML or save as PDF via browser.
+A public demo is available on Streamlit Cloud: [**Synthetic Bank Statement Demo**](https://syntheticbank-jcemrxxikd4pgxqdkwf46j.streamlit.app/)
+- Generate statements with 3–12 transactions and select from 10 templates.
+- Download as PDF via browser.
 - Simplified for non-technical users, excluding LLM data generation.
 
 ### Full Capabilities
