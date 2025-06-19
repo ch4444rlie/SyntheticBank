@@ -207,4 +207,4 @@ def generate_populated_html_and_pdf(df: pd.DataFrame, account_holder: str, templ
     except OSError as e:
         raise Exception(f"PDF generation failed: {e}")
     
-    return html_filename, pdf_filenames
+    return html_filename, pdf_filename
