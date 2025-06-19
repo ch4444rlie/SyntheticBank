@@ -114,9 +114,12 @@ def identify_template_fields(template_path: str) -> StatementFields:
     
     return statement_fields
 
-def generate_populated_html_and_pdf(df: pd.DataFrame, account_holder: str, bank: str, template_dir: str, output_dir: str) -> list:
+def generate_populated_html_and_pdf(df: pd.DataFrame, account_holder: str, bank: str, template_dir: str, output_dir: str, template_name: str) -> list:
     if bank not in BANK_CONFIG:
         raise ValueError(f"Unsupported bank: {bank}. Supported banks: {list(BANK_CONFIG.keys())}")
+    
+    if template_name not in BANK_CONFIG[bank]["templates"]:
+        raise ValueError(f"Template {template_name} not supported for {bank}. Available templates: {BANK_CONFIG[bank]['templates']}")
     
     env = Environment(loader=FileSystemLoader(template_dir))
     
@@ -133,7 +136,7 @@ def generate_populated_html_and_pdf(df: pd.DataFrame, account_holder: str, bank:
     
     min_date = datetime.strptime(min(df['Date']), "%m/%d").replace(year=2025).strftime("%B %d")
     max_date = datetime.strptime(max(df['Date']), "%m/%d").replace(year=2025).strftime("%B %d")
-    statement_date = datetime.now().strftime("%B %d, %Y at %I:%M %p %Z")  # e.g., June 19, 2025 at 03:54 PM CDT
+    statement_date = datetime.now().strftime("%B %d, %Y at %I:%M %p %Z")  # e.g., June 19, 2025 at 04:17 PM CDT
     
     address = fake.address().replace('\n', '<br>')[:100]
     account_holder = account_holder[:50]
@@ -287,40 +290,39 @@ def generate_populated_html_and_pdf(df: pd.DataFrame, account_holder: str, bank:
         }
     
     results = []
-    for template_file in BANK_CONFIG[bank]["templates"]:
-        if not os.path.exists(os.path.join(template_dir, template_file)):
-            raise FileNotFoundError(f"Template {template_file} not found in {template_dir}")
-        
-        template = env.get_template(template_file)
-        template_name = os.path.splitext(template_file)[0]
-        html_filename = os.path.join(output_dir, f"bank_statement_{account_holder.replace(' ', '_')}_{bank}_{template_name}.html")
-        pdf_filename = os.path.join(output_dir, f"bank_statement_{account_holder.replace(' ', '_')}_{bank}_{template_name}.pdf")
-        
-        rendered_html = template.render(**template_data)
-        
-        with open(html_filename, 'w', encoding='utf-8') as f:
-            f.write(rendered_html)
-        
-        wkhtmltopdf_path = os.environ.get("WKHTMLTOPDF_PATH", "/usr/bin/wkhtmltopdf")  # Linux path for Streamlit Cloud
-        config = pdfkit.configuration(wkhtmltopdf=wkhtmltopdf_path)
-        options = {
-            "enable-local-file-access": "",
-            "page-size": "Letter",
-            "margin-top": "0.8in",
-            "margin-right": "0.9in",
-            "margin-bottom": "0.8in",
-            "margin-left": "0.9in",
-            "encoding": "UTF-8",
-            "disable-javascript": "",
-            "image-dpi": "300",
-            "enable-forms": "",
-            "no-outline": "",
-            "print-media-type": ""
-        }
-        try:
-            pdfkit.from_string(rendered_html, pdf_filename, configuration=config, options=options)
-            results.append((html_filename, pdf_filename))
-        except OSError as e:
-            raise Exception(f"PDF generation failed for {bank} template {template_file}: {e}. Ensure wkhtmltopdf is installed and accessible.")
+    if not os.path.exists(os.path.join(template_dir, template_name)):
+        raise FileNotFoundError(f"Template {template_name} not found in {template_dir}")
+    
+    template = env.get_template(template_name)
+    template_name_base = os.path.splitext(template_name)[0]
+    html_filename = os.path.join(output_dir, f"bank_statement_{account_holder.replace(' ', '_')}_{bank}_{template_name_base}.html")
+    pdf_filename = os.path.join(output_dir, f"bank_statement_{account_holder.replace(' ', '_')}_{bank}_{template_name_base}.pdf")
+    
+    rendered_html = template.render(**template_data)
+    
+    with open(html_filename, 'w', encoding='utf-8') as f:
+        f.write(rendered_html)
+    
+    wkhtmltopdf_path = os.environ.get("WKHTMLTOPDF_PATH", "/usr/bin/wkhtmltopdf")  # Linux path for Streamlit Cloud
+    config = pdfkit.configuration(wkhtmltopdf=wkhtmltopdf_path)
+    options = {
+        "enable-local-file-access": "",
+        "page-size": "Letter",
+        "margin-top": "0.8in",
+        "margin-right": "0.9in",
+        "margin-bottom": "0.8in",
+        "margin-left": "0.9in",
+        "encoding": "UTF-8",
+        "disable-javascript": "",
+        "image-dpi": "300",
+        "enable-forms": "",
+        "no-outline": "",
+        "print-media-type": ""
+    }
+    try:
+        pdfkit.from_string(rendered_html, pdf_filename, configuration=config, options=options)
+        results.append((html_filename, pdf_filename))
+    except OSError as e:
+        raise Exception(f"PDF generation failed for {bank} template {template_name}: {e}. Ensure wkhtmltopdf is installed and accessible.")
     
     return results

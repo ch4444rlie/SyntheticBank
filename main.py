@@ -36,7 +36,7 @@ if st.button("Generate Statement"):
             template_path = os.path.join(TEMPLATES_DIR, template_name)
             statement_fields = identify_template_fields(template_path)
             
-            results = generate_populated_html_and_pdf(df, account_holder, selected_bank, TEMPLATES_DIR, SYNTHETIC_STAT_DIR)
+            results = generate_populated_html_and_pdf(df, account_holder, selected_bank, TEMPLATES_DIR, SYNTHETIC_STAT_DIR, template_name)  # Pass template_name
             for html_file, pdf_file in results:
                 st.success(f"Statement generated successfully for {selected_bank.capitalize()}!")
                 st.write(f"CSV saved as: {csv_filename}")
