@@ -1,62 +1,144 @@
 import streamlit as st
 import pandas as pd
 import os
-from statement_generator import generate_bank_statement, identify_template_fields, generate_populated_html_and_pdf, TEMPLATES_DIR, SYNTHETIC_STAT_DIR, BANK_CONFIG
+import base64
+from statement_generator import (
+    generate_bank_statement,
+    identify_template_fields,
+    generate_populated_html_and_pdf,
+    TEMPLATES_DIR,
+    SYNTHETIC_STAT_DIR,
+    BANK_CONFIG
+)
 from faker import Faker
 
 fake = Faker()
 
-st.set_page_config(page_title="Bank Statement Generator", page_icon="🏦")
+# Set page configuration
+st.set_page_config(
+    page_title="Synthetic Bank Statement Generator",
+    page_icon="🏦",
+    layout="wide"
+)
+
+# Bank display name mapping
+BANK_DISPLAY_NAMES = {
+    "chase": "Chase",
+    "citibank": "Citibank",
+    "wellsfargo": "Wells Fargo",
+    "pnc": "PNC"
+}
+
+# Template display name mapping
+TEMPLATE_DISPLAY_NAMES = {
+    "chase_classic_style.html": "Classic Chase Statement",
+    "chase_variation_1.html": "Custom Chase Statement 1",
+    "chase_variation_2.html": "Custom Chase Statement 2",
+    "citibank_classic_template.html": "Classic Citibank Statement",
+    "citibank_variation_1.html": "Custom Citibank Statement 1",
+    "citibank_variation_2.html": "Custom Citibank Statement 2",
+    "wells_fargo_classic.html": "Classic Wells Fargo Statement",
+    "wells_variation_1.html": "Custom Wells Fargo Statement 1",
+    "wells_variation_2.html": "Custom Wells Fargo Statement 2",
+    "pnc_classic.html": "Classic PNC Statement"
+}
+
+# Sidebar
+with st.sidebar:
+    st.header("Statement Options")
+    st.markdown("Configure your synthetic bank statement below.")
+    
+    # Bank selection
+    banks = list(BANK_CONFIG.keys())
+    selected_bank_key = st.selectbox(
+        "Select Bank",
+        banks,
+        format_func=lambda x: BANK_DISPLAY_NAMES[x],
+        index=0
+    )
+    selected_bank = BANK_DISPLAY_NAMES[selected_bank_key]
+    
+    # Transaction count
+    num_transactions = st.slider(
+        "Number of Transactions",
+        min_value=3,
+        max_value=12,
+        value=5,
+        step=1
+    )
+    
+    # Template selection
+    template_files = [f for f in BANK_CONFIG[selected_bank_key]["templates"] if f.endswith('.html')]
+    if not template_files:
+        st.error(f"No HTML templates found for {selected_bank} in the templates directory. Please contact the app administrator.")
+        st.stop()
+    selected_template = st.selectbox(
+        "Select Template Style",
+        template_files,
+        format_func=lambda x: TEMPLATE_DISPLAY_NAMES.get(x, x)
+    )
+
+# Main content
 st.title("Synthetic Bank Statement Generator")
 st.markdown("""
-Create a synthetic bank statement as a PDF. 
-- Select a bank and number of transactions (3–12).
-- Choose a template style for the selected bank.
-- Download the generated PDF directly.
-- No software installation required—just use your browser!
+Generate realistic synthetic bank statements for testing and development.  
+- Configure options in the sidebar to select a bank, transaction count, and template style.  
+- Preview the statement below and download the PDF.  
+- All data is synthetic and for learning purposes only.
 """)
 
-banks = list(BANK_CONFIG.keys())
-selected_bank = st.selectbox("Select Bank", banks, index=0)
-num_transactions = st.number_input("Number of Transactions (3-12)", min_value=3, max_value=12, value=5, step=1)
-template_files = [f for f in BANK_CONFIG[selected_bank]["templates"] if f.endswith('.html')]
-if not template_files:
-    st.error(f"No HTML templates found for {selected_bank} in the templates directory. Please contact the app administrator.")
-    st.stop()
-template_name = st.selectbox("Select Template Style", template_files)
+# Preview area
+st.subheader(f"Preview: {selected_bank} Statement")
+preview_placeholder = st.empty()
 
-if st.button("Generate Statement"):
-    with st.spinner(f"Generating {selected_bank.capitalize()} statement..."):
+# Generate button
+if st.button("Generate Statement", key="generate_button"):
+    with st.spinner(f"Generating {selected_bank} statement..."):
         try:
-            # Generate account holder name internally
+            # Generate account holder name
             account_holder = fake.company().upper()
+            
+            # Generate statement data
             df = generate_bank_statement(num_transactions, account_holder)
-            csv_filename = os.path.join(SYNTHETIC_STAT_DIR, f"bank_statement_{account_holder.replace(' ', '_')}_{selected_bank}.csv")
+            csv_filename = os.path.join(SYNTHETIC_STAT_DIR, f"bank_statement_{account_holder.replace(' ', '_')}_{selected_bank_key}.csv")
             df.to_csv(csv_filename, index=False)
             
-            template_path = os.path.join(TEMPLATES_DIR, template_name)
+            # Identify template fields
+            template_path = os.path.join(TEMPLATES_DIR, selected_template)
             statement_fields = identify_template_fields(template_path)
             
-            results = generate_populated_html_and_pdf(df, account_holder, selected_bank, TEMPLATES_DIR, SYNTHETIC_STAT_DIR, template_name)
+            # Generate HTML and PDF
+            results = generate_populated_html_and_pdf(
+                df, account_holder, selected_bank_key, TEMPLATES_DIR, SYNTHETIC_STAT_DIR, selected_template
+            )
+            
             for html_file, pdf_file in results:
-                st.success(f"Statement generated successfully for {selected_bank.capitalize()}!")
-                st.write(f"CSV saved as: {csv_filename}")
-                st.write(f"PDF saved as: {pdf_file}")
+                # Display success message
+                st.success(f"Statement generated for {selected_bank}!")
                 
-                # Download PDF
+                # Preview PDF
                 with open(pdf_file, "rb") as f:
                     pdf_content = f.read()
-                    st.download_button(
-                        label=f"Download {selected_bank.capitalize()} PDF",
-                        data=pdf_content,
-                        file_name=os.path.basename(pdf_file),
-                        mime="application/pdf",
-                        key=f"pdf_download_{selected_bank}"
-                    )
+                    pdf_base64 = base64.b64encode(pdf_content).decode('utf-8')
+                    pdf_preview = f'<iframe src="data:application/pdf;base64,{pdf_base64}" width="100%" height="600px" style="border: none;"></iframe>'
+                    preview_placeholder.markdown(pdf_preview, unsafe_allow_html=True)
                 
-                st.write("Template Fields:")
-                for field in statement_fields.fields:
-                    st.write(f"- {field.name}: {'Mutable' if field.is_mutable else 'Immutable'}, {field.description}")
+                # Download button
+                st.download_button(
+                    label=f"Download {selected_bank} PDF",
+                    data=pdf_content,
+                    file_name=os.path.basename(pdf_file),
+                    mime="application/pdf",
+                    key=f"pdf_download_{selected_bank_key}"
+                )
+                
+                # Display additional info
+                with st.expander("View Details"):
+                    st.write(f"CSV saved as: {csv_filename}")
+                    st.write(f"PDF saved as: {pdf_file}")
+                    st.write("Template Fields:")
+                    for field in statement_fields.fields:
+                        st.write(f"- {field.name}: {'Mutable' if field.is_mutable else 'Immutable'}, {field.description}")
         
         except Exception as e:
             st.error(f"Error generating statement: {str(e)}")
@@ -66,3 +148,14 @@ if st.button("Generate Statement"):
             - Verify a valid template is selected for the chosen bank.
             - If the issue persists, try refreshing the page or contact the app administrator.
             """)
+            preview_placeholder.markdown("No statement generated yet. Please resolve the error and try again.")
+
+# Placeholder before generation
+if not st.session_state.get("generated", False):
+    preview_placeholder.markdown("""
+    Select options in the sidebar and click 'Generate Statement' to preview your synthetic bank statement here.
+    """)
+
+# Track generation state
+if st.button("Generate Statement", key="generate_button_hidden"):
+    st.session_state["generated"] = True
