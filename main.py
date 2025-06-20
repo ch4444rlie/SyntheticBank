@@ -81,8 +81,9 @@ with st.sidebar:
             st.error("Please select a bank and template style first.")
         else:
             st.session_state["trigger_generate"] = True
-    # Sidebar download button (disabled until generated)
-    if st.session_state.get("generated", False) and st.session_state.get("pdf_file"):
+    
+    # Sidebar download button
+    if st.session_state.get("generated", False) and st.session_state.get("pdf_file") and os.path.exists(st.session_state["pdf_file"]):
         with open(st.session_state["pdf_file"], "rb") as f:
             pdf_content = f.read()
             st.download_button(
@@ -93,8 +94,11 @@ with st.sidebar:
                 key=f"sidebar_pdf_download_{selected_bank_key}"
             )
     else:
-        st.button(
+        st.download_button(
             label=f"Download {selected_bank} PDF (Sidebar)",
+            data=b"",  # Empty bytes to avoid RuntimeError
+            file_name="",
+            mime="application/pdf",
             key=f"sidebar_pdf_download_disabled_{selected_bank_key}",
             disabled=True
         )
