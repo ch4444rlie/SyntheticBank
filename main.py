@@ -11,6 +11,8 @@ from statement_generator import (
     BANK_CONFIG
 )
 from faker import Faker
+from pdf2image import convert_from_path
+import tempfile
 
 fake = Faker()
 
@@ -50,12 +52,10 @@ TEMPLATE_DISPLAY_NAMES = {
 with st.sidebar:
     st.header("Statement Options")
     st.markdown("Configure your synthetic bank statement.")
-
-    # Bank selection with buttons
     st.subheader("Select Bank")
     banks = list(BANK_CONFIG.keys())
     if "selected_bank_key" not in st.session_state:
-        st.session_state["selected_bank_key"] = None  # No default bank selected
+        st.session_state["selected_bank_key"] = None
     
     cols = st.columns(2)
     for idx, bank_key in enumerate(banks):
@@ -67,10 +67,7 @@ with st.sidebar:
     selected_bank_key = st.session_state["selected_bank_key"]
     selected_bank = BANK_DISPLAY_NAMES.get(selected_bank_key, "No Bank Selected")
 
-    # Transaction count
     num_transactions = st.slider("Number of Transactions", min_value=3, max_value=12, value=5, step=1)
-
-    # Template selection (hidden until bank is selected)
     if selected_bank_key:
         template_files = [f for f in BANK_CONFIG[selected_bank_key]["templates"] if f.endswith('.html')]
         if not template_files:
@@ -83,11 +80,12 @@ with st.sidebar:
 
 st.title("Synthetic Bank Statement Generator")
 st.markdown("""
-Create synthetic bank statements for development purposes.  
+Create realistic synthetic bank statements for development purposes.  
 - Customize your synthetic bank statement using the sidebar options.  
 - For a highly realistic bank statement, select the 'Classic' template style.  
 - For a statement with added noise to challenge processing, choose a 'Custom' template style.  
 - Download the generated PDF after configuration.  
+- All data is synthetic and for learning purposes only.
 """)
 
 st.subheader(f"Preview: {selected_bank} Statement")
@@ -108,7 +106,12 @@ if st.button("Generate Statement", key="generate_button", disabled=not selected_
             results = generate_populated_html_and_pdf(df, account_holder, selected_bank_key, TEMPLATES_DIR, SYNTHETIC_STAT_DIR, selected_template)
             for _, pdf_file in results:
                 st.session_state["generated"] = True
-                preview_placeholder.markdown(f"Statement generated! Download the PDF below to view your {selected_bank} statement.")
+                # Convert PDF to PNG for preview
+                with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp_png:
+                    images = convert_from_path(pdf_file, first_page=1, last_page=1)
+                    images[0].save(tmp_png.name, "PNG")
+                    preview_placeholder.image(tmp_png.name, caption=f"{selected_bank} Statement Preview", use_column_width=True)
+                    os.unlink(tmp_png.name)  # Clean up temporary file
                 with open(pdf_file, "rb") as f:
                     pdf_content = f.read()
                     st.download_button(
@@ -131,10 +134,11 @@ if st.button("Generate Statement", key="generate_button", disabled=not selected_
             - Ensure transactions are between 3 and 12.
             - Verify the template is valid.
             - If downloads fail, try Firefox/Edge or disable Chrome’s ad blockers.
+            - Ensure poppler is installed for image previews.
             - Refresh or contact the administrator.
             """)
             preview_placeholder.markdown("No statement generated. Resolve the error and try again.")
             st.session_state["generated"] = False
 
 if not st.session_state["generated"]:
-    preview_placeholder.markdown("Select a bank and options in the sidebar, then click 'Generate Statement' to create your synthetic bank statement.")
+    preview_placeholder.markdown("Select a bank and options in the sidebar, then click 'Generate Statement' to preview your synthetic bank statement.")
