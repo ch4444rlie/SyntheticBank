@@ -74,6 +74,21 @@ with st.sidebar:
     else:
         selected_template = None
         st.markdown("Select a bank to choose a template style.")
+    
+    # Sidebar buttons (hidden until prerequisites selected)
+    if selected_bank_key and selected_template:
+        if st.button("Generate Statement (Sidebar)", key="sidebar_generate_button"):
+            st.session_state["trigger_generate"] = True
+        if st.session_state.get("generated", False) and st.session_state.get("pdf_file"):
+            with open(st.session_state["pdf_file"], "rb") as f:
+                pdf_content = f.read()
+                st.download_button(
+                    label=f"Download {selected_bank} PDF (Sidebar)",
+                    data=pdf_content,
+                    file_name=os.path.basename(st.session_state["pdf_file"]),
+                    mime="application/pdf",
+                    key=f"sidebar_pdf_download_{selected_bank_key}"
+                )
 
 st.title("Synthetic Bank Statement Generator")
 st.markdown("""
@@ -90,8 +105,11 @@ preview_placeholder = st.empty()
 
 if "generated" not in st.session_state:
     st.session_state["generated"] = False
+if "trigger_generate" not in st.session_state:
+    st.session_state["trigger_generate"] = False
 
-if st.button("Generate Statement", key="generate_button", disabled=not selected_bank_key):
+# Main area generate button
+if st.button("Generate Statement", key="generate_button", disabled=not (selected_bank_key and selected_template)) or st.session_state["trigger_generate"]:
     with st.spinner(f"Generating {selected_bank} statement..."):
         try:
             account_holder = fake.company().upper()
@@ -103,7 +121,9 @@ if st.button("Generate Statement", key="generate_button", disabled=not selected_
             results = generate_populated_html_and_pdf(df, account_holder, selected_bank_key, TEMPLATES_DIR, SYNTHETIC_STAT_DIR, selected_template)
             for _, pdf_file in results:
                 st.session_state["generated"] = True
-                # Display download button first
+                st.session_state["pdf_file"] = pdf_file
+                st.session_state["trigger_generate"] = False
+                # Download button above preview
                 with open(pdf_file, "rb") as f:
                     pdf_content = f.read()
                     st.download_button(
@@ -113,7 +133,7 @@ if st.button("Generate Statement", key="generate_button", disabled=not selected_
                         mime="application/pdf",
                         key=f"pdf_download_{selected_bank_key}"
                     )
-                # Display PDF preview below
+                # PDF preview
                 pdf_base64 = base64.b64encode(pdf_content).decode('utf-8')
                 pdf_preview = f'<iframe src="data:application/pdf;base64,{pdf_base64}" width="100%" height="600px" style="border: none;"></iframe>'
                 preview_placeholder.markdown("""
@@ -137,6 +157,7 @@ if st.button("Generate Statement", key="generate_button", disabled=not selected_
             """)
             preview_placeholder.markdown("No statement generated. Resolve the error and try again.")
             st.session_state["generated"] = False
+            st.session_state["trigger_generate"] = False
 
 if not st.session_state["generated"]:
     preview_placeholder.markdown("Select a bank and options in the sidebar, then click 'Generate Statement' to preview your synthetic bank statement.")
