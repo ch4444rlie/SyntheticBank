@@ -16,6 +16,17 @@ fake = Faker()
 
 st.set_page_config(page_title="Synthetic Bank Statement Generator", page_icon="🏦", layout="wide")
 
+# CSS to normalize button sizes
+st.markdown("""
+<style>
+.stButton > button {
+    width: 100%;
+    height: 40px;
+    font-size: 16px;
+}
+</style>
+""", unsafe_allow_html=True)
+
 BANK_DISPLAY_NAMES = {
     "chase": "Chase",
     "citibank": "Citibank",
@@ -44,27 +55,31 @@ with st.sidebar:
     st.subheader("Select Bank")
     banks = list(BANK_CONFIG.keys())
     if "selected_bank_key" not in st.session_state:
-        st.session_state["selected_bank_key"] = banks[0]
+        st.session_state["selected_bank_key"] = None  # No default bank selected
     
-    cols = st.columns(2)  # Two columns for button layout
+    cols = st.columns(2)
     for idx, bank_key in enumerate(banks):
         with cols[idx % 2]:
             if st.button(BANK_DISPLAY_NAMES[bank_key], key=f"bank_button_{bank_key}"):
                 st.session_state["selected_bank_key"] = bank_key
-                st.session_state["generated"] = False  # Reset generation state
+                st.session_state["generated"] = False
     
     selected_bank_key = st.session_state["selected_bank_key"]
-    selected_bank = BANK_DISPLAY_NAMES[selected_bank_key]
+    selected_bank = BANK_DISPLAY_NAMES.get(selected_bank_key, "No Bank Selected")
 
     # Transaction count
     num_transactions = st.slider("Number of Transactions", min_value=3, max_value=12, value=5, step=1)
 
-    # Template selection
-    template_files = [f for f in BANK_CONFIG[selected_bank_key]["templates"] if f.endswith('.html')]
-    if not template_files:
-        st.error(f"No templates found for {selected_bank}. Contact the administrator.")
-        st.stop()
-    selected_template = st.selectbox("Select Template Style", template_files, format_func=lambda x: TEMPLATE_DISPLAY_NAMES.get(x, x))
+    # Template selection (hidden until bank is selected)
+    if selected_bank_key:
+        template_files = [f for f in BANK_CONFIG[selected_bank_key]["templates"] if f.endswith('.html')]
+        if not template_files:
+            st.error(f"No templates found for {selected_bank}. Contact the administrator.")
+            st.stop()
+        selected_template = st.selectbox("Select Template Style", template_files, format_func=lambda x: TEMPLATE_DISPLAY_NAMES.get(x, x))
+    else:
+        selected_template = None
+        st.markdown("Select a bank to choose a template style.")
 
 st.title("Synthetic Bank Statement Generator")
 st.markdown("""
@@ -80,7 +95,7 @@ preview_placeholder = st.empty()
 if "generated" not in st.session_state:
     st.session_state["generated"] = False
 
-if st.button("Generate Statement", key="generate_button"):
+if st.button("Generate Statement", key="generate_button", disabled=not selected_bank_key):
     with st.spinner(f"Generating {selected_bank} statement..."):
         try:
             account_holder = fake.company().upper()
@@ -121,4 +136,4 @@ if st.button("Generate Statement", key="generate_button"):
             st.session_state["generated"] = False
 
 if not st.session_state["generated"]:
-    preview_placeholder.markdown("Select options in the sidebar and click 'Generate Statement' to create your synthetic bank statement.")
+    preview_placeholder.markdown("Select a bank and options in the sidebar, then click 'Generate Statement' to create your synthetic bank statement.")
