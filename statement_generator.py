@@ -21,10 +21,10 @@ for directory in [SAMPLE_LOGOS_DIR, SYNTHETIC_STAT_DIR, TEMPLATES_DIR]:
     os.makedirs(directory, exist_ok=True)
 
 BANK_CONFIG = {
-    "chase": {"logo": "chase_bank_logo.png", "templates": ["chase_mail_style.html", "chase_website_style.html", "chase_app_style.html"]},
-    "citibank": {"logo": "citibank_logo.png", "templates": ["citibank_classic_template.html", "citibank_website_style.html", "citibank_app_style.html"]},
-    "wellsfargo": {"logo": "wellsfargo_logo.png", "templates": ["wells_fargo_classic.html", "wells_fargo_app.html", "wells_fargo_web.html"]},
-    "pnc": {"logo": "pnc_logo.png", "templates": ["pnc_main.html"]}
+    "chase": {"logo": "chase_bank_logo.png", "templates": ["chase_classic_style.html", "chase_variation_1.html", "chase_variation_2.html"]},
+    "citibank": {"logo": "citibank_logo.png", "templates": ["citibank_classic_template.html", "citibank_variation_1.html", "citibank_variation_2.html"]},
+    "wellsfargo": {"logo": "wellsfargo_logo.png", "templates": ["wells_fargo_classic.html", "wells_variation_1.html", "wells_variation_2.html"]},
+    "pnc": {"logo": "pnc_logo.png", "templates": ["pnc_classic.html"]}
 }
 
 class FieldDefinition(BaseModel):

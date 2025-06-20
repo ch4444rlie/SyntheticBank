@@ -1,84 +1,89 @@
 {
   "fields": [
     {
-      "name": "account_number",
-      "is_mutable": true,
-      "description": "Unique identifier for the specific account"
-    },
-    {
-      "name": "statement_period",
-      "is_mutable": true,
-      "description": "Period covered by the bank statement (e.g., Monthly Statement for January 2023)"
-    },
-    {
-      "name": "logo_path",
-      "is_mutable": false,
-      "description": "Path to the logo image of Wells Fargo"
-    },
-    {
-      "name": "account_holder_address",
-      "is_mutable": true,
-      "description": "Address associated with the account holder"
-    },
-    {
-      "name": "summary.beginning_date",
-      "is_mutable": false,
-      "description": "Start date of the statement period"
-    },
-    {
-      "name": "summary.beginning_balance",
-      "is_mutable": false,
-      "description": "Initial balance at the beginning of the statement period"
-    },
-    {
-      "name": "summary.deposits_total",
-      "is_mutable": true,
-      "description": "Total deposits made during the statement period"
-    },
-    {
-      "name": "summary.withdrawals_total",
-      "is_mutable": true,
-      "description": "Total withdrawals made during the statement period"
-    },
-    {
-      "name": "summary.ending_date",
-      "is_mutable": false,
-      "description": "End date of the statement period"
-    },
-    {
-      "name": "summary.ending_balance",
-      "is_mutable": false,
-      "description": "Final balance at the end of the statement period"
-    },
-    {
       "name": "account_holder",
       "is_mutable": true,
       "description": "Name of the account holder"
     },
     {
-      "name": "transaction.date",
+      "name": "account_holder_address",
+      "is_mutable": true,
+      "description": "Address of the account holder"
+    },
+    {
+      "name": "account_number",
+      "is_mutable": true,
+      "description": "Account number"
+    },
+    {
+      "name": "statement_period",
+      "is_mutable": true,
+      "description": "Statement date range"
+    },
+    {
+      "name": "summary",
+      "is_mutable": true,
+      "description": "Checking summary data (beginning balance, counts, totals)"
+    },
+    {
+      "name": "deposits",
+      "is_mutable": true,
+      "description": "List of deposit transactions"
+    },
+    {
+      "name": "withdrawals",
+      "is_mutable": true,
+      "description": "List of withdrawal transactions"
+    },
+    {
+      "name": "daily_balances",
+      "is_mutable": true,
+      "description": "Daily ending balances"
+    },
+    {
+      "name": "logo_path",
+      "is_mutable": true,
+      "description": "Path to the bank logo"
+    },
+    {
+      "name": "bank_name",
       "is_mutable": false,
-      "description": "Date when a transaction occurred"
+      "description": "Name of the bank (Wellsfargo)"
     },
     {
-      "name": "transaction.description",
-      "is_mutable": true,
-      "description": "Description or purpose of the transaction"
-    },
-    {
-      "name": "transaction.deposits_credits",
-      "is_mutable": true,
-      "description": "Amount deposited in a specific transaction"
-    },
-    {
-      "name": "transaction.withdrawals_debits",
-      "is_mutable": true,
-      "description": "Amount withdrawn in a specific transaction"
-    },
-    {
-      "name": "transaction.ending_balance",
+      "name": "bank_address",
       "is_mutable": false,
-      "description": "Balance after the completion of the specific transaction"
+      "description": "Bank address"
+    },
+    {
+      "name": "checking_summary_header",
+      "is_mutable": false,
+      "description": "Header for checking summary"
+    },
+    {
+      "name": "deposits_header",
+      "is_mutable": false,
+      "description": "Header for deposits section"
+    },
+    {
+      "name": "withdrawals_header",
+      "is_mutable": false,
+      "description": "Header for withdrawals section"
+    },
+    {
+      "name": "daily_balance_header",
+      "is_mutable": false,
+      "description": "Header for daily balance section"
+    },
+    {
+      "name": "customer_service",
+      "is_mutable": false,
+      "description": "Customer service contact information"
+    },
+    {
+      "name": "footnotes",
+      "is_mutable": false,
+      "description": "Footnotes and disclosures"
     }
   ]
 }
