@@ -103,15 +103,7 @@ if st.button("Generate Statement", key="generate_button", disabled=not selected_
             results = generate_populated_html_and_pdf(df, account_holder, selected_bank_key, TEMPLATES_DIR, SYNTHETIC_STAT_DIR, selected_template)
             for _, pdf_file in results:
                 st.session_state["generated"] = True
-                # Display PDF preview
-                with open(pdf_file, "rb") as f:
-                    pdf_content = f.read()
-                    pdf_base64 = base64.b64encode(pdf_content).decode('utf-8')
-                    pdf_preview = f'<iframe src="data:application/pdf;base64,{pdf_base64}" width="100%" height="600px" style="border: none;"></iframe>'
-                    preview_placeholder.markdown("""
-                    **Note**: If the PDF preview doesn't display (e.g., due to Chrome security settings), download the PDF below to view the statement.
-                    """)
-                    preview_placeholder.markdown(pdf_preview, unsafe_allow_html=True)
+                # Display download button first
                 with open(pdf_file, "rb") as f:
                     pdf_content = f.read()
                     st.download_button(
@@ -121,6 +113,13 @@ if st.button("Generate Statement", key="generate_button", disabled=not selected_
                         mime="application/pdf",
                         key=f"pdf_download_{selected_bank_key}"
                     )
+                # Display PDF preview below
+                pdf_base64 = base64.b64encode(pdf_content).decode('utf-8')
+                pdf_preview = f'<iframe src="data:application/pdf;base64,{pdf_base64}" width="100%" height="600px" style="border: none;"></iframe>'
+                preview_placeholder.markdown("""
+                **Note**: If the PDF preview doesn't display (e.g., due to Chrome security settings), use the download button above to view the statement.
+                """)
+                preview_placeholder.markdown(pdf_preview, unsafe_allow_html=True)
                 with st.expander("View Details"):
                     st.write(f"CSV saved: {csv_filename}")
                     st.write(f"PDF saved: {pdf_file}")
