@@ -101,15 +101,17 @@ if st.button("Generate Statement", key="generate_button", disabled=not selected_
             template_path = os.path.join(TEMPLATES_DIR, selected_template)
             statement_fields = identify_template_fields(template_path)
             results = generate_populated_html_and_pdf(df, account_holder, selected_bank_key, TEMPLATES_DIR, SYNTHETIC_STAT_DIR, selected_template)
-            for html_file, pdf_file in results:
+            for _, pdf_file in results:
                 st.session_state["generated"] = True
-                # Display HTML preview with note
-                with open(html_file, "r") as f:
-                    html_content = f.read()
+                # Display PDF preview
+                with open(pdf_file, "rb") as f:
+                    pdf_content = f.read()
+                    pdf_base64 = base64.b64encode(pdf_content).decode('utf-8')
+                    pdf_preview = f'<iframe src="data:application/pdf;base64,{pdf_base64}" width="100%" height="600px" style="border: none;"></iframe>'
                     preview_placeholder.markdown("""
-                    **Note**: The HTML preview may differ slightly from the final PDF due to PDF rendering settings (e.g., margins, pagination). Download the PDF for the exact output.
+                    **Note**: If the PDF preview doesn't display (e.g., due to Chrome security settings), download the PDF below to view the statement.
                     """)
-                    preview_placeholder.markdown(html_content, unsafe_allow_html=True)
+                    preview_placeholder.markdown(pdf_preview, unsafe_allow_html=True)
                 with open(pdf_file, "rb") as f:
                     pdf_content = f.read()
                     st.download_button(
@@ -122,7 +124,6 @@ if st.button("Generate Statement", key="generate_button", disabled=not selected_
                 with st.expander("View Details"):
                     st.write(f"CSV saved: {csv_filename}")
                     st.write(f"PDF saved: {pdf_file}")
-                    st.write(f"HTML saved: {html_file}")
                     st.write("Template Fields:")
                     for field in statement_fields.fields:
                         st.write(f"- {field.name}: {'Mutable' if field.is_mutable else 'Immutable'}, {field.description}")
@@ -132,7 +133,7 @@ if st.button("Generate Statement", key="generate_button", disabled=not selected_
             **Troubleshooting**:
             - Ensure transactions are between 3 and 12.
             - Verify the template is valid.
-            - If downloads fail, try Firefox/Edge or disable Chrome’s ad blockers.
+            - If the PDF preview or download fails, try Firefox/Edge or disable Chrome’s ad blockers.
             - Refresh or contact the administrator.
             """)
             preview_placeholder.markdown("No statement generated. Resolve the error and try again.")
