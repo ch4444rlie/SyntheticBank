@@ -46,7 +46,7 @@ TEMPLATE_DISPLAY_NAMES = {
 # Sidebar
 with st.sidebar:
     st.header("Statement Options")
-    st.markdown("Configure your synthetic bank statement below.")
+    st.markdown("Configure your synthetic bank statement.")
     
     # Bank selection
     banks = list(BANK_CONFIG.keys())
@@ -70,7 +70,7 @@ with st.sidebar:
     # Template selection
     template_files = [f for f in BANK_CONFIG[selected_bank_key]["templates"] if f.endswith('.html')]
     if not template_files:
-        st.error(f"No HTML templates found for {selected_bank} in the templates directory. Please contact the app administrator.")
+        st.error(f"No templates found for {selected_bank}. Contact the administrator.")
         st.stop()
     selected_template = st.selectbox(
         "Select Template Style",
@@ -81,21 +81,25 @@ with st.sidebar:
 # Main content
 st.title("Synthetic Bank Statement Generator")
 st.markdown("""
-Generate realistic synthetic bank statements for testing and development.  
-- Configure options in the sidebar to select a bank, transaction count, and template style.  
-- Preview the statement below and download the PDF.  
-- All data is synthetic and for learning purposes only.
+Generate synthetic bank statements for testing.  
+- Use the sidebar to select a bank, transaction count, and template style.  
+- Download the PDF below after generation.  
+- All data is synthetic.
 """)
 
 # Preview area
 st.subheader(f"Preview: {selected_bank} Statement")
 preview_placeholder = st.empty()
 
+# Initialize session state
+if "generated" not in st.session_state:
+    st.session_state["generated"] = False
+
 # Generate button
 if st.button("Generate Statement", key="generate_button"):
     with st.spinner(f"Generating {selected_bank} statement..."):
         try:
-            # Generate account holder name
+            # Generate account holder
             account_holder = fake.company().upper()
             
             # Generate statement data
@@ -113,29 +117,29 @@ if st.button("Generate Statement", key="generate_button"):
             )
             
             for html_file, pdf_file in results:
-                # Display success message
-                st.success(f"Statement generated for {selected_bank}!")
+                # Update session state
+                st.session_state["generated"] = True
                 
-                # Preview PDF
-                with open(pdf_file, "rb") as f:
-                    pdf_content = f.read()
-                    pdf_base64 = base64.b64encode(pdf_content).decode('utf-8')
-                    pdf_preview = f'<iframe src="data:application/pdf;base64,{pdf_base64}" width="100%" height="600px" style="border: none;"></iframe>'
-                    preview_placeholder.markdown(pdf_preview, unsafe_allow_html=True)
+                # Update preview placeholder
+                preview_placeholder.markdown(f"""
+                Statement generated! Download the PDF below to view your {selected_bank} statement.
+                """)
                 
                 # Download button
-                st.download_button(
-                    label=f"Download {selected_bank} PDF",
-                    data=pdf_content,
-                    file_name=os.path.basename(pdf_file),
-                    mime="application/pdf",
-                    key=f"pdf_download_{selected_bank_key}"
-                )
+                with open(pdf_file, "rb") as f:
+                    pdf_content = f.read()
+                    st.download_button(
+                        label=f"Download {selected_bank} PDF",
+                        data=pdf_content,
+                        file_name=os.path.basename(pdf_file),
+                        mime="application/pdf",
+                        key=f"pdf_download_{selected_bank_key}"
+                    )
                 
-                # Display additional info
+                # Display details
                 with st.expander("View Details"):
-                    st.write(f"CSV saved as: {csv_filename}")
-                    st.write(f"PDF saved as: {pdf_file}")
+                    st.write(f"CSV saved: {csv_filename}")
+                    st.write(f"PDF saved: {pdf_file}")
                     st.write("Template Fields:")
                     for field in statement_fields.fields:
                         st.write(f"- {field.name}: {'Mutable' if field.is_mutable else 'Immutable'}, {field.description}")
@@ -144,18 +148,16 @@ if st.button("Generate Statement", key="generate_button"):
             st.error(f"Error generating statement: {str(e)}")
             st.markdown("""
             **Troubleshooting**:
-            - Ensure the number of transactions is between 3 and 12.
-            - Verify a valid template is selected for the chosen bank.
-            - If the issue persists, try refreshing the page or contact the app administrator.
+            - Ensure transactions are between 3 and 12.
+            - Verify the template is valid.
+            - If the PDF fails to download, try Firefox/Edge or disable Chrome's ad blockers.
+            - Refresh the page or contact the administrator.
             """)
-            preview_placeholder.markdown("No statement generated yet. Please resolve the error and try again.")
+            preview_placeholder.markdown("No statement generated. Resolve the error and try again.")
+            st.session_state["generated"] = False
 
 # Placeholder before generation
-if not st.session_state.get("generated", False):
+if not st.session_state["generated"]:
     preview_placeholder.markdown("""
-    Select options in the sidebar and click 'Generate Statement' to preview your synthetic bank statement here.
+    Select options in the sidebar and click 'Generate Statement' to create your synthetic bank statement.
     """)
-
-# Track generation state
-if st.button("Generate Statement", key="generate_button_hidden"):
-    st.session_state["generated"] = True
