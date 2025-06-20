@@ -14,14 +14,8 @@ from faker import Faker
 
 fake = Faker()
 
-# Set page configuration
-st.set_page_config(
-    page_title="Synthetic Bank Statement Generator",
-    page_icon="🏦",
-    layout="wide"
-)
+st.set_page_config(page_title="Synthetic Bank Statement Generator", page_icon="🏦", layout="wide")
 
-# Bank display name mapping
 BANK_DISPLAY_NAMES = {
     "chase": "Chase",
     "citibank": "Citibank",
@@ -29,7 +23,6 @@ BANK_DISPLAY_NAMES = {
     "pnc": "PNC"
 }
 
-# Template display name mapping
 TEMPLATE_DISPLAY_NAMES = {
     "chase_classic_style.html": "Classic Chase Statement",
     "chase_variation_1.html": "Custom Chase Statement 1",
@@ -43,42 +36,19 @@ TEMPLATE_DISPLAY_NAMES = {
     "pnc_classic.html": "Classic PNC Statement"
 }
 
-# Sidebar
 with st.sidebar:
     st.header("Statement Options")
     st.markdown("Configure your synthetic bank statement.")
-    
-    # Bank selection
     banks = list(BANK_CONFIG.keys())
-    selected_bank_key = st.selectbox(
-        "Select Bank",
-        banks,
-        format_func=lambda x: BANK_DISPLAY_NAMES[x],
-        index=0
-    )
+    selected_bank_key = st.selectbox("Select Bank", banks, format_func=lambda x: BANK_DISPLAY_NAMES[x], index=0)
     selected_bank = BANK_DISPLAY_NAMES[selected_bank_key]
-    
-    # Transaction count
-    num_transactions = st.slider(
-        "Number of Transactions",
-        min_value=3,
-        max_value=12,
-        value=5,
-        step=1
-    )
-    
-    # Template selection
+    num_transactions = st.slider("Number of Transactions", min_value=3, max_value=12, value=5, step=1)
     template_files = [f for f in BANK_CONFIG[selected_bank_key]["templates"] if f.endswith('.html')]
     if not template_files:
         st.error(f"No templates found for {selected_bank}. Contact the administrator.")
         st.stop()
-    selected_template = st.selectbox(
-        "Select Template Style",
-        template_files,
-        format_func=lambda x: TEMPLATE_DISPLAY_NAMES.get(x, x)
-    )
+    selected_template = st.selectbox("Select Template Style", template_files, format_func=lambda x: TEMPLATE_DISPLAY_NAMES.get(x, x))
 
-# Main content
 st.title("Synthetic Bank Statement Generator")
 st.markdown("""
 Generate synthetic bank statements for testing.  
@@ -87,45 +57,25 @@ Generate synthetic bank statements for testing.
 - All data is synthetic.
 """)
 
-# Preview area
 st.subheader(f"Preview: {selected_bank} Statement")
 preview_placeholder = st.empty()
 
-# Initialize session state
 if "generated" not in st.session_state:
     st.session_state["generated"] = False
 
-# Generate button
 if st.button("Generate Statement", key="generate_button"):
     with st.spinner(f"Generating {selected_bank} statement..."):
         try:
-            # Generate account holder
             account_holder = fake.company().upper()
-            
-            # Generate statement data
             df = generate_bank_statement(num_transactions, account_holder)
             csv_filename = os.path.join(SYNTHETIC_STAT_DIR, f"bank_statement_{account_holder.replace(' ', '_')}_{selected_bank_key}.csv")
             df.to_csv(csv_filename, index=False)
-            
-            # Identify template fields
             template_path = os.path.join(TEMPLATES_DIR, selected_template)
             statement_fields = identify_template_fields(template_path)
-            
-            # Generate HTML and PDF
-            results = generate_populated_html_and_pdf(
-                df, account_holder, selected_bank_key, TEMPLATES_DIR, SYNTHETIC_STAT_DIR, selected_template
-            )
-            
+            results = generate_populated_html_and_pdf(df, account_holder, selected_bank_key, TEMPLATES_DIR, SYNTHETIC_STAT_DIR, selected_template)
             for html_file, pdf_file in results:
-                # Update session state
                 st.session_state["generated"] = True
-                
-                # Update preview placeholder
-                preview_placeholder.markdown(f"""
-                Statement generated! Download the PDF below to view your {selected_bank} statement.
-                """)
-                
-                # Download button
+                preview_placeholder.markdown(f"Statement generated! Download the PDF below to view your {selected_bank} statement.")
                 with open(pdf_file, "rb") as f:
                     pdf_content = f.read()
                     st.download_button(
@@ -135,15 +85,12 @@ if st.button("Generate Statement", key="generate_button"):
                         mime="application/pdf",
                         key=f"pdf_download_{selected_bank_key}"
                     )
-                
-                # Display details
                 with st.expander("View Details"):
                     st.write(f"CSV saved: {csv_filename}")
                     st.write(f"PDF saved: {pdf_file}")
                     st.write("Template Fields:")
                     for field in statement_fields.fields:
                         st.write(f"- {field.name}: {'Mutable' if field.is_mutable else 'Immutable'}, {field.description}")
-        
         except Exception as e:
             st.error(f"Error generating statement: {str(e)}")
             st.markdown("""
@@ -151,13 +98,10 @@ if st.button("Generate Statement", key="generate_button"):
             - Ensure transactions are between 3 and 12.
             - Verify the template is valid.
             - If the PDF fails to download, try Firefox/Edge or disable Chrome's ad blockers.
-            - Refresh the page or contact the administrator.
+            - Refresh or contact the administrator.
             """)
             preview_placeholder.markdown("No statement generated. Resolve the error and try again.")
             st.session_state["generated"] = False
 
-# Placeholder before generation
 if not st.session_state["generated"]:
-    preview_placeholder.markdown("""
-    Select options in the sidebar and click 'Generate Statement' to create your synthetic bank statement.
-    """)
+    preview_placeholder.markdown("Select options in the sidebar and click 'Generate Statement' to create your synthetic bank statement.")
