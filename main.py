@@ -39,10 +39,27 @@ TEMPLATE_DISPLAY_NAMES = {
 with st.sidebar:
     st.header("Statement Options")
     st.markdown("Configure your synthetic bank statement.")
+
+    # Bank selection with buttons
+    st.subheader("Select Bank")
     banks = list(BANK_CONFIG.keys())
-    selected_bank_key = st.selectbox("Select Bank", banks, format_func=lambda x: BANK_DISPLAY_NAMES[x], index=0)
+    if "selected_bank_key" not in st.session_state:
+        st.session_state["selected_bank_key"] = banks[0]
+    
+    cols = st.columns(2)  # Two columns for button layout
+    for idx, bank_key in enumerate(banks):
+        with cols[idx % 2]:
+            if st.button(BANK_DISPLAY_NAMES[bank_key], key=f"bank_button_{bank_key}"):
+                st.session_state["selected_bank_key"] = bank_key
+                st.session_state["generated"] = False  # Reset generation state
+    
+    selected_bank_key = st.session_state["selected_bank_key"]
     selected_bank = BANK_DISPLAY_NAMES[selected_bank_key]
+
+    # Transaction count
     num_transactions = st.slider("Number of Transactions", min_value=3, max_value=12, value=5, step=1)
+
+    # Template selection
     template_files = [f for f in BANK_CONFIG[selected_bank_key]["templates"] if f.endswith('.html')]
     if not template_files:
         st.error(f"No templates found for {selected_bank}. Contact the administrator.")
@@ -73,7 +90,7 @@ if st.button("Generate Statement", key="generate_button"):
             template_path = os.path.join(TEMPLATES_DIR, selected_template)
             statement_fields = identify_template_fields(template_path)
             results = generate_populated_html_and_pdf(df, account_holder, selected_bank_key, TEMPLATES_DIR, SYNTHETIC_STAT_DIR, selected_template)
-            for html_file, pdf_file in results:
+            for _, pdf_file in results:
                 st.session_state["generated"] = True
                 preview_placeholder.markdown(f"Statement generated! Download the PDF below to view your {selected_bank} statement.")
                 with open(pdf_file, "rb") as f:
@@ -97,7 +114,7 @@ if st.button("Generate Statement", key="generate_button"):
             **Troubleshooting**:
             - Ensure transactions are between 3 and 12.
             - Verify the template is valid.
-            - If the PDF fails to download, try Firefox/Edge or disable Chrome's ad blockers.
+            - If downloads fail, try Firefox/Edge or disable Chrome’s ad blockers.
             - Refresh or contact the administrator.
             """)
             preview_placeholder.markdown("No statement generated. Resolve the error and try again.")
