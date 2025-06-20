@@ -83,10 +83,11 @@ with st.sidebar:
 
 st.title("Synthetic Bank Statement Generator")
 st.markdown("""
-Generate synthetic bank statements for testing.  
-- Use the sidebar to select a bank, transaction count, and template style.  
-- Download the PDF below after generation.  
-- All data is synthetic.
+Create synthetic bank statements for development purposes.  
+- Customize your synthetic bank statement using the sidebar options.  
+- For a highly realistic bank statement, select the 'Classic' template style.  
+- For a statement with added noise to challenge processing, choose a 'Custom' template style.  
+- Download the generated PDF after configuration.  
 """)
 
 st.subheader(f"Preview: {selected_bank} Statement")
