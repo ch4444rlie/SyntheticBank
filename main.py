@@ -75,20 +75,31 @@ with st.sidebar:
         selected_template = None
         st.markdown("Select a bank to choose a template style.")
     
-    # Sidebar buttons (hidden until prerequisites selected)
-    if selected_bank_key and selected_template:
-        if st.button("Generate Statement (Sidebar)", key="sidebar_generate_button"):
+    # Sidebar buttons (always visible)
+    if st.button("Generate Statement (Sidebar)", key="sidebar_generate_button"):
+        if not (selected_bank_key and selected_template):
+            st.error("Please select a bank and template style first.")
+        else:
             st.session_state["trigger_generate"] = True
-        if st.session_state.get("generated", False) and st.session_state.get("pdf_file"):
-            with open(st.session_state["pdf_file"], "rb") as f:
-                pdf_content = f.read()
-                st.download_button(
-                    label=f"Download {selected_bank} PDF (Sidebar)",
-                    data=pdf_content,
-                    file_name=os.path.basename(st.session_state["pdf_file"]),
-                    mime="application/pdf",
-                    key=f"sidebar_pdf_download_{selected_bank_key}"
-                )
+    if st.session_state.get("generated", False) and st.session_state.get("pdf_file"):
+        with open(st.session_state["pdf_file"], "rb") as f:
+            pdf_content = f.read()
+            st.download_button(
+                label=f"Download {selected_bank} PDF (Sidebar)",
+                data=pdf_content,
+                file_name=os.path.basename(st.session_state["pdf_file"]),
+                mime="application/pdf",
+                key=f"sidebar_pdf_download_{selected_bank_key}"
+            )
+    else:
+        st.download_button(
+            label=f"Download {selected_bank} PDF (Sidebar)",
+            data=None,
+            file_name="",
+            mime="application/pdf",
+            key=f"sidebar_pdf_download_disabled_{selected_bank_key}",
+            disabled=True
+        )
 
 st.title("Synthetic Bank Statement Generator")
 st.markdown("""
@@ -108,56 +119,57 @@ if "generated" not in st.session_state:
 if "trigger_generate" not in st.session_state:
     st.session_state["trigger_generate"] = False
 
-# Main area generate button
 if st.button("Generate Statement", key="generate_button", disabled=not (selected_bank_key and selected_template)) or st.session_state["trigger_generate"]:
-    with st.spinner(f"Generating {selected_bank} statement..."):
-        try:
-            account_holder = fake.company().upper()
-            df = generate_bank_statement(num_transactions, account_holder)
-            csv_filename = os.path.join(SYNTHETIC_STAT_DIR, f"bank_statement_{account_holder.replace(' ', '_')}_{selected_bank_key}.csv")
-            df.to_csv(csv_filename, index=False)
-            template_path = os.path.join(TEMPLATES_DIR, selected_template)
-            statement_fields = identify_template_fields(template_path)
-            results = generate_populated_html_and_pdf(df, account_holder, selected_bank_key, TEMPLATES_DIR, SYNTHETIC_STAT_DIR, selected_template)
-            for _, pdf_file in results:
-                st.session_state["generated"] = True
-                st.session_state["pdf_file"] = pdf_file
-                st.session_state["trigger_generate"] = False
-                # Download button above preview
-                with open(pdf_file, "rb") as f:
-                    pdf_content = f.read()
-                    st.download_button(
-                        label=f"Download {selected_bank} PDF",
-                        data=pdf_content,
-                        file_name=os.path.basename(pdf_file),
-                        mime="application/pdf",
-                        key=f"pdf_download_{selected_bank_key}"
-                    )
-                # PDF preview
-                pdf_base64 = base64.b64encode(pdf_content).decode('utf-8')
-                pdf_preview = f'<iframe src="data:application/pdf;base64,{pdf_base64}" width="100%" height="600px" style="border: none;"></iframe>'
-                preview_placeholder.markdown("""
-                **Note**: If the PDF preview doesn't display (e.g., due to Chrome security settings), use the download button above to view the statement.
+    if not (selected_bank_key and selected_template):
+        st.error("Please select a bank and template style first.")
+        st.session_state["trigger_generate"] = False
+    else:
+        with st.spinner(f"Generating {selected_bank} statement..."):
+            try:
+                account_holder = fake.company().upper()
+                df = generate_bank_statement(num_transactions, account_holder)
+                csv_filename = os.path.join(SYNTHETIC_STAT_DIR, f"bank_statement_{account_holder.replace(' ', '_')}_{selected_bank_key}.csv")
+                df.to_csv(csv_filename, index=False)
+                template_path = os.path.join(TEMPLATES_DIR, selected_template)
+                statement_fields = identify_template_fields(template_path)
+                results = generate_populated_html_and_pdf(df, account_holder, selected_bank_key, TEMPLATES_DIR, SYNTHETIC_STAT_DIR, selected_template)
+                for _, pdf_file in results:
+                    st.session_state["generated"] = True
+                    st.session_state["pdf_file"] = pdf_file
+                    st.session_state["trigger_generate"] = False
+                    with open(pdf_file, "rb") as f:
+                        pdf_content = f.read()
+                        st.download_button(
+                            label=f"Download {selected_bank} PDF",
+                            data=pdf_content,
+                            file_name=os.path.basename(pdf_file),
+                            mime="application/pdf",
+                            key=f"pdf_download_{selected_bank_key}"
+                        )
+                    pdf_base64 = base64.b64encode(pdf_content).decode('utf-8')
+                    pdf_preview = f'<iframe src="data:application/pdf;base64,{pdf_base64}" width="100%" height="600px" style="border: none;"></iframe>'
+                    preview_placeholder.markdown("""
+                    **Note**: If the PDF preview doesn't display (e.g., due to Chrome security settings), use the download button above or in the sidebar to view the statement.
+                    """)
+                    preview_placeholder.markdown(pdf_preview, unsafe_allow_html=True)
+                    with st.expander("View Details"):
+                        st.write(f"CSV saved: {csv_filename}")
+                        st.write(f"PDF saved: {pdf_file}")
+                        st.write("Template Fields:")
+                        for field in statement_fields.fields:
+                            st.write(f"- {field.name}: {'Mutable' if field.is_mutable else 'Immutable'}, {field.description}")
+            except Exception as e:
+                st.error(f"Error generating statement: {str(e)}")
+                st.markdown("""
+                **Troubleshooting**:
+                - Ensure transactions are between 3 and 12.
+                - Verify the template is valid.
+                - If the PDF preview or download fails, try Firefox/Edge or disable Chrome’s ad blockers.
+                - Refresh or contact the administrator.
                 """)
-                preview_placeholder.markdown(pdf_preview, unsafe_allow_html=True)
-                with st.expander("View Details"):
-                    st.write(f"CSV saved: {csv_filename}")
-                    st.write(f"PDF saved: {pdf_file}")
-                    st.write("Template Fields:")
-                    for field in statement_fields.fields:
-                        st.write(f"- {field.name}: {'Mutable' if field.is_mutable else 'Immutable'}, {field.description}")
-        except Exception as e:
-            st.error(f"Error generating statement: {str(e)}")
-            st.markdown("""
-            **Troubleshooting**:
-            - Ensure transactions are between 3 and 12.
-            - Verify the template is valid.
-            - If the PDF preview or download fails, try Firefox/Edge or disable Chrome’s ad blockers.
-            - Refresh or contact the administrator.
-            """)
-            preview_placeholder.markdown("No statement generated. Resolve the error and try again.")
-            st.session_state["generated"] = False
-            st.session_state["trigger_generate"] = False
+                preview_placeholder.markdown("No statement generated. Resolve the error and try again.")
+                st.session_state["generated"] = False
+                st.session_state["trigger_generate"] = False
 
 if not st.session_state["generated"]:
     preview_placeholder.markdown("Select a bank and options in the sidebar, then click 'Generate Statement' to preview your synthetic bank statement.")
