@@ -111,9 +111,6 @@ Create realistic synthetic bank statements for development purposes.
 - All data is synthetic and for learning purposes only.
 """)
 
-st.subheader(f"Preview: {selected_bank} Statement")
-preview_placeholder = st.empty()
-
 if "generated" not in st.session_state:
     st.session_state["generated"] = False
 if "trigger_generate" not in st.session_state:
@@ -123,6 +120,7 @@ if "pdf_content" not in st.session_state:
 if "pdf_filename" not in st.session_state:
     st.session_state["pdf_filename"] = None
 
+# Main area generate button
 if st.button("Generate Statement", key="generate_button", disabled=not (selected_bank_key and selected_template)) or st.session_state["trigger_generate"]:
     if not (selected_bank_key and selected_template):
         st.error("Please select a bank and template style first.")
@@ -143,6 +141,7 @@ if st.button("Generate Statement", key="generate_button", disabled=not (selected
                     with open(pdf_file, "rb") as f:
                         st.session_state["pdf_content"] = f.read()
                     st.session_state["trigger_generate"] = False
+                    # Download button above preview section
                     st.download_button(
                         label=f"Download {selected_bank} PDF",
                         data=st.session_state["pdf_content"],
@@ -150,6 +149,9 @@ if st.button("Generate Statement", key="generate_button", disabled=not (selected
                         mime="application/pdf",
                         key=f"pdf_download_{selected_bank_key}"
                     )
+                    # Preview section
+                    st.subheader(f"Preview: {selected_bank} Statement")
+                    preview_placeholder = st.empty()
                     pdf_base64 = base64.b64encode(st.session_state["pdf_content"]).decode('utf-8')
                     pdf_preview = f'<iframe src="data:application/pdf;base64,{pdf_base64}" width="100%" height="600px" style="border: none;"></iframe>'
                     preview_placeholder.markdown("""
@@ -171,6 +173,7 @@ if st.button("Generate Statement", key="generate_button", disabled=not (selected
                 - If the PDF preview or download fails, try Firefox/Edge or disable Chrome’s ad blockers.
                 - Refresh or contact the administrator.
                 """)
+                preview_placeholder = st.empty()
                 preview_placeholder.markdown("No statement generated. Resolve the error and try again.")
                 st.session_state["generated"] = False
                 st.session_state["trigger_generate"] = False
@@ -178,4 +181,6 @@ if st.button("Generate Statement", key="generate_button", disabled=not (selected
                 st.session_state["pdf_filename"] = None
 
 if not st.session_state["generated"]:
+    st.subheader(f"Preview: {selected_bank} Statement")
+    preview_placeholder = st.empty()
     preview_placeholder.markdown("Select a bank and options in the sidebar, then click 'Generate Statement' to preview your synthetic bank statement.")
