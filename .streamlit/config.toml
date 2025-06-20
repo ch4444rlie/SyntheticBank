@@ -1,5 +1,0 @@
-[global]
-dataDir = "/tmp"
-
-[server]
-runOnSave = true

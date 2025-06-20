@@ -11,14 +11,11 @@ from statement_generator import (
     BANK_CONFIG
 )
 from faker import Faker
-from pdf2image import convert_from_path
-import tempfile
 
 fake = Faker()
 
 st.set_page_config(page_title="Synthetic Bank Statement Generator", page_icon="🏦", layout="wide")
 
-# CSS to normalize button sizes
 st.markdown("""
 <style>
 .stButton > button {
@@ -104,14 +101,15 @@ if st.button("Generate Statement", key="generate_button", disabled=not selected_
             template_path = os.path.join(TEMPLATES_DIR, selected_template)
             statement_fields = identify_template_fields(template_path)
             results = generate_populated_html_and_pdf(df, account_holder, selected_bank_key, TEMPLATES_DIR, SYNTHETIC_STAT_DIR, selected_template)
-            for _, pdf_file in results:
+            for html_file, pdf_file in results:
                 st.session_state["generated"] = True
-                # Convert PDF to PNG for preview
-                with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp_png:
-                    images = convert_from_path(pdf_file, first_page=1, last_page=1)
-                    images[0].save(tmp_png.name, "PNG")
-                    preview_placeholder.image(tmp_png.name, caption=f"{selected_bank} Statement Preview", use_column_width=True)
-                    os.unlink(tmp_png.name)  # Clean up temporary file
+                # Display HTML preview with note
+                with open(html_file, "r") as f:
+                    html_content = f.read()
+                    preview_placeholder.markdown("""
+                    **Note**: The HTML preview may differ slightly from the final PDF due to PDF rendering settings (e.g., margins, pagination). Download the PDF for the exact output.
+                    """)
+                    preview_placeholder.markdown(html_content, unsafe_allow_html=True)
                 with open(pdf_file, "rb") as f:
                     pdf_content = f.read()
                     st.download_button(
@@ -124,6 +122,7 @@ if st.button("Generate Statement", key="generate_button", disabled=not selected_
                 with st.expander("View Details"):
                     st.write(f"CSV saved: {csv_filename}")
                     st.write(f"PDF saved: {pdf_file}")
+                    st.write(f"HTML saved: {html_file}")
                     st.write("Template Fields:")
                     for field in statement_fields.fields:
                         st.write(f"- {field.name}: {'Mutable' if field.is_mutable else 'Immutable'}, {field.description}")
@@ -134,7 +133,6 @@ if st.button("Generate Statement", key="generate_button", disabled=not selected_
             - Ensure transactions are between 3 and 12.
             - Verify the template is valid.
             - If downloads fail, try Firefox/Edge or disable Chrome’s ad blockers.
-            - Ensure poppler is installed for image previews.
             - Refresh or contact the administrator.
             """)
             preview_placeholder.markdown("No statement generated. Resolve the error and try again.")
