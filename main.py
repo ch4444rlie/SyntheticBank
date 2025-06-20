@@ -75,31 +75,12 @@ with st.sidebar:
         selected_template = None
         st.markdown("Select a bank to choose a template style.")
     
-    # Sidebar buttons (always visible)
+    # Sidebar generate button (always visible)
     if st.button("Generate Statement (Sidebar)", key="sidebar_generate_button"):
         if not (selected_bank_key and selected_template):
             st.error("Please select a bank and template style first.")
         else:
             st.session_state["trigger_generate"] = True
-    
-    # Sidebar download button
-    if st.session_state.get("generated", False) and st.session_state.get("pdf_content"):
-        st.download_button(
-            label=f"Download {selected_bank} PDF (Sidebar)",
-            data=st.session_state["pdf_content"],
-            file_name=st.session_state["pdf_filename"],
-            mime="application/pdf",
-            key=f"sidebar_pdf_download_{selected_bank_key}"
-        )
-    else:
-        st.download_button(
-            label=f"Download {selected_bank} PDF (Sidebar)",
-            data=b"",
-            file_name="",
-            mime="application/pdf",
-            key=f"sidebar_pdf_download_disabled_{selected_bank_key}",
-            disabled=True
-        )
 
 st.title("Synthetic Bank Statement Generator")
 st.markdown("""
@@ -155,7 +136,7 @@ if st.button("Generate Statement", key="generate_button", disabled=not (selected
                     pdf_base64 = base64.b64encode(st.session_state["pdf_content"]).decode('utf-8')
                     pdf_preview = f'<iframe src="data:application/pdf;base64,{pdf_base64}" width="100%" height="600px" style="border: none;"></iframe>'
                     preview_placeholder.markdown("""
-                    **Note**: If the PDF preview doesn't display (e.g., due to Chrome security settings), use the download button above or in the sidebar to view the statement.
+                    **Note**: If the PDF preview doesn't display (e.g., due to Chrome security settings), use the download button above to view the statement.
                     """)
                     preview_placeholder.markdown(pdf_preview, unsafe_allow_html=True)
                     with st.expander("View Details"):
