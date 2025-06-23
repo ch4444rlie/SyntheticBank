@@ -82,14 +82,12 @@ with st.sidebar:
         else:
             st.session_state["trigger_generate"] = True
 
-st.title("Synthetic Bank Statement Generator")
-st.markdown("""
-Create realistic synthetic bank statements for development purposes.  
-- Customize your synthetic bank statement using the sidebar options.  
-- For a highly realistic bank statement, select the 'Classic' template style.  
-- For a statement with added noise to challenge processing, choose a 'Custom' template style.  
+st.title("Lightweight Synthetic Bank Statement Generator")
+st.markdown("""  
+- Create your synthetic bank statement with the sidebar options.  
+- For a highly realistic bank statement, such as one you would receive in the mail, select the 'Classic' template style.  
+- For a less realistic variation on the bank statement, choose a 'Custom' template style.  
 - Download the generated PDF after configuration.  
-- All data is synthetic and for learning purposes only.
 """)
 
 if "generated" not in st.session_state:
