@@ -50,6 +50,8 @@ TEMPLATE_DISPLAY_NAMES = {
     "pnc_classic.html": "Classic PNC Statement"
 }
 
+NEW_STATEMENTS_DIR = "new_statements"  # New directory for storing statements
+
 with st.sidebar:
     st.header("Statement Options")
     st.markdown("Configure your synthetic bank statement.")
@@ -127,11 +129,11 @@ if st.button("Generate Statement", key="generate_button", disabled=not (selected
             try:
                 account_holder = fake.company().upper() if st.session_state["account_type"] == "business" else fake.name().upper()
                 df = generate_bank_statement(num_transactions, account_holder, st.session_state["account_type"])
-                csv_filename = os.path.join(SYNTHETIC_STAT_DIR, f"bank_statement_{st.session_state['account_type'].upper()}_{account_holder.replace(' ', '_')}_{selected_bank_key}.csv")
+                csv_filename = os.path.join(NEW_STATEMENTS_DIR, f"bank_statement_{st.session_state['account_type'].upper()}_{account_holder.replace(' ', '_')}_{selected_bank_key}.csv")
                 df.to_csv(csv_filename, index=False)
                 template_path = os.path.join(TEMPLATES_DIR, selected_template)
                 statement_fields = identify_template_fields(template_path)
-                results = generate_populated_html_and_pdf(df, account_holder, selected_bank_key, TEMPLATES_DIR, SYNTHETIC_STAT_DIR, st.session_state["account_type"])
+                results = generate_populated_html_and_pdf(df, account_holder, selected_bank_key, TEMPLATES_DIR, NEW_STATEMENTS_DIR, st.session_state["account_type"])
                 for _, pdf_file in results:
                     st.session_state["generated"] = True
                     st.session_state["pdf_filename"] = os.path.basename(pdf_file)
