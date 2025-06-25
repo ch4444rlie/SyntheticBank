@@ -1,0 +1,13 @@
+Date,Description,Category,Amount,Balance,Account Holder,Account Type,Transaction ID
+05/27,Office Supplies Invoice S,Office Supplies,-189.62,9368.16,"LARSON, MCCOY AND MOSES",Business,LAVP9654090007
+05/28,Employee Payroll Disburse,Payroll Expense,-359.13,9009.03,"LARSON, MCCOY AND MOSES",Business,LDBQ1436460008
+05/30,Vendor Invoice Settlement,Vendor Payment,-345.1,8663.93,"LARSON, MCCOY AND MOSES",Business,HSOS5396180005
+05/30,Refund From Customer 3456,Refund Received,523.49,9187.42,"LARSON, MCCOY AND MOSES",Business,BVBU3223260009
+06/02,Refund From Customer Bus,Refund Received,174.92,9362.34,"LARSON, MCCOY AND MOSES",Business,NOYP6495790006
+06/02,Grant Received Business,Grant Received,840.32,10202.66,"LARSON, MCCOY AND MOSES",Business,XQGH8514500010
+06/07,Grant Received Q2 Busin,Grant Received,856.53,11059.19,"LARSON, MCCOY AND MOSES",Business,QEOV0725930004
+06/11,Refunded Customer Reimbur,Refund Received,538.97,11598.16,"LARSON, MCCOY AND MOSES",Business,DAMA4178260003
+06/14,Client Sales Revenue Rece,Sales Revenue,138.21,11736.37,"LARSON, MCCOY AND MOSES",Business,PVVJ4043550000
+06/14,Marketing Campaign Expens,Marketing Cost,-70.66,11665.710000000001,"LARSON, MCCOY AND MOSES",Business,OXUQ1471780011
+06/16,Equipment Purchase Serve,Equipment Purchase,-357.55,11308.16,"LARSON, MCCOY AND MOSES",Business,HVOJ3583910002
+06/21,Client Sales Revenue,Sales Revenue,861.01,12169.17,"LARSON, MCCOY AND MOSES",Business,GJAT3457740001

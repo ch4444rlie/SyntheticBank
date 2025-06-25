@@ -1,0 +1,199 @@
+{
+  "fields": [
+    {
+      "name": "logo_path",
+      "is_mutable": false,
+      "description": "Path to the bank's logo"
+    },
+    {
+      "name": "statement_period",
+      "is_mutable": true,
+      "description": "Period covered by the bank statement"
+    },
+    {
+      "name": "account_holder_address",
+      "is_mutable": false,
+      "description": "Address of the account holder"
+    },
+    {
+      "name": "account_number",
+      "is_mutable": true,
+      "description": "Account number associated with this statement"
+    },
+    {
+      "name": "total_pages",
+      "is_mutable": false,
+      "description": "Total number of pages in the bank statement"
+    },
+    {
+      "name": "summary.overdraft_protection1",
+      "is_mutable": false,
+      "description": "First overdraft protection information provided by Pnc Bank"
+    },
+    {
+      "name": "summary.overdraft_protection2",
+      "is_mutable": false,
+      "description": "Second overdraft protection information provided by Pnc Bank"
+    },
+    {
+      "name": "summary.overdraft_status",
+      "is_mutable": false,
+      "description": "Current overdraft status of the account"
+    },
+    {
+      "name": "summary.beginning_balance",
+      "is_mutable": false,
+      "description": "Balance at the start of the statement period"
+    },
+    {
+      "name": "summary.deposits_total",
+      "is_mutable": true,
+      "description": "Total amount deposited during the statement period"
+    },
+    {
+      "name": "summary.withdrawals_total",
+      "is_mutable": true,
+      "description": "Total amount withdrawn during the statement period"
+    },
+    {
+      "name": "summary.ending_balance",
+      "is_mutable": false,
+      "description": "Balance at the end of the statement period"
+    },
+    {
+      "name": "summary.average_balance",
+      "is_mutable": true,
+      "description": "Average balance for the statement period"
+    },
+    {
+      "name": "summary.fees",
+      "is_mutable": true,
+      "description": "Total fees charged during the statement period"
+    },
+    {
+      "name": "summary.checks_written",
+      "is_mutable": true,
+      "description": "Number of checks written during the statement period"
+    },
+    {
+      "name": "summary.pos_transactions",
+      "is_mutable": true,
+      "description": "Total number of POS transactions"
+    },
+    {
+      "name": "summary.pos_pin_transactions",
+      "is_mutable": true,
+      "description": "Number of POS transactions with PIN"
+    },
+    {
+      "name": "summary.total_atm_transactions",
+      "is_mutable": true,
+      "description": "Total number of ATM transactions"
+    },
+    {
+      "name": "summary.pnc_atm_transactions",
+      "is_mutable": true,
+      "description": "Number of PNC-owned ATM transactions"
+    },
+    {
+      "name": "summary.other_atm_transactions",
+      "is_mutable": true,
+      "description": "Number of other ATM transactions"
+    },
+    {
+      "name": "summary.apy_earned",
+      "is_mutable": false,
+      "description": "Annual Percentage Yield earned on the account"
+    },
+    {
+      "name": "summary.days_in_period",
+      "is_mutable": false,
+      "description": "Number of days covered by the statement period"
+    },
+    {
+      "name": "summary.average_collected_balance",
+      "is_mutable": true,
+      "description": "Average collected balance during the statement period"
+    },
+    {
+      "name": "summary.interest_paid_period",
+      "is_mutable": false,
+      "description": "Interest paid for the current period"
+    },
+    {
+      "name": "summary.interest_paid_ytd",
+      "is_mutable": true,
+      "description": "Total interest paid year to date"
+    },
+    {
+      "name": "transaction.date",
+      "is_mutable": true,
+      "description": "Date of the transaction"
+    },
+    {
+      "name": "transaction.amount",
+      "is_mutable": true,
+      "description": "Amount of the transaction"
+    },
+    {
+      "name": "transaction.description",
+      "is_mutable": true,
+      "description": "Description or purpose of the transaction"
+    },
+    {
+      "name": "transactions|selectattr('type', 'equalto', 'deposit')|list|length",
+      "is_mutable": false,
+      "description": "Number of deposit transactions in the statement"
+    },
+    {
+      "name": "transactions|selectattr('type', 'equalto', 'electronic')|list|length",
+      "is_mutable": false,
+      "description": "Number of electronic transactions in the statement"
+    },
+    {
+      "name": "transactions|selectattr('type', 'equalto', 'other')|list|length",
+      "is_mutable": false,
+      "description": "Number of other transactions in the statement"
+    },
+    {
+      "name": "row.date1",
+      "is_mutable": true,
+      "description": "Date of a specific transaction row"
+    },
+    {
+      "name": "row.bal1",
+      "is_mutable": false,
+      "description": "Balance before a specific transaction"
+    },
+    {
+      "name": "row.date2",
+      "is_mutable": true,
+      "description": "Second date of a specific transaction row"
+    },
+    {
+      "name": "row.bal2",
+      "is_mutable": false,
+      "description": "Balance after the second transaction of a specific row"
+    },
+    {
+      "name": "row.date3",
+      "is_mutable": true,
+      "description": "Third date of a specific transaction row (if applicable)"
+    },
+    {
+      "name": "row.bal3",
+      "is_mutable": false,
+      "description": "Balance after the third transaction of a specific row (if applicable)"
+    },
+    {
+      "name": "current_page",
+      "is_mutable": false,
+      "description": "Current page number of the bank statement"
+    },
+    {
+      "name": "total_pages",
+      "is_mutable": false,
+      "description": "Total number of pages in the bank statement"
+    }
+  ]
+}
