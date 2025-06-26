@@ -60,32 +60,54 @@ with st.sidebar:
             if st.button(BANK_DISPLAY_NAMES[bank_key], key=f"bank_button_{bank_key}"):
                 st.session_state["selected_bank_key"] = bank_key
                 st.session_state["generated"] = False
+                st.session_state["selected_account_type"] = None  # Reset account type on bank change
+                st.session_state["selected_template"] = None  # Reset template on bank change
     
     selected_bank_key = st.session_state["selected_bank_key"]
     selected_bank = BANK_DISPLAY_NAMES.get(selected_bank_key, "No Bank Selected")
 
-    # New section for Business or Personal as chips
-    st.subheader("Account Type")
+    # New section for Account Type as buttons
+    st.subheader("Select Account Type")
     account_types = ["Business", "Personal"]
     if "selected_account_type" not in st.session_state:
-        st.session_state["selected_account_type"] = ["Personal"]  # Default to Personal
-    selected_account_type = st.multiselect("Select Account Type", account_types, default=st.session_state["selected_account_type"],
-                                          key="account_type_chips")
+        st.session_state["selected_account_type"] = None
+    
+    cols_account = st.columns(2)
+    for idx, account_type in enumerate(account_types):
+        with cols_account[idx % 2]:
+            if st.button(account_type, key=f"account_type_button_{account_type}"):
+                st.session_state["selected_account_type"] = account_type
+                st.session_state["generated"] = False
+    
+    selected_account_type = st.session_state["selected_account_type"]
 
     num_transactions = st.slider("Number of Transactions", min_value=3, max_value=12, value=5, step=1)
-    if selected_bank_key:
+    if selected_bank_key and selected_account_type:
         template_files = [f for f in BANK_CONFIG[selected_bank_key]["templates"] if f.endswith('.html')]
         if not template_files:
             st.error(f"No templates found for {selected_bank}. Contact the administrator.")
             st.stop()
-        selected_template = st.selectbox("Select Template Style", template_files, format_func=lambda x: TEMPLATE_DISPLAY_NAMES.get(x, x))
+        # New section for Template Style as buttons
+        st.subheader("Select Template Style")
+        if "selected_template" not in st.session_state:
+            st.session_state["selected_template"] = None
+        
+        cols_template = st.columns(len(template_files) // 2 + len(template_files) % 2)
+        for idx, template in enumerate(template_files):
+            with cols_template[idx % len(cols_template)]:
+                display_name = TEMPLATE_DISPLAY_NAMES.get(template, template)
+                if st.button(display_name, key=f"template_button_{template}"):
+                    st.session_state["selected_template"] = template
+                    st.session_state["generated"] = False
+        
+        selected_template = st.session_state["selected_template"]
     else:
         selected_template = None
-        st.markdown("Select a bank to choose a template style.")
+        st.markdown("Select a bank and account type to choose a template style.")
     
     # Sidebar generate button (always visible)
     if st.button("Generate Statement (Sidebar)", key="sidebar_generate_button"):
-        if not (selected_bank_key and selected_template and selected_account_type):
+        if not (selected_bank_key and selected_account_type and selected_template):
             st.error("Please select a bank, account type, and template style first.")
         else:
             st.session_state["trigger_generate"] = True
@@ -108,20 +130,20 @@ if "pdf_filename" not in st.session_state:
     st.session_state["pdf_filename"] = None
 
 # Main area generate button
-if st.button("Generate Statement", key="generate_button", disabled=not (selected_bank_key and selected_template and selected_account_type)) or st.session_state["trigger_generate"]:
-    if not (selected_bank_key and selected_template and selected_account_type):
+if st.button("Generate Statement", key="generate_button", disabled=not (selected_bank_key and selected_account_type and selected_template)) or st.session_state["trigger_generate"]:
+    if not (selected_bank_key and selected_account_type and selected_template):
         st.error("Please select a bank, account type, and template style first.")
         st.session_state["trigger_generate"] = False
     else:
         with st.spinner(f"Generating {selected_bank} statement..."):
             try:
-                account_holder = fake.company().upper() if "Business" in selected_account_type else fake.name()
+                account_holder = fake.company().upper() if selected_account_type == "Business" else fake.name()
                 df = generate_bank_statement(num_transactions, account_holder)
                 csv_filename = os.path.join(SYNTHETIC_STAT_DIR, f"bank_statement_{account_holder.replace(' ', '_')}_{selected_bank_key}.csv")
                 df.to_csv(csv_filename, index=False)
                 template_path = os.path.join(TEMPLATES_DIR, selected_template)
                 statement_fields = identify_template_fields(template_path)
-                results = generate_populated_html_and_pdf(df, account_holder, selected_bank_key, TEMPLATES_DIR, SYNTHETIC_STAT_DIR, selected_template, account_type=selected_account_type[0] if selected_account_type else "Personal")
+                results = generate_populated_html_and_pdf(df, account_holder, selected_bank_key, TEMPLATES_DIR, SYNTHETIC_STAT_DIR, selected_template, account_type=selected_account_type)
                 for _, pdf_file in results:
                     st.session_state["generated"] = True
                     st.session_state["pdf_filename"] = os.path.basename(pdf_file)
