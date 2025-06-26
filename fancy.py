@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import os
 import base64
-from statement_generator import (
+from fancy_generator import (
     generate_bank_statement,
     identify_template_fields,
     generate_populated_html_and_pdf,
@@ -182,7 +182,15 @@ if st.button("Generate Statement", key="generate_button", disabled=not (selected
                 df.to_csv(csv_filename, index=False)
                 template_path = os.path.join(TEMPLATES_DIR, selected_template)
                 statement_fields = identify_template_fields(template_path)
-                results = generate_populated_html_and_pdf(df, account_holder, selected_bank_key, TEMPLATES_DIR, SYNTHETIC_STAT_DIR, selected_template)
+                results = generate_populated_html_and_pdf(
+                    df, 
+                    account_holder, 
+                    selected_bank_key, 
+                    TEMPLATES_DIR, 
+                    SYNTHETIC_STAT_DIR, 
+                    selected_template,
+                    account_type=selected_account_type  # Pass account_type to the function
+                )
                 for _, pdf_file in results:
                     st.session_state["generated"] = True
                     st.session_state["pdf_filename"] = os.path.basename(pdf_file)
