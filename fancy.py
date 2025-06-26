@@ -79,6 +79,11 @@ TEMPLATE_DISPLAY_NAMES = {
     "pnc_classic.html": "Classic PNC Statement"
 }
 
+# Debug print statements
+import os
+print(f"Current directory: {os.getcwd()}")
+print(f"Files in directory: {os.listdir()}")
+
 with st.sidebar:
     st.header("Statement Options")
     st.markdown("Configure your synthetic bank statement.")

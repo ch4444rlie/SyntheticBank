@@ -1,3 +1,20 @@
+from jinja2 import Environment, FileSystemLoader
+import os
+from datetime import datetime
+from faker import Faker
+import streamlit as st  # Ensure Streamlit is imported if used
+
+fake = Faker()
+
+# Define constants
+TEMPLATES_DIR = "templates"
+SYNTHETIC_STAT_DIR = "synthetic_statements"
+BANK_CONFIG = {
+    "chase": {"templates": ["chase_classic_style.html", "chase_variation_1.html", "chase_variation_2.html"]},
+    "citibank": {"templates": ["citibank_classic_template.html", "citibank_variation_1.html", "citibank_variation_2.html"]},
+    "wellsfargo": {"templates": ["wells_fargo_classic.html", "wells_variation_1.html", "wells_variation_2.html"]},
+    "pnc": {"templates": ["pnc_classic.html"]}
+}
 
 def get_important_account_info(account_type, current_date):
     """Generate Important Account Information based on account type."""
@@ -25,16 +42,46 @@ def get_important_account_info(account_type, current_date):
         """
     return ""
 
-def generate_populated_html_and_pdf(df, account_holder, bank_key, template_dir, output_dir, template_file):
-    """Generate populated HTML and PDF from a DataFrame and template."""
-    from jinja2 import Environment, FileSystemLoader  # Assuming Jinja2 is used
-    import os
+def generate_bank_statement(num_transactions, account_holder):
+    """Generate synthetic bank statement data."""
+    data = []
+    balance = 1000.0
+    for i in range(num_transactions):
+        transaction_type = fake.random_element(elements=("deposit", "withdrawal"))
+        amount = fake.pyfloat(left_digits=3, right_digits=2, positive=True, max_value=500)
+        if transaction_type == "withdrawal":
+            amount = -amount
+        balance += amount
+        data.append({
+            "date": fake.date_between(start_date="-1y", end_date="today").strftime("%Y-%m-%d"),
+            "description": fake.sentence(nb_words=4),
+            "type": transaction_type,
+            "amount": amount,
+            "balance": balance,
+            "account_number": fake.random_number(digits=8)
+        })
+    return pd.DataFrame(data)
 
+def identify_template_fields(template_path):
+    """Identify fields in the template (placeholder implementation)."""
+    from jinja2 import Template
+    with open(template_path, "r") as f:
+        template_content = f.read()
+    fields = []
+    # Simple parsing for {{ variable }} placeholders
+    import re
+    for match in re.finditer(r'{{([^}]+)}}', template_content):
+        field_name = match.group(1).strip()
+        fields.append(type('Field', (), {"name": field_name, "is_mutable": True, "description": f"Field for {field_name}"}))
+    return type('TemplateFields', (), {"fields": fields})()
+
+def generate_populated_html_and_pdf(df, account_holder, bank_key, template_dir, output_dir, template_file, account_type="Personal"):
+    """Generate populated HTML and PDF from a DataFrame and template."""
     # Set up Jinja2 environment
     env = Environment(loader=FileSystemLoader(template_dir))
     template = env.get_template(template_file)
 
-    # Prepare summary data (example structure, adjust based on your implementation)
+    # Prepare summary data
     summary = {
         "beginning_balance": df["balance"].iloc[0] if not df.empty else "0.00",
         "deposits_count": len(df[df["type"] == "deposit"]),
@@ -45,15 +92,13 @@ def generate_populated_html_and_pdf(df, account_holder, bank_key, template_dir, 
         "ending_balance": f"${df['balance'].iloc[-1] if not df.empty else '0.00'}"
     }
 
-    # Prepare transactions (example structure, adjust as needed)
+    # Prepare transactions
     transactions = df.to_dict("records")
 
-    # Get current date for dynamic content
-    from datetime import datetime
-    current_date = datetime.now().strftime("%B %d, %Y")
+    # Get current date
+    current_date = datetime.now().strftime("%B %d, %Y")  # e.g., June 26, 2025
 
-    # Get important account info based on account type (from session state or passed parameter)
-    account_type = st.session_state.get("selected_account_type", "Personal")  # Default to Personal if not set
+    # Get important account info based on account type
     important_account_info = get_important_account_info(account_type, current_date)
 
     # Render template with all variables
@@ -82,11 +127,22 @@ def generate_populated_html_and_pdf(df, account_holder, bank_key, template_dir, 
         terms=""  # Placeholder, populate if needed
     )
 
-    # Save HTML and generate PDF (assuming existing logic)
+    # Save HTML and generate PDF
     html_file = os.path.join(output_dir, f"{account_holder.replace(' ', '_')}_{bank_key}_statement.html")
     pdf_file = os.path.join(output_dir, f"{account_holder.replace(' ', '_')}_{bank_key}_statement.pdf")
     with open(html_file, "w", encoding="utf-8") as f:
         f.write(html_content)
-    # Assuming you have a PDF generation function (e.g., using wkhtmltopdf)
-    # generate_pdf(html_file, pdf_file)  # Implement this based on your setup
+    # Placeholder for PDF generation (replace with your actual PDF library, e.g., wkhtmltopdf)
+    # Example using wkhtmltopdf (install separately if needed)
+    try:
+        import wkhtmltopdf
+        wkhtmltopdf.from_file(html_file, pdf_file)
+    except ImportError:
+        with open(pdf_file, "wb") as f:
+            f.write(b"PDF generation requires wkhtmltopdf. Install it or use a different method.")
     return [(html_file, pdf_file)]
+
+if __name__ == "__main__":
+    # Example usage for testing
+    df = generate_bank_statement(5, "Test User")
+    generate_populated_html_and_pdf(df, "Test User", "citibank", TEMPLATES_DIR, SYNTHETIC_STAT_DIR, "citibank_classic_template.html", account_type="Personal")
