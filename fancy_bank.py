@@ -23,11 +23,11 @@ st.markdown("""
     height: 40px;
     font-size: 16px;
 }
-/* Larger buttons for Select Template Style section */
+/* Adjusted buttons for Select Template Style section */
 div[data-testid="stVerticalBlock"] > div:nth-child(3) .stButton > button {
-    height: 50px;
-    font-size: 18px;
-    padding: 5px 10px;
+    height: 45px;  /* Reduced from 50px */
+    font-size: 16px;  /* Reduced from 18px */
+    padding: 3px 8px;  /* Adjusted for better spacing */
 }
 </style>
 """, unsafe_allow_html=True)
@@ -149,7 +149,7 @@ if st.button("Generate Statement", key="generate_button", disabled=not (selected
                 df.to_csv(csv_filename, index=False)
                 template_path = os.path.join(TEMPLATES_DIR, selected_template)
                 statement_fields = identify_template_fields(template_path)
-                results = generate_populated_html_and_pdf(df, account_holder, selected_bank_key, TEMPLATES_DIR, SYNTHETIC_STAT_DIR, selected_template, account_type=selected_account_type)
+                results = generate_populated_html_and_pdf(df, account_holder, selected_bank_key, TEMPLATES_DIR, SYNTHETIC_STAT_DIR, selected_template)  # Removed account_type
                 for _, pdf_file in results:
                     st.session_state["generated"] = True
                     st.session_state["pdf_filename"] = os.path.basename(pdf_file)
