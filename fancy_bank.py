@@ -23,6 +23,12 @@ st.markdown("""
     height: 40px;
     font-size: 16px;
 }
+/* Larger buttons for Select Template Style section */
+div[data-testid="stVerticalBlock"] > div:nth-child(3) .stButton > button {
+    height: 50px;
+    font-size: 18px;
+    padding: 5px 10px;
+}
 </style>
 """, unsafe_allow_html=True)
 
