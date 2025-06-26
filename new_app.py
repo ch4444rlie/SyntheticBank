@@ -28,7 +28,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Bank and template display names for user-friendly interface
+# Bank and template display names
 BANK_DISPLAY_NAMES = {
     "chase": "Chase",
     "citibank": "Citibank",
@@ -130,7 +130,7 @@ if st.session_state["trigger_generate"]:
                 df.to_csv(csv_filename, index=False, encoding='utf-8')
                 
                 statement_fields = identify_template_fields(selected_bank_key, TEMPLATES_DIR)
-                results = generate_populated_html_and_pdf(df, account_holder, selected_bank_key, TEMPLATES_DIR, SYNTHETIC_STAT_DIR, account_type)
+                results = generate_populated_html_and_pdf(df, account_holder, selected_bank_key, TEMPLATES_DIR, SYNTHETIC_STAT_DIR, account_type, selected_template)
                 
                 # Use the first result (single template)
                 html_file, pdf_file = results[0]
