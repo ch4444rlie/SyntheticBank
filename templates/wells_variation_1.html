@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<title>Wells Fargo – App Statement</title>
-<style>
+  <meta charset="UTF-8" />
+  <title>Bank Statement</title>
+  <style>
     /* Reset & defaults */
     * { margin: 0; padding: 0; font-family: Arial, sans-serif; }
     body { background-color: #F0F4F8; color: #333; font-size: 12px; line-height: 1.5; padding: 10px; }
@@ -30,12 +30,17 @@
     .highlight { background-color: #FFCDD2; font-weight: bold; }
     tr:last-child td { border-bottom: none; }
 
+    /* Important Account Information */
+    .important-info p { font-size: 10px; line-height: 1.45; margin: 5px 0; }
+    hr.section-rule { border: 0; height: 1px; background: #C62828; margin: 10px 0; }
+
     /* Notice */
     .notice { text-align: center; margin: 15px 0; font-size: 10px; color: #666; }
 
     /* Footer */
     .footer { margin-top: 15px; padding: 10px; background-color: #F0F4F8; font-size: 9px; color: #666; text-align: center; }
     .footer hr { border: 0; height: 1px; background: #C62828; margin: 5px 0; }
+    .footer h3 { color: #C62828; font-size: 10px; font-weight: bold; margin-bottom: 8px; }
 
     /* Print-specific fallbacks */
     @media print {
@@ -45,71 +50,85 @@
         table { page-break-inside: auto; }
         tr { page-break-inside: avoid; page-break-after: auto; }
     }
-</style>
+  </style>
 </head>
 <body>
 
 <div class="header">
-    Wells Fargo <img src="{{logo_path}}" alt="Wells Fargo logo">
+  <img src="{{logo_path}}" alt="Wells Fargo logo">
 </div>
 
 <div class="content">
-    <div class="info-section">
-        <b>Account Details</b>
-        <span>Account Holder: {{account_holder}}</span>
-        <span>Address: {{account_holder_address}}</span>
-        <span>Account Number: {{account_number}}</span>
-    </div>
+  <div class="info-section">
+    <b>Account Details</b>
+    <span>Account Holder: {{account_holder}}</span>
+    <span>Address: {{account_holder_address}}</span>
+    <span>Account Number: {{account_number}}</span>
+    <span>Account Type: Complete {{ account_type }} Advantage Checking</span>
+  </div>
 
-    <h2>Transaction History</h2>
-    <div class="meta">
-        <span>{{statement_period}}</span>
-        <span>Created on {{statement_date}}</span>
-    </div>
+  <!-- IMPORTANT ACCOUNT INFORMATION -->
+  <div class="important-info">
+    <h2>Important Account Information</h2>
+    <hr class="section-rule">
+    {{ important_account_info }}
+    <hr class="section-rule">
+  </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th style="width:20%;">Date</th>
-                <th>Description</th>
-                <th style="width:15%;" class="num">Credits</th>
-                <th style="width:15%;" class="num">Debits</th>
-                <th style="width:15%;" class="num">Balance</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr class="highlight">
-                <td></td><td>Opening Balance</td>
-                <td class="num"></td>
-                <td class="num"></td>
-                <td class="num">{{summary.beginning_balance}}</td>
-            </tr>
-            {% for transaction in transactions %}
-            <tr>
-                <td>{{ transaction.date }}</td>
-                <td>{{ transaction.description }}</td>
-                <td class="num">{{ transaction.deposits_credits }}</td>
-                <td class="num">{{ transaction.withdrawals_debits }}</td>
-                <td class="num">{{ transaction.ending_balance }}</td>
-            </tr>
-            {% endfor %}
-            <tr class="highlight">
-                <td></td><td>Total</td>
-                <td class="num">{{summary.deposits_total}}</td>
-                <td class="num">{{summary.withdrawals_total}}</td>
-                <td class="num">{{summary.ending_balance}}</td>
-            </tr>
-        </tbody>
-    </table>
+  <h2>Transaction History</h2>
+  <div class="meta">
+    <span>{{statement_period}}</span>
+    <span>Created on {{statement_date}}</span>
+  </div>
 
-    <p class="notice">
-        This is for informational purposes only. See your full statement for details.
-    </p>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:20%;">Date</th>
+        <th>Description</th>
+        <th style="width:15%;" class="num">Credits</th>
+        <th style="width:15%;" class="num">Debits</th>
+        <th style="width:15%;" class="num">Balance</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="highlight">
+        <td></td><td>Opening Balance</td>
+        <td class="num"></td>
+        <td class="num"></td>
+        <td class="num">{{summary.beginning_balance}}</td>
+      </tr>
+      {% for transaction in transactions %}
+      <tr>
+        <td>{{ transaction.date }}</td>
+        <td>{{ transaction.description }}</td>
+        <td class="num">{{ transaction.deposits_credits }}</td>
+        <td class="num">{{ transaction.withdrawals_debits }}</td>
+        <td class="num">{{ transaction.ending_balance }}</td>
+      </tr>
+      {% endfor %}
+      <tr class="highlight">
+        <td></td><td>Total</td>
+        <td class="num">{{summary.deposits_total}}</td>
+        <td class="num">{{summary.withdrawals_total}}</td>
+        <td class="num">{{summary.ending_balance}}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="notice">
+    This is for informational purposes only. See your full statement for details.
+  </p>
 </div>
 
 <div class="footer">
-    <hr>
-    <p>© 2025 Wells Fargo Bank, N.A. All rights reserved. Member FDIC.</p>
+  <hr>
+  <h3>Footnotes and Disclosures</h3>
+  {{ footnotes }}
+  {{ disclosures }}
+  {{ terms }}
+  <hr>
+  <p>© 2025 Wells Fargo Bank, N.A. All rights reserved. Member FDIC.</p>
 </div>
 
 </body>

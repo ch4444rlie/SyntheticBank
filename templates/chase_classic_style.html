@@ -154,6 +154,15 @@
       font-weight: bold;
       margin-bottom: 10px;
     }
+    .small-text {
+      font-size: 9px;
+      line-height: 1.45;
+    }
+    hr.section-rule {
+      border: none;
+      border-top: 1px solid #000;
+      margin: 14px 0;
+    }
   </style>
 </head>
 <body>
@@ -185,127 +194,138 @@
   </tr>
 </table>
 
-  <!-- PAYEE INFO -->
-  <div>
-    <strong>
-      {{ account_holder }}<br>
-      {{ account_holder_address }}
-    </strong>
-  </div>
+<!-- PAYEE INFO -->
+<div>
+  <strong>
+    {{ account_holder }}<br>
+    {{ account_holder_address }}
+  </strong>
+</div>
 
 <!-- CHECKING SUMMARY -->
 <div class="section-divider">
   <div style="text-align: center; margin: 0 auto; margin-bottom: -10px; max-width: 100%;">
-    Chase Business Select Checking
+    Chase {{ account_type }} Select Checking
   </div>
   <div class="section-header"><h2>Checking Summary</h2></div>
 </div>
-  <table class="summary-table">
-    <tr>
-      <th></th>
-      <th>Instances</th>
-      <th>Amount</th>
-    </tr>
-    <tr>
-      <td>Beginning Balance</td>
-      <td>–</td>
-      <td>{{ summary.beginning_balance }}</td>
-    </tr>
-    <tr>
-      <td>Deposits and Additions</td>
-      <td>{{ summary.deposits_count }}</td>
-      <td>{{ summary.deposits_total }}</td>
-    </tr>
-    <tr>
-      <td>Electronic Withdrawals</td>
-      <td>{{ summary.withdrawals_count }}</td>
-      <td>{{ summary.withdrawals_total }}</td>
-    </tr>
-    <tr>
-      <td>Ending Balance</td>
-      <td>{{ summary.transactions_count }}</td>
-      <td>{{ summary.ending_balance }}</td>
-    </tr>
-  </table>
-  <p>
-    Your monthly service fee was waived because you maintained an average checking balance of $7,500.00
-    or a minimum checking balance of $5,000.00 or more during the statement period.
-  </p>
+<table class="summary-table">
+  <tr>
+    <th></th>
+    <th>Instances</th>
+    <th>Amount</th>
+  </tr>
+  <tr>
+    <td>Beginning Balance</td>
+    <td>–</td>
+    <td>{{ summary.beginning_balance }}</td>
+  </tr>
+  <tr>
+    <td>Deposits and Additions</td>
+    <td>{{ summary.deposits_count }}</td>
+    <td>{{ summary.deposits_total }}</td>
+  </tr>
+  <tr>
+    <td>Electronic Withdrawals</td>
+    <td>{{ summary.withdrawals_count }}</td>
+    <td>{{ summary.withdrawals_total }}</td>
+  </tr>
+  <tr>
+    <td>Ending Balance</td>
+    <td>{{ summary.transactions_count }}</td>
+    <td>{{ summary.ending_balance }}</td>
+  </tr>
+</table>
+{% if show_fee_waiver %}
+<p>
+  Your monthly service fee was waived because you maintained an average checking balance of $7,500.00
+  or a minimum checking balance of $5,000.00 or more during the statement period.
+</p>
+{% endif %}
 
-  <!-- DEPOSITS AND ADDITIONS -->
-  {% if deposits %}
-  <div class="section-divider">
-    <div class="section-header"><h2>Deposits and Additions</h2></div>
-  </div>
-  <table class="data-table">
-    <tr>
-      <th>Date</th>
-      <th>Description</th>
-      <th>Amount</th>
-    </tr>
-    {% for deposit in deposits %}
-    <tr class="date-row">
-      <td>{{ deposit.date }}</td>
-      <td>{{ deposit.description }}</td>
-      <td>{{ deposit.amount }}</td>
-    </tr>
-    {% endfor %}
-    <tr>
-      <td colspan="2"><strong>Total Deposits and Additions</strong></td>
-      <td style="text-align: right;">{{ summary.deposits_total }}</td>
-    </tr>
-  </table>
-  {% endif %}
+<!-- IMPORTANT ACCOUNT INFORMATION -->
+<hr class="section-rule">
+<div class="section-divider">
+  <div class="section-header"><h2>Important Account Information</h2></div>
+</div>
+<div class="small-text">
+  {{ important_account_info }}
+</div>
+<hr class="section-rule">
 
-  <!-- WITHDRAWALS -->
-  {% if withdrawals %}
-  <div class="section-divider">
-    <div class="section-header"><h2>Withdrawals</h2></div>
-  </div>
-  <table class="data-table">
-    <tr>
-      <th>Date</th>
-      <th>Description</th>
-      <th>Amount</th>
-    </tr>
-    {% for withdrawal in withdrawals %}
-    <tr class="date-row">
-      <td>{{ withdrawal.date }}</td>
-      <td>{{ withdrawal.description }}</td>
-      <td>{{ withdrawal.amount }}</td>
-    </tr>
-    {% endfor %}
-    <tr>
-      <td colspan="2"><strong>Total Electronic Withdrawals</strong></td>
-      <td style="text-align: right;">{{ summary.withdrawals_total }}</td>
-    </tr>
-  </table>
-  {% endif %}
+<!-- DEPOSITS AND ADDITIONS -->
+{% if deposits %}
+<div class="section-divider">
+  <div class="section-header"><h2>Deposits and Additions</h2></div>
+</div>
+<table class="data-table">
+  <tr>
+    <th>Date</th>
+    <th>Description</th>
+    <th>Amount</th>
+  </tr>
+  {% for deposit in deposits %}
+  <tr class="date-row">
+    <td>{{ deposit.date }}</td>
+    <td>{{ deposit.description }}</td>
+    <td>{{ deposit.amount }}</td>
+  </tr>
+  {% endfor %}
+  <tr>
+    <td colspan="2"><strong>Total Deposits and Additions</strong></td>
+    <td style="text-align: right;">{{ summary.deposits_total }}</td>
+  </tr>
+</table>
+{% endif %}
 
-  <!-- DAILY ENDING BALANCE -->
-  <div class="section-divider">
-    <div class="section-header"><h2>Daily Ending Balance</h2></div>
-  </div>
-  <table class="balance-table">
-    <tr>
-      <th>Date</th>
-      <th>Amount</th>
-    </tr>
-    {% for balance in daily_balances %}
-    <tr>
-      <td>{{ balance.date }}</td>
-      <td>{{ balance.amount }}</td>
-    </tr>
-    {% endfor %}
-  </table>
+<!-- WITHDRAWALS -->
+{% if withdrawals %}
+<div class="section-divider">
+  <div class="section-header"><h2>Withdrawals</h2></div>
+</div>
+<table class="data-table">
+  <tr>
+    <th>Date</th>
+    <th>Description</th>
+    <th>Amount</th>
+  </tr>
+  {% for withdrawal in withdrawals %}
+  <tr class="date-row">
+    <td>{{ withdrawal.date }}</td>
+    <td>{{ withdrawal.description }}</td>
+    <td>{{ withdrawal.amount }}</td>
+  </tr>
+  {% endfor %}
+  <tr>
+    <td colspan="2"><strong>Total Electronic Withdrawals</strong></td>
+    <td style="text-align: right;">{{ summary.withdrawals_total }}</td>
+  </tr>
+</table>
+{% endif %}
 
-  <!-- FOOTNOTES AND DISCLOSURES -->
-  <div class="footnotes">
-    <h3>Footnotes and Disclosures</h3>
-    <p><strong>1. Privacy Notice:</strong> For details on how we protect your personal information, see our U.S. Consumer Privacy Notice at chase.com.</p>
-    <p><strong>2. Fees and Adjustments:</strong> This statement may include fees or adjustments. For specific charge details, contact Customer Service at 1-800-242-7338. Transactions may be pending until finalized.</p>
-    <p><strong>3. Statement Access:</strong> Access up to 7 years of statements online at chase.com or via the Chase Mobile® app under ‘Statements & Documents.’ Paper statements may stop after enrolling in paperless delivery.</p>
-    <p><strong>4. Regulatory Compliance:</strong> This statement complies with federal regulations. Visit chase.com/disclosures for more information.</p>
-  </div>
+<!-- DAILY ENDING BALANCE -->
+<div class="section-divider">
+  <div class="section-header"><h2>Daily Ending Balance</h2></div>
+</div>
+<table class="balance-table">
+  <tr>
+    <th>Date</th>
+    <th>Amount</th>
+  </tr>
+  {% for balance in daily_balances %}
+  <tr>
+    <td>{{ balance.date }}</td>
+    <td>{{ balance.amount }}</td>
+  </tr>
+  {% endfor %}
+</table>
+
+<!-- FOOTNOTES AND DISCLOSURES -->
+<div class="footnotes">
+  <h3>Footnotes and Disclosures</h3>
+  {{ footnotes }}
+  {{ disclosures }}
+  {{ terms }}
+</div>
 </body>
 </html>

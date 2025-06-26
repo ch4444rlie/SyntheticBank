@@ -9,6 +9,8 @@
     body   { font-family: Arial, sans-serif; font-size: 9px; line-height: 1.35; }
     h1,h2  { text-align: center; font-weight: 600; }
     hr.bar { border: none; height: 4px; background:#003e7e; margin: 12px 0; }
+    hr.section-rule { border: none; border-top: 1px solid #888; margin: 14px 0; }
+    .small-text { font-size: 9px; line-height: 1.35; }
 
     /* ─── Layout wrappers ───────────────────────────────────────────── */
     header, main, footer { width: 90%; margin: 0 auto; }
@@ -17,20 +19,19 @@
     .branch-address { font-size: 9px; line-height: 1.4; color: rgb(0,70,133); font-weight: bold; }
     .citi-logo      { width: 120px; height: auto; float: right; }
 
-/* ─── Info blocks ───────────────────────────────────────────────── */
-.info-table { 
-    width: 90%; 
-    margin: 0 auto; /* Center the table */
-    border-collapse: collapse; 
-}
-.info-cell { 
-    width: 48%; 
-    vertical-align: top; 
-    padding-right: 2%; 
-}
-.info-cell b { display: block; margin-bottom: 4px; }
-.info-cell span { display: block; }
-
+    /* ─── Info blocks ───────────────────────────────────────────────── */
+    .info-table { 
+        width: 90%; 
+        margin: 0 auto; /* Center the table */
+        border-collapse: collapse; 
+    }
+    .info-cell { 
+        width: 48%; 
+        vertical-align: top; 
+        padding-right: 2%; 
+    }
+    .info-cell b { display: block; margin-bottom: 4px; }
+    .info-cell span { display: block; }
 
     /* ─── Transactions table ───────────────────────────────────────── */
     table           { width:100%; border-collapse: collapse; margin-top:18px; }
@@ -73,7 +74,7 @@
                 <!-- bank info -->
                 <b>Bank information</b>
                 <span><b>Account Provider Name: Citibank UK Limited</b></span>
-                <span><b>Account Name: Transit account at Citibank in the UK</b></span>
+                <span><b>Account Name: {{ account_type }} Transit account at Citibank in the UK</b></span>
                 <span><b>IBAN: GB29 NWBK 6016 1331 9268 19</b></span>
                 <span><b>Country code: GB</b></span>
                 <span><b>Check Digits: 29</b></span>
@@ -96,6 +97,14 @@
 
     <!-- Add 5 blank lines -->
     <br><br><br><br><br>
+
+    <!-- important account information -->
+    <hr class="section-rule">
+    <h2>Important Account Information</h2>
+    <div class="small-text">
+        {{ important_account_info }}
+    </div>
+    <hr class="section-rule">
 
     <!-- transactions header -->
     <h1 style="font-weight:normal;">ACCOUNT TRANSACTIONS</h1>
@@ -153,12 +162,21 @@
     <p style="margin:14px 0; text-align:center;">
         This printout is for information purposes only. Your regular account statement of assets takes precedence.
     </p>
+
+    <!-- footnotes and disclosures -->
+    <hr class="section-rule">
+    <h2>Footnotes and Disclosures</h2>
+    <div class="small-text">
+        {{ footnotes }}
+        {{ disclosures }}
+        {{ terms }}
+    </div>
 </main>
 
 <footer>
     <hr class="bar">
     <p>Citigroup UK Limited is authorised by the Prudential Regulation Authority and regulated by the Financial Conduct Authority and the Prudential Regulation Authority.<br>
-       Our firm’s Financial Services Register number is 805574. Citibank UK Limited is a company limited by shares registered in England and Wales with registered address at Citigroup Centre, Canada Square, Canary Wharf, London E14 5 LB.<br>
+       Our firm’s Financial Services Register number is 805574. Citibank UK Limited is a company limited by shares registered in England and Wales with registered address at Citigroup Centre, Canada Square, Canary Wharf, London E14 5LB.<br>
        © All rights reserved Citibank UK Limited 2021. CITI, the Arc Design & Citibank are registered service marks of Citigroup Inc. Calls may be monitored or recorded for training and service quality purposes. PNB FBD 132019.</p>
     <p style="text-align:right; margin-top:4px;">Citibank</p>
 </footer>
