@@ -3,27 +3,32 @@
     {
       "name": "account_type",
       "is_mutable": false,
-      "description": "Type of account (e.g., checking, savings)"
+      "description": "Type of the account (e.g., checking, savings)"
     },
     {
       "name": "logo_path",
+      "is_mutable": true,
+      "description": "URL path to the bank's logo"
+    },
+    {
+      "name": "account_type",
       "is_mutable": false,
-      "description": "Path to the bank's logo image"
+      "description": "Repetition of account type for table structure"
     },
     {
       "name": "customer_iban",
       "is_mutable": false,
-      "description": "International Bank Account Number of the customer"
+      "description": "International Bank Account Number (IBAN) of the customer"
     },
     {
       "name": "customer_iban|slice(2,4)",
-      "is_mutable": false,
-      "description": "Last four digits of the customer's IBAN for privacy"
+      "is_mutable": true,
+      "description": "First four digits of the customer's IBAN"
     },
     {
       "name": "customer_iban|slice(8,14)",
-      "is_mutable": false,
-      "description": "Middle eight digits of the customer's IBAN for privacy"
+      "is_mutable": true,
+      "description": "Next six digits of the customer's IBAN"
     },
     {
       "name": "customer_account_number",
@@ -33,17 +38,32 @@
     {
       "name": "account_holder",
       "is_mutable": true,
-      "description": "Name of the account holder in this account"
+      "description": "Name of the account holder at Citibank"
     },
     {
       "name": "client_number",
       "is_mutable": true,
-      "description": "Client identification number of the account holder"
+      "description": "Unique client identification number for the account holder"
     },
     {
       "name": "date_of_birth",
       "is_mutable": true,
       "description": "Date of birth of the account holder"
+    },
+    {
+      "name": "customer_account_number",
+      "is_mutable": false,
+      "description": "Repetition of customer's account number for table structure"
+    },
+    {
+      "name": "customer_iban",
+      "is_mutable": false,
+      "description": "Repetition of the customer's IBAN for table structure"
+    },
+    {
+      "name": "customer_bank_name",
+      "is_mutable": false,
+      "description": "Name of the bank where the account is held (Citibank)"
     },
     {
       "name": "statement_period",
@@ -53,52 +73,52 @@
     {
       "name": "statement_date",
       "is_mutable": false,
-      "description": "Date the bank statement was issued"
+      "description": "Date the bank statement was generated"
     },
     {
       "name": "opening_balance",
-      "is_mutable": false,
-      "description": "Balance of the account at the start of the statement period"
+      "is_mutable": true,
+      "description": "Initial balance of the account on the statement date"
     },
     {
       "name": "transaction.date",
-      "is_mutable": true,
-      "description": "Date each transaction occurred on the account"
+      "is_mutable": false,
+      "description": "Date when a specific transaction occurred"
     },
     {
       "name": "transaction.description",
       "is_mutable": true,
-      "description": "Description of each transaction on the account"
+      "description": "Description of the specific transaction"
     },
     {
       "name": "transaction.debit",
       "is_mutable": true,
-      "description": "Amount debited from the account for each transaction"
+      "description": "Amount debited for a specific transaction"
     },
     {
       "name": "transaction.credit",
       "is_mutable": true,
-      "description": "Amount credited to the account for each transaction"
+      "description": "Amount credited for a specific transaction"
     },
     {
       "name": "transaction.balance",
       "is_mutable": false,
-      "description": "Balance of the account after each transaction"
+      "description": "Balance after the specific transaction occurred"
     },
     {
       "name": "total_debit",
-      "is_mutable": false,
-      "description": "Total amount debited from the account during the statement period"
+      "is_mutable": true,
+      "description": "Total debits recorded on the bank statement"
     },
     {
       "name": "total_credit",
-      "is_mutable": false,
-      "description": "Total amount credited to the account during the statement period"
+      "is_mutable": true,
+      "description": "Total credits recorded on the bank statement"
     },
     {
       "name": "total",
       "is_mutable": false,
-      "description": "Final balance of the account at the end of the statement period"
+      "description": "Overall balance at the end of the statement period"
     }
   ]
 }
