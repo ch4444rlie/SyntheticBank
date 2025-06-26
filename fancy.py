@@ -18,34 +18,43 @@ st.set_page_config(page_title="Synthetic Bank Statement Generator", page_icon="ð
 
 st.markdown("""
 <style>
+/* General button styling (applied to all buttons unless overridden) */
 .stButton > button {
     width: 100%;
     height: 40px;
     font-size: 16px;
-    margin-bottom: 8px; /* Consistent spacing between buttons */
-    transition: all 0.2s ease; /* Smooth transition for hover and active states */
+    margin-bottom: 8px;
+    transition: all 0.2s ease;
 }
 
-/* Highlight selected buttons */
+/* Highlight selected buttons with a "pressed" effect */
 .stButton > button.selected {
-    background-color: #007bff !important; /* Blue background for selected state */
-    color: white !important; /* White text for selected state */
-    border: 1px solid #0056b3 !important; /* Slightly darker border for contrast */
+    background-color: #0056b3 !important; /* Darker blue for pressed effect */
+    color: white !important;
+    border: 1px solid #003d7a !important; /* Even darker border */
+    box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.2) !important; /* Inner shadow for pressed look */
 }
 
 /* Hover effect for non-selected buttons */
 .stButton > button:hover:not(.selected) {
-    background-color: #e6f0ff !important; /* Light blue hover effect */
+    background-color: #e6f0ff !important;
     border: 1px solid #007bff !important;
 }
 
-/* Adjusted buttons for Select Template Style section */
+/* Adjusted buttons for Select Template Style section only */
 div[data-testid="stVerticalBlock"] > div:nth-child(3) .stButton > button {
-    height: 40px; /* Reduced height */
-    font-size: 14px; /* Smaller font size for condensed text */
-    padding: 2px 6px; /* Reduced padding for tighter spacing */
-    line-height: 1.2; /* Reduced line spacing */
-    margin-bottom: 4px; /* Reduced spacing between buttons */
+    height: 40px;
+    font-size: 14px;
+    padding: 2px 6px;
+    line-height: 1.2;
+    margin-bottom: 4px;
+}
+
+/* Add divider line above Generate Statement button */
+div[data-testid="stVerticalBlock"] > div:last-child .stButton > button {
+    border-top: 1px solid #ccc !important;
+    margin-top: 10px !important;
+    padding-top: 10px !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -81,14 +90,13 @@ with st.sidebar:
     cols = st.columns(2)
     for idx, bank_key in enumerate(banks):
         with cols[idx % 2]:
-            # Add 'selected' class if this bank is selected
-            button_class = "selected" if st.session_state["selected_bank_key"] == bank_key else ""
+            # Apply 'selected' class only for template buttons, keep original style for bank
+            button_class = "" if idx < len(banks) - 1 else ""  # No class for bank buttons
             if st.button(BANK_DISPLAY_NAMES[bank_key], key=f"bank_button_{bank_key}", help="Select bank"):
                 st.session_state["selected_bank_key"] = bank_key
                 st.session_state["generated"] = False
                 st.session_state["selected_account_type"] = None
                 st.session_state["selected_template"] = None
-                # Force rerun to update button styles
                 st.rerun()
     
     selected_bank_key = st.session_state["selected_bank_key"]
@@ -102,8 +110,8 @@ with st.sidebar:
     cols_account = st.columns(2)
     for idx, account_type in enumerate(account_types):
         with cols_account[idx % 2]:
-            # Add 'selected' class if this account type is selected
-            button_class = "selected" if st.session_state["selected_account_type"] == account_type else ""
+            # Apply 'selected' class only for template buttons, keep original style for account type
+            button_class = "" if idx < len(account_types) - 1 else ""  # No class for account buttons
             if st.button(account_type, key=f"account_type_button_{account_type}", help="Select account type"):
                 st.session_state["selected_account_type"] = account_type
                 st.session_state["generated"] = False
@@ -125,7 +133,7 @@ with st.sidebar:
         for idx, template in enumerate(template_files):
             with cols_template[idx % len(cols_template)]:
                 display_name = TEMPLATE_DISPLAY_NAMES.get(template, template)
-                # Add 'selected' class if this template is selected
+                # Apply 'selected' class only for template buttons
                 button_class = "selected" if st.session_state["selected_template"] == template else ""
                 if st.button(display_name, key=f"template_button_{template}", help="Select template style"):
                     st.session_state["selected_template"] = template
