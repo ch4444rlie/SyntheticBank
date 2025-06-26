@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chase Bank Statement</title>
+  <title>{{ account_type }} Statement</title>
   <style>
     body { background-color: #f3f4f6; font-family: Arial, sans-serif; color: #1f2937; margin: 0; padding: 20px; }
     .container { max-width: 1024px; margin: 0 auto; }
@@ -13,7 +13,7 @@
     .header p { margin: 5px 0; }
     .header .blue-text { color: #3b82f6; font-weight: bold; }
     .payee p { margin: 5px 0; }
-    .summary h2, .transactions h2, .balance h2, .important-info h2, .footnotes h3 { color: #3b82f6; font-size: 18px; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; }
+    .summary h2, .transactions h2, .balance h2, .important-info h2, .footnotes h2 { color: #3b82f6; font-size: 18px; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; }
     .summary div { margin: 10px 0; }
     .summary p { margin: 5px 0; }
     .transactions div { border-bottom: 1px solid #e5e7eb; padding: 10px 0; }
@@ -56,40 +56,58 @@
     <!-- CHECKING SUMMARY -->
     <div class="card summary">
       <h2>Checking Summary</h2>
-      <p style="text-align: center; font-size: 12px; margin-bottom: 10px;">Chase {{ account_type }} Select Checking</p>
+      <p style="text-align: center; font-size: 12px; margin-bottom: 10px;">{{ account_type }}</p>
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
         <div><p style="font-weight: bold;">Beginning Balance</p><p>{{ summary.beginning_balance }}</p></div>
         <div><p style="font-weight: bold;">Deposits and Additions</p><p>{{ summary.deposits_count }} instances | {{ summary.deposits_total }}</p></div>
         <div><p style="font-weight: bold;">Electronic Withdrawals</p><p>{{ summary.withdrawals_count }} instances | {{ summary.withdrawals_total }}</p></div>
         <div><p style="font-weight: bold;">Ending Balance</p><p>{{ summary.transactions_count }} transactions | {{ summary.ending_balance }}</p></div>
       </div>
-      <p style="font-size: 12px; margin-top: 10px;">{% if show_fee_waiver %}Your monthly service fee was waived due to an average balance of $7,500.00 or a minimum balance of $5,000.00.{% endif %}</p>
+      <p style="font-size: 12px; margin-top: 10px;">
+        {% if show_fee_waiver %}
+        {% if account_type == "Chase Total Checking" %}
+        Your monthly service fee was waived because you maintained an average checking balance of $1,500 or had qualifying direct deposits totaling $500 or more during the statement period.
+        {% else %}
+        Your monthly service fee was waived because you maintained an average checking balance of $10,000 or had $2,500 in qualifying direct deposits during the statement period.
+        {% endif %}
+        {% endif %}
+      </p>
     </div>
 
     <!-- IMPORTANT ACCOUNT INFORMATION -->
     <div class="card important-info">
       <h2>Important Account Information</h2>
       <hr class="section-rule">
-      {{ important_account_info }}
+      {% if account_type == "Chase Total Checking" %}
+      <p>Effective July 1, 2025, the monthly service fee for Chase Total Checking accounts will increase to $15 unless you maintain a minimum daily balance of $1,500, have $500 in qualifying direct deposits, or maintain a linked Chase savings account with a balance of $5,000 or more.</p>
+      <p>Starting June 30, 2025, Chase will introduce real-time transaction alerts for Chase Total Checking accounts via the Chase Mobile app to enhance account monitoring. Enable alerts at chase.com/alerts.</p>
+      <p>Effective July 15, 2025, Chase will waive overdraft fees for transactions of $5 or less and cap daily overdraft fees at two per day for Chase Total Checking accounts.</p>
+      {% else %}
+      <p>Effective July 1, 2025, the monthly service fee for Chase Business Complete Checking accounts will increase to $20 unless you maintain a minimum daily balance of $2,000, have $2,000 in net purchases on a Chase Business Debit Card, or maintain linked Chase business accounts with a combined balance of $10,000.</p>
+      <p>Starting June 30, 2025, Chase will offer enhanced cash flow tools for Chase Business Complete Checking accounts via Chase Online, including automated invoice tracking and payment scheduling.</p>
+      <p>Effective July 15, 2025, Chase will reduce wire transfer fees to $25 for domestic transfers for Chase Business Complete Checking accounts, down from $30.</p>
+      {% endif %}
+      <p>For questions about your account or these changes, please visit chase.com or contact our Customer Service team at <b>1-800-242-7338</b>, available 24/7.</p>
       <hr class="section-rule">
     </div>
 
     <!-- TRANSACTIONS -->
-    {% if deposits or withdrawals %}
+    {% if transactions %}
     <div class="card transactions">
       <h2>Transactions</h2>
       <div>
-        {% for deposit in deposits %}
+        {% for transaction in transactions %}
+        {% if transaction.type == "deposit" %}
         <div>
-          <p class="green-text">{{ deposit.date }} - Deposit</p>
-          <p>{{ deposit.description }} | {{ deposit.amount }}</p>
+          <p class="green-text">{{ transaction.date }} - Deposit</p>
+          <p>{{ transaction.description }} | {{ transaction.amount }}</p>
         </div>
-        {% endfor %}
-        {% for withdrawal in withdrawals %}
+        {% elif transaction.type == "withdrawal" %}
         <div>
-          <p class="red-text">{{ withdrawal.date }} - Withdrawal</p>
-          <p>{{ withdrawal.description }} | {{ withdrawal.amount }}</p>
+          <p class="red-text">{{ transaction.date }} - Withdrawal</p>
+          <p>{{ transaction.description }} | {{ transaction.amount }}</p>
         </div>
+        {% endif %}
         {% endfor %}
       </div>
       <p style="font-weight: bold; margin-top: 10px;">Total Deposits: {{ summary.deposits_total }}</p>
@@ -111,10 +129,9 @@
 
     <!-- FOOTNOTES -->
     <div class="card footnotes">
-      <h3>Footnotes and Disclosures</h3>
-      {{ footnotes }}
-      {{ disclosures }}
-      {{ terms }}
+      <p style="color: #1f2937; font-size: 10px; font-weight: normal; margin-bottom: 6px;">Disclosures</p>
+      <p>All account transactions are subject to the Chase Deposit Account Agreement, available at chase.com. Interest rates and Annual Percentage Yields (APYs) may change without notice. For details on overdraft policies and fees, visit chase.com/overdraft or call 1-800-242-7338.</p>
+      <p>JPMorgan Chase Bank, N.A. is a Member FDIC. Equal Housing Lender.</p>
     </div>
   </div>
 </body>

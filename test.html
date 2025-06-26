@@ -2,98 +2,201 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>Discover Card – Printable Account Activity</title>
+<title>{{ account_type }} Statement</title>
 <style>
-/* ─── reset & base ───────────────────────────────────────────── */
+/* ─── base reset ─────────────────────────────────────────────── */
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.45;color:#000;}
+body{font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.4;color:#000;}
 
-/* headings */
-h1{font-size:22px;margin:18px 0 4px;}
-h2{font-size:14px;margin:12px 0 6px;}
-.small{font-size:10px;}
+/* ─── helpers ─────────────────────────────────────────────────── */
+hr.rule{border:none;border-top:1px solid #000;margin:12px 0;}
 
-/* layout helpers */
-.section{padding:0 5%;}
-.flex{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;}
+/* ─── header area ─────────────────────────────────────────────── */
+header{padding:36px 6% 18px; overflow: hidden;} /* Clear floats */
+.statement-title{font-size:24px;font-weight:700;margin-bottom:6px;}
+.subtitle{font-size:13px;}
+.logo{height:58px; float: right; margin-left: 20px;} /* Float logo to right */
 
-/* customer / account header */
-.header-block{font-size:11.5px;line-height:1.4;}
+/* ─── address + help box ─────────────────────────────────────── */
+.addr-help-wrap{padding:18px 6%; overflow: hidden;} /* Clear floats */
+.addr{float: left; width: 60%; font-size:12px;line-height:1.5;}
+.help-box{float: right; width: 35%; font-size:11px;line-height:1.45;border-left:1px solid #000;padding-left:24px;}
+.help-box b{display:block;margin-bottom:4px;font-size:12px;}
 
-/* transactions table */
-table{width:100%;border-collapse:collapse;font-size:11.5px;margin-bottom:20px;}
-th{background:#d9d9d9;text-align:left;font-weight:700;padding:6px 4px;}
-td{padding:6px 4px;vertical-align:top;}
-td.num{text-align:right;}
-tbody tr:last-child td{border-bottom:none;}
-th,td{border-bottom:1px solid #666;}
+/* ─── intro section ──────────────────────────────────────────── */
+.intro{padding:0 6% 24px;font-size:11.5px;}
+.intro-title{font-weight:700;margin-bottom:6px;font-size:16px;}
 
-/* footer */
-footer{padding:12px 5% 24px;font-size:10px;text-align:center;}
+/* ─── summary tables ─────────────────────────────────────────── */
+.two-col{padding:0 6%; overflow: hidden;} /* Clear floats */
+.summary-block{float: left; width: 48%; font-size:12px; margin-right: 2%;} /* Two columns with space */
+.summary-block table{width:100%;border-collapse:collapse;}
+.summary-block th{font-size:15px;text-align:left;padding-bottom:4px;}
+.summary-block td{padding:3px 0;}
+.summary-block td.num{text-align:right;}
+
+/* vertical divider between the first and second summary panels */
+.two-col .summary-block:first-child{
+    border-right:1px solid #000;
+    padding-right:24px;
+}
+
+/* indent labels inside activity summary */
+.activity-table td.label{padding-left:1.25em;}
+
+/* smaller font for routing / account details */
+.routing-table td{font-size:10.5px;}
+
+/* ─── transaction history ────────────────────────────────────── */
+.history{padding:12px 6%;}
+.history h3{font-size:15px;margin-bottom:8px;}
+table.txn{width:100%;border-collapse:collapse;font-size:12px;}
+.txn th,.txn td{border-bottom:1px solid #666;padding:4px 6px;}
+.txn th{background:#d9d9d9;text-align:left;font-weight:700;}
+.txn td.num{text-align:right;}
+.txn tbody tr:last-child td{border-bottom:none;}
+
+/* ─── footer ─────────────────────────────────────────────────── */
+footer{padding:36px 6% 48px;font-size:10px;line-height:1.3;text-align:justify;}
+.disclosures-title{font-weight:700;margin-bottom:6px;font-size:12px;}
 </style>
 </head>
 <body>
 
-<!-- ─── TITLE & BRAND ─────────────────────────────────────────── -->
-<section class="section">
-    <h1>Printable Account Activity</h1>
-    <span class="small">Discover Bank</span>
+<!-- ─── statement header ─────────────────────────────────────────── -->
+<header>
+    <div>
+        <div class="statement-title">{{ account_type }}</div>
+        <div class="subtitle">
+            Account number: {{ account_number }} | {{ statement_period }}
+        </div>
+    </div>
+    {% if logo_path %}
+    <img src="{{ logo_path }}" alt="Wells Fargo" class="logo">
+    {% endif %}
+</header>
+
+<!-- ─── address & help section ───────────────────────────────────── -->
+<section class="addr-help-wrap">
+    <address class="addr">
+        {{ account_holder_address }}
+    </address>
+    <div class="help-box">
+        <b>Questions?</b>
+        Available by phone 24 hours a day, 7 days a week:<br>
+        <strong>1-800-CALL-WELLS</strong> (1-800-225-5935)<br><br>
+        <span style="white-space:nowrap;">TTY: 1-800-877-4833</span><br>
+        <span style="white-space:nowrap;">En español: 1-877-337-7454</span><br><br>
+        Online: wellsfargo.com<br><br>
+        Write:<br>
+        Wells Fargo Bank,<br>
+        420 Montgomery Street<br>
+        San Francisco, CA 94104
+    </div>
 </section>
 
-<hr style="border:none;border-top:1px solid #000;margin:16px 0;">
+<hr class="rule">
 
-<!-- ─── CUSTOMER HEADER BLOCK ─────────────────────────────────── -->
-<section class="section flex">
-    <div class="header-block">
-        <b>{{customer_name}}</b><br>
-        Acct. Ending&nbsp;{{acct_last4}}<br>
-        {{street_address}}<br>
-        {{city_state_zip}}<br>
-        {{phone}}
-    </div>
-
-    <div class="header-block" style="text-align:right;">
-        <b>Activity Period:</b><br>
-        {{period_start}} – {{period_end}}
-    </div>
+<!-- ─── intro blurb ──────────────────────────────────────────────── -->
+<section class="intro">
+    <div class="intro-title">Your Wells Fargo</div>
+    It’s a great time to talk with a banker about how Wells Fargo’s accounts
+    and services can help you stay competitive by saving you time and money.
+    To find out how we can help, stop by any Wells Fargo location or call us at
+    the number at the top of your statement.
 </section>
 
-<hr style="border:none;border-top:1px solid #000;margin:16px 0;">
+<!-- ─── important account information ────────────────────────────── -->
+<section class="intro">
+    <div class="intro-title">Important Account Information</div>
+    {% if account_type == "Everyday Checking" %}
+    <p>Effective July 1, 2025, the monthly service fee for Everyday Checking accounts will increase to $12 unless you maintain a minimum daily balance of $500, have $500 in qualifying direct deposits, or maintain a linked Wells Fargo savings account with a balance of $300 or more.</p>
+    <p>Starting June 30, 2025, Wells Fargo will introduce real-time transaction alerts for Everyday Checking accounts via the Wells Fargo Mobile app. Enable alerts at wellsfargo.com/alerts.</p>
+    <p>Effective July 15, 2025, Wells Fargo will waive overdraft fees for transactions of $5 or less and cap daily overdraft fees at two per day for Everyday Checking accounts.</p>
+    {% else %}
+    <p>Effective July 1, 2025, the monthly service fee for Business Checking accounts will increase to $14 unless you maintain a minimum daily balance of $2,500 or have $1,000 in net purchases on a Wells Fargo Business Debit Card per month.</p>
+    <p>Starting June 30, 2025, Wells Fargo will offer enhanced cash flow tools for Business Checking accounts via Wells Fargo Online Banking, including automated invoice tracking and payment scheduling.</p>
+    <p>Effective July 15, 2025, Wells Fargo will reduce domestic wire transfer fees to $25 for Business Checking accounts, down from $30.</p>
+    {% endif %}
+    <p>For questions, visit wellsfargo.com or contact our Customer Service at 1-800-225-5935, available 24/7.</p>
+</section>
 
-<!-- ─── TRANSACTIONS TABLE ────────────────────────────────────── -->
-<section class="section">
-    <h2>Transactions</h2>
+<!-- ─── activity & routing summaries ─────────────────────────────── -->
+<div class="two-col">
+    <!-- Activity summary -->
+    <div class="summary-block">
+        <table class="activity-table">
+            <tr><th colspan="2">Activity summary</th></tr>
+            <tr><td class="label">Beginning balance on </td><td class="num">{{ summary.beginning_balance }}</td></tr>
+            <tr><td class="label">Deposits / Credits</td><td class="num">{{ summary.deposits_total }}</td></tr>
+            <tr><td class="label">Withdrawals / Debits</td><td class="num">{{ summary.withdrawals_total }}</td></tr>
+            <tr>
+                <td class="label"><strong>Ending balance on </strong></td>
+                <td class="num"><strong>{{ summary.ending_balance }}</strong></td>
+            </tr>
+        </table>
+    </div>
 
-    <table>
+    <!-- Account & routing details -->
+    <div class="summary-block">
+        <table class="routing-table">
+            <tr><th></th></tr>
+            <tr><td>Account number: {{ account_number }}</td></tr>
+            <tr><td>{{ account_holder }}</td></tr>
+            <tr><td>For Direct Deposit and Automatic Payments use Routing Number (RTN): 053000219</td></tr>
+            <tr><td>For Wire Transfer use Routing Number (RTN): 121000248</td></tr>
+        </table>
+    </div>
+</div>
+
+<hr class="rule">
+
+<!-- ─── transaction history ─────────────────────────────────────── -->
+<section class="history">
+    <h3>Transaction history</h3>
+
+    <table class="txn">
         <thead>
             <tr>
-                <th style="width:14%;">Trans. Date</th>
-                <th style="width:14%;">Post Date</th>
+                <th style="width:12%;">Date</th>
                 <th>Description</th>
-                <th style="width:15%;" class="num">Amount</th>
-                <th style="width:18%;">Category</th>
+                <th style="width:16%;" class="num">Deposits / Credits</th>
+                <th style="width:16%;" class="num">Withdrawals / Debits</th>
+                <th style="width:16%;" class="num">Ending daily balance</th>
             </tr>
         </thead>
         <tbody>
-            {% for txn in transactions %}
+            <tr class="highlight">
+                <td></td><td>Opening balance</td>
+                <td class="num"></td>
+                <td class="num"></td>
+                <td class="num">{{ summary.beginning_balance }}</td>
+            </tr>
+            {% for transaction in transactions %}
             <tr>
-                <td>{{txn.trans_date}}</td>
-                <td>{{txn.post_date}}</td>
-                <td>{{txn.description}}</td>
-                <td class="num">{{txn.amount}}</td>
-                <td>{{txn.category}}</td>
+                <td>{{ transaction.date }}</td>
+                <td>{{ transaction.description }}</td>
+                <td class="num">{{ transaction.credit }}</td>
+                <td class="num">{{ transaction.debit }}</td>
+                <td class="num">{{ transaction.balance }}</td>
             </tr>
             {% endfor %}
+            <tr class="highlight">
+                <td></td><td>Total</td>
+                <td class="num">{{ summary.deposits_total }}</td>
+                <td class="num">{{ summary.withdrawals_total }}</td>
+                <td class="num">{{ summary.ending_balance }}</td>
+            </tr>
         </tbody>
     </table>
 </section>
 
-<!-- ─── FOOTER ─────────────────────────────────────────────────── -->
+<!-- ─── disclosures ─────────────────────────────────────────────── -->
 <footer>
-    ©{{statement_year}} Discover, a division of Capital One, N.A., Member FDIC.<br>
-    {{print_timestamp}}
+    <div class="disclosures-title">Disclosures</div>
+    <p>All account transactions are subject to the Wells Fargo Deposit Account Agreement, available at wellsfargo.com. Interest rates and Annual Percentage Yields (APYs) may change without notice. For details on overdraft policies and fees, visit wellsfargo.com/overdraft or call 1-800-225-5935.</p>
+    <p>© 2025 Wells Fargo Bank, N.A. All rights reserved. Member FDIC.</p>
 </footer>
 
 </body>
 </html>
-``` :contentReference[oaicite:0]{index=0}

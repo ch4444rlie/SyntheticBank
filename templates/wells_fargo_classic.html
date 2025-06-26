@@ -2,15 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>Wells Fargo – Complete Advantage Checking</title>
+<title>{{ account_type }} Statement</title>
 <style>
 /* ─── base reset ─────────────────────────────────────────────── */
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:Arial, Helvetica, sans-serif;font-size:12px;line-height:1.4;color:#000;}
+body{font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.4;color:#000;}
 
 /* ─── helpers ─────────────────────────────────────────────────── */
 hr.rule{border:none;border-top:1px solid #000;margin:12px 0;}
-.small-text{font-size:12px;line-height:1.4;padding:0 12px;}
 
 /* ─── header area ─────────────────────────────────────────────── */
 header{padding:36px 6% 18px; overflow: hidden;} /* Clear floats */
@@ -50,7 +49,7 @@ header{padding:36px 6% 18px; overflow: hidden;} /* Clear floats */
 
 /* ─── transaction history ────────────────────────────────────── */
 .history{padding:12px 6%;}
-.history h3{font-size:15px;margin:0 0 8px 0;}
+.history h3{font-size:15px;margin-bottom:8px;}
 table.txn{width:100%;border-collapse:collapse;font-size:12px;}
 .txn th,.txn td{border-bottom:1px solid #666;padding:4px 6px;}
 .txn th{background:#d9d9d9;text-align:left;font-weight:700;}
@@ -59,21 +58,6 @@ table.txn{width:100%;border-collapse:collapse;font-size:12px;}
 
 /* ─── footer ─────────────────────────────────────────────────── */
 footer{padding:36px 6% 48px;font-size:10px;line-height:1.3;text-align:justify;}
-footer h3{font-size:12px;font-weight:700;margin-bottom:8px;}
-
-/* ─── print-specific fallbacks ───────────────────────────────── */
-@media print {
-    header { padding: 20px 6%; }
-    .logo { float: right; margin-left: 20px; }
-    .addr-help-wrap { padding: 10px 6%; }
-    .addr { float: left; width: 60%; }
-    .help-box { float: right; width: 35%; }
-    .two-col { padding: 0 6%; }
-    .summary-block { float: left; width: 48%; margin-right: 2%; }
-    .two-col .summary-block:first-child { border-right: 1px solid #000; padding-right: 24px; }
-    table { page-break-inside: auto; }
-    tr { page-break-inside: avoid; page-break-after: auto; }
-}
 </style>
 </head>
 <body>
@@ -81,18 +65,20 @@ footer h3{font-size:12px;font-weight:700;margin-bottom:8px;}
 <!-- ─── statement header ─────────────────────────────────────────── -->
 <header>
     <div>
-        <div class="statement-title">Complete {{ account_type }} Advantage Checking</div>
+        <div class="statement-title">{{ account_type }}</div>
         <div class="subtitle">
-            Account number: {{account_number}} | {{statement_period}}
+            Account number: {{ account_number }} | {{ statement_period }}
         </div>
     </div>
-    <img src="{{logo_path}}" alt="Wells Fargo" class="logo">
+    {% if logo_path %}
+    <img src="{{ logo_path }}" alt="Wells Fargo" class="logo">
+    {% endif %}
 </header>
 
 <!-- ─── address & help section ───────────────────────────────────── -->
 <section class="addr-help-wrap">
     <address class="addr">
-        {{account_holder_address}}
+        {{ account_holder_address }}
     </address>
     <div class="help-box">
         <b>Questions?</b>
@@ -119,18 +105,33 @@ footer h3{font-size:12px;font-weight:700;margin-bottom:8px;}
     the number at the top of your statement.
 </section>
 
+<!-- ─── important account information ────────────────────────────── -->
+<section class="intro">
+    <div class="intro-title">Important Account Information</div>
+    {% if account_type == "Everyday Checking" %}
+    <p>Effective July 1, 2025, the monthly service fee for Everyday Checking accounts will increase to $12 unless you maintain a minimum daily balance of $500, have $500 in qualifying direct deposits, or maintain a linked Wells Fargo savings account with a balance of $300 or more.</p>
+    <p>Starting June 30, 2025, Wells Fargo will introduce real-time transaction alerts for Everyday Checking accounts via the Wells Fargo Mobile app. Enable alerts at wellsfargo.com/alerts.</p>
+    <p>Effective July 15, 2025, Wells Fargo will waive overdraft fees for transactions of $5 or less and cap daily overdraft fees at two per day for Everyday Checking accounts.</p>
+    {% else %}
+    <p>Effective July 1, 2025, the monthly service fee for Business Checking accounts will increase to $14 unless you maintain a minimum daily balance of $2,500 or have $1,000 in net purchases on a Wells Fargo Business Debit Card per month.</p>
+    <p>Starting June 30, 2025, Wells Fargo will offer enhanced cash flow tools for Business Checking accounts via Wells Fargo Online Banking, including automated invoice tracking and payment scheduling.</p>
+    <p>Effective July 15, 2025, Wells Fargo will reduce domestic wire transfer fees to $25 for Business Checking accounts, down from $30.</p>
+    {% endif %}
+    <p>For questions, visit wellsfargo.com or contact our Customer Service at 1-800-225-5935, available 24/7.</p>
+</section>
+
 <!-- ─── activity & routing summaries ─────────────────────────────── -->
 <div class="two-col">
     <!-- Activity summary -->
     <div class="summary-block">
         <table class="activity-table">
             <tr><th colspan="2">Activity summary</th></tr>
-            <tr><td class="label">Beginning balance on {{summary.beginning_date}}</td><td class="num">{{summary.beginning_balance}}</td></tr>
-            <tr><td class="label">Deposits / Credits</td><td class="num">{{summary.deposits_total}}</td></tr>
-            <tr><td class="label">Withdrawals / Debits</td><td class="num">{{summary.withdrawals_total}}</td></tr>
+            <tr><td class="label">Beginning balance on </td><td class="num">{{ summary.beginning_balance }}</td></tr>
+            <tr><td class="label">Deposits / Credits</td><td class="num">{{ summary.deposits_total }}</td></tr>
+            <tr><td class="label">Withdrawals / Debits</td><td class="num">{{ summary.withdrawals_total }}</td></tr>
             <tr>
-                <td class="label"><strong>Ending balance on {{summary.ending_date}}</strong></td>
-                <td class="num"><strong>{{summary.ending_balance}}</strong></td>
+                <td class="label"><strong>Ending balance on </strong></td>
+                <td class="num"><strong>{{ summary.ending_balance }}</strong></td>
             </tr>
         </table>
     </div>
@@ -139,23 +140,13 @@ footer h3{font-size:12px;font-weight:700;margin-bottom:8px;}
     <div class="summary-block">
         <table class="routing-table">
             <tr><th></th></tr>
-            <tr><td>Account number: {{account_number}}</td></tr>
-            <tr><td>{{account_holder}}</td></tr>
+            <tr><td>Account number: {{ account_number }}</td></tr>
+            <tr><td>{{ account_holder }}</td></tr>
             <tr><td>For Direct Deposit and Automatic Payments use Routing Number (RTN): 053000219</td></tr>
             <tr><td>For Wire Transfer use Routing Number (RTN): 121000248</td></tr>
         </table>
     </div>
 </div>
-
-<hr class="rule">
-
-<!-- ─── important account information ──────────────────────────────────── -->
-<section class="history">
-    <h3>Important Account Information</h3>
-    <div class="small-text">
-        {{ important_account_info }}
-    </div>
-</section>
 
 <hr class="rule">
 
@@ -178,37 +169,32 @@ footer h3{font-size:12px;font-weight:700;margin-bottom:8px;}
                 <td></td><td>Opening balance</td>
                 <td class="num"></td>
                 <td class="num"></td>
-                <td class="num">{{summary.beginning_balance}}</td>
+                <td class="num">{{ summary.beginning_balance }}</td>
             </tr>
             {% for transaction in transactions %}
             <tr>
                 <td>{{ transaction.date }}</td>
                 <td>{{ transaction.description }}</td>
-                <td class="num">{{ transaction.deposits_credits }}</td>
-                <td class="num">{{ transaction.withdrawals_debits }}</td>
-                <td class="num">{{ transaction.ending_balance }}</td>
+                <td class="num">{{ transaction.credit }}</td>
+                <td class="num">{{ transaction.debit }}</td>
+                <td class="num">{{ transaction.balance }}</td>
             </tr>
             {% endfor %}
             <tr class="highlight">
                 <td></td><td>Total</td>
-                <td class="num">{{summary.deposits_total}}</td>
-                <td class="num">{{summary.withdrawals_total}}</td>
-                <td class="num">{{summary.ending_balance}}</td>
+                <td class="num">{{ summary.deposits_total }}</td>
+                <td class="num">{{ summary.withdrawals_total }}</td>
+                <td class="num">{{ summary.ending_balance }}</td>
             </tr>
         </tbody>
     </table>
 </section>
 
-<!-- ─── footnotes and disclosures ──────────────────────────────────── -->
+<!-- ─── disclosures ─────────────────────────────────────────────── -->
 <footer>
-    <h3>Footnotes and Disclosures</h3>
-    <div class="small-text">
-        {{ footnotes }}
-        {{ disclosures }}
-        {{ terms }}
-    </div>
-    <hr class="rule">
-    <p>© 2020 Wells Fargo Bank, N.A.  All rights reserved.  Member FDIC.</p>
+  <p>Disclosures</p>
+    <p>All account transactions are subject to the Wells Fargo Deposit Account Agreement, available at wellsfargo.com. Interest rates and Annual Percentage Yields (APYs) may change without notice. For details on overdraft policies and fees, visit wellsfargo.com/overdraft or call 1-800-225-5935.</p>
+    <p>© 2025 Wells Fargo Bank, N.A. All rights reserved. Member FDIC.</p>
 </footer>
 
 </body>

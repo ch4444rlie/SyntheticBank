@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Bank Statement</title>
+  <title>{{ account_type }} Statement</title>
   <style>
     /* Reset & defaults */
     * { margin: 0; padding: 0; font-family: Arial, sans-serif; }
@@ -40,7 +40,7 @@
     /* Footer */
     .footer { margin-top: 15px; padding: 10px; background-color: #F0F4F8; font-size: 9px; color: #666; text-align: center; }
     .footer hr { border: 0; height: 1px; background: #C62828; margin: 5px 0; }
-    .footer h3 { color: #C62828; font-size: 10px; font-weight: bold; margin-bottom: 8px; }
+    .footer p { margin-bottom: 5px; }
 
     /* Print-specific fallbacks */
     @media print {
@@ -55,30 +55,41 @@
 <body>
 
 <div class="header">
-  <img src="{{logo_path}}" alt="Wells Fargo logo">
+  {% if logo_path %}
+  <img src="{{ logo_path }}" alt="Wells Fargo logo">
+  {% endif %}
 </div>
 
 <div class="content">
   <div class="info-section">
     <b>Account Details</b>
-    <span>Account Holder: {{account_holder}}</span>
-    <span>Address: {{account_holder_address}}</span>
-    <span>Account Number: {{account_number}}</span>
-    <span>Account Type: Complete {{ account_type }} Advantage Checking</span>
+    <span>Account Holder: {{ account_holder }}</span>
+    <span>Address: {{ account_holder_address }}</span>
+    <span>Account Number: {{ account_number }}</span>
+    <span>Account Type: {{ account_type }}</span>
   </div>
 
   <!-- IMPORTANT ACCOUNT INFORMATION -->
   <div class="important-info">
     <h2>Important Account Information</h2>
     <hr class="section-rule">
-    {{ important_account_info }}
+    {% if account_type == "Everyday Checking" %}
+    <p>Effective July 1, 2025, the monthly service fee for Everyday Checking accounts will increase to $12 unless you maintain a minimum daily balance of $500, have $500 in qualifying direct deposits, or maintain a linked Wells Fargo savings account with a balance of $300 or more.</p>
+    <p>Starting June 30, 2025, Wells Fargo will introduce real-time transaction alerts for Everyday Checking accounts via the Wells Fargo Mobile app. Enable alerts at wellsfargo.com/alerts.</p>
+    <p>Effective July 15, 2025, Wells Fargo will waive overdraft fees for transactions of $5 or less and cap daily overdraft fees at two per day for Everyday Checking accounts.</p>
+    {% else %}
+    <p>Effective July 1, 2025, the monthly service fee for Business Checking accounts will increase to $14 unless you maintain a minimum daily balance of $2,500 or have $1,000 in net purchases on a Wells Fargo Business Debit Card per month.</p>
+    <p>Starting June 30, 2025, Wells Fargo will offer enhanced cash flow tools for Business Checking accounts via Wells Fargo Online Banking, including automated invoice tracking and payment scheduling.</p>
+    <p>Effective July 15, 2025, Wells Fargo will reduce domestic wire transfer fees to $25 for Business Checking accounts, down from $30.</p>
+    {% endif %}
+    <p>For questions, visit wellsfargo.com or contact our Customer Service at 1-800-225-5935, available 24/7.</p>
     <hr class="section-rule">
   </div>
 
   <h2>Transaction History</h2>
   <div class="meta">
-    <span>{{statement_period}}</span>
-    <span>Created on {{statement_date}}</span>
+    <span>{{ statement_period }}</span>
+    <span>Created on {{ statement_date }}</span>
   </div>
 
   <table>
@@ -96,22 +107,22 @@
         <td></td><td>Opening Balance</td>
         <td class="num"></td>
         <td class="num"></td>
-        <td class="num">{{summary.beginning_balance}}</td>
+        <td class="num">{{ summary.beginning_balance }}</td>
       </tr>
       {% for transaction in transactions %}
       <tr>
         <td>{{ transaction.date }}</td>
         <td>{{ transaction.description }}</td>
-        <td class="num">{{ transaction.deposits_credits }}</td>
-        <td class="num">{{ transaction.withdrawals_debits }}</td>
-        <td class="num">{{ transaction.ending_balance }}</td>
+        <td class="num">{{ transaction.credit }}</td>
+        <td class="num">{{ transaction.debit }}</td>
+        <td class="num">{{ transaction.balance }}</td>
       </tr>
       {% endfor %}
       <tr class="highlight">
         <td></td><td>Total</td>
-        <td class="num">{{summary.deposits_total}}</td>
-        <td class="num">{{summary.withdrawals_total}}</td>
-        <td class="num">{{summary.ending_balance}}</td>
+        <td class="num">{{ summary.deposits_total }}</td>
+        <td class="num">{{ summary.withdrawals_total }}</td>
+        <td class="num">{{ summary.ending_balance }}</td>
       </tr>
     </tbody>
   </table>
@@ -123,11 +134,8 @@
 
 <div class="footer">
   <hr>
-  <h3>Footnotes and Disclosures</h3>
-  {{ footnotes }}
-  {{ disclosures }}
-  {{ terms }}
-  <hr>
+  <p style="font-size: 9px; font-weight: normal; color: #666; margin-bottom: 8px;">Disclosures</p>
+  <p>All account transactions are subject to the Wells Fargo Deposit Account Agreement, available at wellsfargo.com. Interest rates and Annual Percentage Yields (APYs) may change without notice. For details on overdraft policies and fees, visit wellsfargo.com/overdraft or call 1-800-225-5935.</p>
   <p>© 2025 Wells Fargo Bank, N.A. All rights reserved. Member FDIC.</p>
 </div>
 

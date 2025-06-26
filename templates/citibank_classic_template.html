@@ -2,15 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>Citibank Statement – Sample</title>
+<title>{{ account_type }} Statement</title>
 <style>
     /* ─── Reset & helpers ───────────────────────────────────────────── */
     *      { box-sizing: border-box; margin: 0; padding: 0; }
     body   { font-family: Arial, sans-serif; font-size: 9px; line-height: 1.35; }
     h1,h2  { text-align: center; font-weight: 600; }
     hr.bar { border: none; height: 4px; background:#003e7e; margin: 12px 0; }
-    hr.section-rule { border: none; border-top: 1px solid #888; margin: 14px 0; }
-    .small-text { font-size: 9px; line-height: 1.35; }
 
     /* ─── Layout wrappers ───────────────────────────────────────────── */
     header, main, footer { width: 90%; margin: 0 auto; }
@@ -61,7 +59,9 @@
                 Contact us: citigroup.com/citi/contact.html
             </div>
             <!-- logo -->
-            <img src="{{logo_path}}" alt="Citibank" class="citi-logo" style="position: absolute; top: 0; right: 0;">
+            {% if logo_path %}
+            <img src="{{ logo_path }}" alt="Citibank" class="citi-logo" style="position: absolute; top: 0; right: 0;">
+            {% endif %}
         </div>
         <hr class="bar">
     </header>
@@ -74,13 +74,13 @@
                 <!-- bank info -->
                 <b>Bank information</b>
                 <span><b>Account Provider Name: Citibank UK Limited</b></span>
-                <span><b>Account Name: {{ account_type }} Transit account at Citibank in the UK</b></span>
-                <span><b>IBAN: GB29 NWBK 6016 1331 9268 19</b></span>
+                <span><b>Account Name: {{ account_type }}</b></span>
+                <span><b>IBAN: {{ customer_iban }}</b></span>
                 <span><b>Country code: GB</b></span>
-                <span><b>Check Digits: 29</b></span>
-                <span><b>Bank code: NWBK</b></span>
-                <span><b>British bank code (sort code): 601613</b></span>
-                <span><b>Bank account number: 31926819</b></span>
+                <span><b>Check Digits: {{ customer_iban|slice(2,4) }}</b></span>
+                <span><b>Bank code: CITI</b></span>
+                <span><b>British bank code (sort code): {{ customer_iban|slice(8,14) }}</b></span>
+                <span><b>Bank account number: {{ customer_account_number }}</b></span>
             </td>
             <td class="info-cell">
                 <!-- customer info -->
@@ -94,20 +94,26 @@
             </td>
         </tr>
     </table>
+    <!-- Add 4s blank lines -->
+    <br><br><br><br>
+    <!-- Important Account Information -->
+    <h2 style="text-align: center; font-weight: normal; font-size: 12px; text-transform: uppercase;">Important Account Information</h2>
+    {% if account_type == "Citi Access Checking" %}
+    <p>Effective July 1, 2025, the monthly account fee for Citi Access Checking accounts will increase to £10 unless you maintain a minimum daily balance of £1,500 or have qualifying direct deposits of £500 or more per month.</p>
+    <p>Starting June 30, 2025, Citibank will introduce real-time transaction alerts for Citi Access Checking accounts via the Citi Mobile UK app. Enable alerts at citibank.co.uk/alerts.</p>
+    <p>Effective July 15, 2025, Citibank will waive overdraft fees for transactions of £5 or less and cap daily overdraft fees at two per day for Citi Access Checking accounts.</p>
+    {% else %}
+    <p>Effective July 1, 2025, the monthly account fee for CitiBusiness Checking accounts will increase to £15 unless you maintain a minimum daily balance of £5,000 or have £2,000 in net purchases on a Citi Business Debit Card per month.</p>
+    <p>Starting June 30, 2025, Citibank will offer enhanced cash flow tools for CitiBusiness Checking accounts via Citi Online Banking, including automated invoice tracking and payment scheduling.</p>
+    <p>Effective July 15, 2025, Citibank will reduce domestic BACS transfer fees to £20 for CitiBusiness Checking accounts, down from £25.</p>
+    {% endif %}
+    <p>For questions, visit citibank.co.uk or contact our Client Contact Centre at 0800 005 555 (or +44 20 7500 5500 from abroad), available 24/7.</p>
 
-    <!-- Add 5 blank lines -->
-    <br><br><br><br><br>
-
-    <!-- important account information -->
-    <hr class="section-rule">
-    <h2>Important Account Information</h2>
-    <div class="small-text">
-        {{ important_account_info }}
-    </div>
-    <hr class="section-rule">
+    <!-- Add 4 blank lines -->
+    <br><br><br><br>
 
     <!-- transactions header -->
-    <h1 style="font-weight:normal;">ACCOUNT TRANSACTIONS</h1>
+    <h2 style="text-align: center; font-weight: normal; font-size: 12px; text-transform: uppercase;">Account Transactions</h2>
     <div style="font-weight:600; margin-top:4px; text-align: right;">
         <span>{{ statement_period }}</span>
         <span>Created on<br>{{ statement_date }}</span>
@@ -130,8 +136,8 @@
             <tr class="highlight-row">
                 <td></td>
                 <td>Opening balance</td>
-                <td class="num-right">{{ opening_balance_debit }}</td>
-                <td class="num-right">{{ opening_balance_credit }}</td>
+                <td class="num-right"></td>
+                <td class="num-right"></td>
                 <td></td>
                 <td class="num-right">{{ opening_balance }}</td>
             </tr>
@@ -162,15 +168,6 @@
     <p style="margin:14px 0; text-align:center;">
         This printout is for information purposes only. Your regular account statement of assets takes precedence.
     </p>
-
-    <!-- footnotes and disclosures -->
-    <hr class="section-rule">
-    <h2>Footnotes and Disclosures</h2>
-    <div class="small-text">
-        {{ footnotes }}
-        {{ disclosures }}
-        {{ terms }}
-    </div>
 </main>
 
 <footer>

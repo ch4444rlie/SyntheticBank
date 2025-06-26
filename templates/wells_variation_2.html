@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Bank Statement</title>
+  <title>{{ account_type }} Statement</title>
   <style>
     /* Reset & defaults */
     * { margin: 0; padding: 0; font-family: 'Verdana', sans-serif; box-sizing: border-box; }
@@ -21,13 +21,13 @@
     .account-details b { color: #800000; font-size: 14px; margin-bottom: 8px; display: block; }
     .account-details span { display: block; margin-bottom: 6px; }
     .important-info { margin-top: 20px; }
-    .important-info h2 { color: #800000; font-size: 16px; font-weight: 600; margin-bottom: 10px; }
+    .important-info h1 { color: #800000; font-size: 16px; font-weight: 600; margin-bottom: 10px; text-align: center; }
     .important-info p { font-size: 10px; line-height: 1.5; margin: 5px 0; word-wrap: break-word; }
     hr.section-rule { border: 0; height: 2px; background: #800000; margin: 10px 0; }
 
     /* Right Column */
     .right-column { width: 65%; background-color: #FFFFFF; border: 2px solid #800000; padding: 15px; border-radius: 5px; }
-    h2 { color: #800000; font-size: 16px; font-weight: 600; margin-bottom: 12px; text-transform: uppercase; }
+    h1 { color: #800000; font-size: 16px; font-weight: 600; margin-bottom: 12px; text-transform: uppercase; text-align: center; }
     .meta { text-align: right; color: #4A2C2C; font-weight: 500; margin-bottom: 10px; }
     table { width: 100%; border-collapse: collapse; table-layout: fixed; }
     th, td { padding: 10px; border: 1px solid #E0C0C0; word-wrap: break-word; }
@@ -48,7 +48,6 @@
     /* Footer */
     .footer { margin-top: 20px; padding: 15px; background-color: #F5EBE0; border-top: 2px solid #800000; text-align: center; }
     .footer hr { border: 0; height: 2px; background: #800000; margin: 10px 0; }
-    .footer h3 { color: #800000; font-size: 12px; font-weight: 600; margin-bottom: 8px; }
     .footer p { margin-bottom: 5px; color: #6B4E4E; }
 
     /* Print-specific fallbacks */
@@ -67,7 +66,9 @@
 <body>
 
 <div class="header">
-  <img src="{{logo_path}}" alt="Wells Fargo logo">
+  {% if logo_path %}
+  <img src="{{ logo_path }}" alt="Wells Fargo logo">
+  {% endif %}
   <h1>WELLS FARGO ONLINE</h1>
 </div>
 
@@ -75,39 +76,54 @@
   <div class="left-column">
     <div class="account-details">
       <b>Account Details</b>
-      <span>Account Holder: {{account_holder}}</span>
-      <span>Address: {{account_holder_address}}</span>
-      <span>Account Number: {{account_number}}</span>
-      <span>Account Type: Complete {{ account_type }} Advantage Checking</span>
+      <span>Account Holder: {{ account_holder }}</span>
+      <span>Address: {{ account_holder_address }}</span>
+      <span>Account Number: {{ account_number }}</span>
+      <span>Account Type: {{ account_type }}</span>
     </div>
 
     <div class="important-info">
-      <h2>Important Account Information</h2>
+      <h1>Important Account Information</h1>
       <hr class="section-rule">
-      {{ important_account_info }}
+      {% if account_type == "Everyday Checking" %}
+      <p>Effective July 1, 2025, the monthly service fee for Everyday Checking accounts will increase to $12 unless you maintain a minimum daily balance of $500, have $500 in qualifying direct deposits, or maintain a linked Wells Fargo savings account with a balance of $300 or more.</p>
+      <p>Starting June 30, 2025, Wells Fargo will introduce real-time transaction alerts for Everyday Checking accounts via the Wells Fargo Mobile app. Enable alerts at wellsfargo.com/alerts.</p>
+      <p>Effective July 15, 2025, Wells Fargo will waive overdraft fees for transactions of $5 or less and cap daily overdraft fees at two per day for Everyday Checking accounts.</p>
+      {% else %}
+      <p>Effective July 1, 2025, the monthly service fee for Business Checking accounts will increase to $14 unless you maintain a minimum daily balance of $2,500 or have $1,000 in net purchases on a Wells Fargo Business Debit Card per month.</p>
+      <p>Starting June 30, 2025, Wells Fargo will offer enhanced cash flow tools for Business Checking accounts via Wells Fargo Online Banking, including automated invoice tracking and payment scheduling.</p>
+      <p>Effective July 15, 2025, Wells Fargo will reduce domestic wire transfer fees to $25 for Business Checking accounts, down from $30.</p>
+      {% endif %}
+      <p>For questions, visit wellsfargo.com or contact our Customer Service at 1-800-225-5935, available 24/7.</p>
       <hr class="section-rule">
     </div>
   </div>
 
   <div class="right-column">
     <div class="summary">
-      <h2>Checking Summary</h2>
+      <h1>Checking Summary</h1>
       <table class="summary-table">
-        <tr><td>Beginning Balance</td><td class="num">{{summary.beginning_balance}}</td></tr>
-        <tr><td>Deposits / Credits</td><td class="num">{{summary.deposits_count}} instances | {{summary.deposits_total}}</td></tr>
-        <tr><td>Withdrawals / Debits</td><td class="num">{{summary.withdrawals_count}} instances | {{summary.withdrawals_total}}</td></tr>
-        <tr><td class="highlight">Ending Balance</td><td class="num">{{summary.transactions_count}} transactions | {{summary.ending_balance}}</td></tr>
+        <tr><td>Beginning Balance</td><td class="num">{{ summary.beginning_balance }}</td></tr>
+        <tr><td>Deposits / Credits</td><td class="num">{{ summary.deposits_count }} instances | {{ summary.deposits_total }}</td></tr>
+        <tr><td>Withdrawals / Debits</td><td class="num">{{ summary.withdrawals_count }} instances | {{ summary.withdrawals_total }}</td></tr>
+        <tr><td class="highlight">Ending Balance</td><td class="num">{{ summary.transactions_count }} transactions | {{ summary.ending_balance }}</td></tr>
       </table>
       <p style="font-size: 10px; margin-top: 10px;">
-        {% if show_fee_waiver %}Your monthly service fee was waived due to an average balance of $15,000.00 or a minimum balance of $10,000.00.{% endif %}
+        {% if show_fee_waiver %}
+        {% if account_type == "Everyday Checking" %}
+        Your monthly service fee was waived because you maintained an average checking balance of $1,500 or had qualifying direct deposits totaling $500 or more during the statement period.
+        {% else %}
+        Your monthly service fee was waived because you maintained an average checking balance of $10,000 or had $2,500 in qualifying direct deposits during the statement period.
+        {% endif %}
+        {% endif %}
       </p>
     </div>
 
     <div class="transactions">
-      <h2>Transaction History</h2>
+      <h1>Transaction History</h1>
       <div class="meta">
-        <span>{{statement_period}}</span>
-        <span>Created on {{statement_date}}</span>
+        <span>{{ statement_period }}</span>
+        <span>Created on {{ statement_date }}</span>
       </div>
       <table>
         <thead>
@@ -124,22 +140,22 @@
             <td></td><td>Opening Balance</td>
             <td class="num"></td>
             <td class="num"></td>
-            <td class="num">{{summary.beginning_balance}}</td>
+            <td class="num">{{ summary.beginning_balance }}</td>
           </tr>
           {% for transaction in transactions %}
           <tr>
             <td>{{ transaction.date }}</td>
             <td>{{ transaction.description }}</td>
-            <td class="num">{{ transaction.deposits_credits }}</td>
-            <td class="num">{{ transaction.withdrawals_debits }}</td>
-            <td class="num">{{ transaction.ending_balance }}</td>
+            <td class="num">{{ transaction.credit }}</td>
+            <td class="num">{{ transaction.debit }}</td>
+            <td class="num">{{ transaction.balance }}</td>
           </tr>
           {% endfor %}
           <tr class="highlight">
             <td></td><td>Total</td>
-            <td class="num">{{summary.deposits_total}}</td>
-            <td class="num">{{summary.withdrawals_total}}</td>
-            <td class="num">{{summary.ending_balance}}</td>
+            <td class="num">{{ summary.deposits_total }}</td>
+            <td class="num">{{ summary.withdrawals_total }}</td>
+            <td class="num">{{ summary.ending_balance }}</td>
           </tr>
         </tbody>
       </table>
@@ -152,13 +168,9 @@
 
 <div class="footer">
   <hr>
-  <h3>Footnotes and Disclosures</h3>
-  {{ footnotes }}
-  {{ disclosures }}
-  {{ terms }}
-  <hr>
-  <p>Wells Fargo Bank, N.A. is a member of the Wells Fargo family of companies. © 2025 Wells Fargo Bank, N.A. All rights reserved. Member FDIC.</p>
-  <p>Wells Fargo</p>
+  <p style="font-size: 9px; font-weight: normal; color: #6B4E4E; margin-bottom: 8px;">Disclosures</p>
+  <p>All account transactions are subject to the Wells Fargo Deposit Account Agreement, available at wellsfargo.com. Interest rates and Annual Percentage Yields (APYs) may change without notice. For details on overdraft policies and fees, visit wellsfargo.com/overdraft or call 1-800-225-5935.</p>
+  <p>© 2025 Wells Fargo Bank, N.A. All rights reserved. Member FDIC.</p>
 </div>
 
 </body>

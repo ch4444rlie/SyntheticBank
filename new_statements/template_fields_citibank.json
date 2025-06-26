@@ -1,104 +1,104 @@
 {
   "fields": [
     {
+      "name": "account_type",
+      "is_mutable": false,
+      "description": "Type of account (e.g., checking, savings)"
+    },
+    {
+      "name": "logo_path",
+      "is_mutable": false,
+      "description": "Path to the bank's logo image"
+    },
+    {
+      "name": "customer_iban",
+      "is_mutable": false,
+      "description": "International Bank Account Number of the customer"
+    },
+    {
+      "name": "customer_iban|slice(2,4)",
+      "is_mutable": false,
+      "description": "Last four digits of the customer's IBAN for privacy"
+    },
+    {
+      "name": "customer_iban|slice(8,14)",
+      "is_mutable": false,
+      "description": "Middle eight digits of the customer's IBAN for privacy"
+    },
+    {
+      "name": "customer_account_number",
+      "is_mutable": false,
+      "description": "Account number of the customer at Citibank"
+    },
+    {
       "name": "account_holder",
       "is_mutable": true,
-      "description": "Name of the account holder"
+      "description": "Name of the account holder in this account"
     },
     {
       "name": "client_number",
       "is_mutable": true,
-      "description": "Client identification number"
+      "description": "Client identification number of the account holder"
     },
     {
       "name": "date_of_birth",
       "is_mutable": true,
-      "description": "Customer's date of birth"
-    },
-    {
-      "name": "customer_account_number",
-      "is_mutable": true,
-      "description": "Customer's account number"
-    },
-    {
-      "name": "customer_iban",
-      "is_mutable": true,
-      "description": "Customer's IBAN"
-    },
-    {
-      "name": "customer_bank_name",
-      "is_mutable": true,
-      "description": "Name of the customer's bank"
+      "description": "Date of birth of the account holder"
     },
     {
       "name": "statement_period",
       "is_mutable": true,
-      "description": "Statement date range"
+      "description": "Period covered by the bank statement"
     },
     {
       "name": "statement_date",
-      "is_mutable": true,
-      "description": "Date the statement was created"
-    },
-    {
-      "name": "opening_balance_debit",
-      "is_mutable": true,
-      "description": "Opening balance debit amount"
-    },
-    {
-      "name": "opening_balance_credit",
-      "is_mutable": true,
-      "description": "Opening balance credit amount"
+      "is_mutable": false,
+      "description": "Date the bank statement was issued"
     },
     {
       "name": "opening_balance",
-      "is_mutable": true,
-      "description": "Opening balance total"
+      "is_mutable": false,
+      "description": "Balance of the account at the start of the statement period"
     },
     {
-      "name": "transactions",
+      "name": "transaction.date",
       "is_mutable": true,
-      "description": "List of transaction details"
+      "description": "Date each transaction occurred on the account"
+    },
+    {
+      "name": "transaction.description",
+      "is_mutable": true,
+      "description": "Description of each transaction on the account"
+    },
+    {
+      "name": "transaction.debit",
+      "is_mutable": true,
+      "description": "Amount debited from the account for each transaction"
+    },
+    {
+      "name": "transaction.credit",
+      "is_mutable": true,
+      "description": "Amount credited to the account for each transaction"
+    },
+    {
+      "name": "transaction.balance",
+      "is_mutable": false,
+      "description": "Balance of the account after each transaction"
     },
     {
       "name": "total_debit",
-      "is_mutable": true,
-      "description": "Total debit amount"
+      "is_mutable": false,
+      "description": "Total amount debited from the account during the statement period"
     },
     {
       "name": "total_credit",
-      "is_mutable": true,
-      "description": "Total credit amount"
+      "is_mutable": false,
+      "description": "Total amount credited to the account during the statement period"
     },
     {
       "name": "total",
-      "is_mutable": true,
-      "description": "Total balance"
-    },
-    {
-      "name": "bank_name",
       "is_mutable": false,
-      "description": "Name of the bank (Citibank)"
-    },
-    {
-      "name": "bank_address",
-      "is_mutable": false,
-      "description": "Bank address"
-    },
-    {
-      "name": "table_headers",
-      "is_mutable": false,
-      "description": "Headers for transaction table"
-    },
-    {
-      "name": "customer_service",
-      "is_mutable": false,
-      "description": "Customer service contact information"
-    },
-    {
-      "name": "footnotes",
-      "is_mutable": false,
-      "description": "Footnotes and disclosures"
+      "description": "Final balance of the account at the end of the statement period"
     }
   ]
 }

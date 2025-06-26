@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Citibank Statement – App View</title>
+  <title>{{ account_type }} Statement</title>
   <style>
     :root {
       --brand: #0066c1;
@@ -13,8 +13,7 @@
     }
     /* Reset & base */
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-           background: var(--bg); color: #000; font-size: 15px; line-height: 1.5; }
+    body { font-family: Arial, sans-serif; font-size: 15px; line-height: 1.5; background: var(--bg); color: #000; }
 
     /* Header app-bar */
     .appbar { background: var(--brand); color: #fff; padding: 14px 20px; display: flex; align-items: center; gap: 8px; }
@@ -27,7 +26,7 @@
     .card { background: var(--card); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
 
     /* Headings */
-    .card h3 { font-size: 17px; margin-bottom: 12px; color: var(--brand); }
+    .card h1 { font-size: 15px; font-weight: normal; text-align: center; margin-bottom: 12px; color: var(--brand); }
 
     /* Info list */
     .info-list { list-style: none; margin: 0; padding: 0; }
@@ -36,7 +35,7 @@
 
     /* Transactions */
     .txn-head, .txn-row { display: grid; grid-template-columns: 90px 1fr 70px; }
-    .txn-head { font-weight: 600; color: var(--brand); margin-bottom: 6px; }
+    .txn-head { font-weight: 600; color: var(--brand); margin-bottom: 6px; font-size: 15px; }
     .txn-row { padding: 8px 0; border-bottom: 1px solid #e1e6ef; font-size: 14px; }
     .txn-row:last-child { border-bottom: none; }
     .num { text-align: right; }
@@ -59,14 +58,16 @@
 <!-- App bar -->
 <div class="appbar">
   <strong>Statement</strong>
+  {% if logo_path %}
   <img src="{{ logo_path }}" alt="Citibank">
+  {% endif %}
 </div>
 
 <div class="wrapper">
 
   <!-- Account card -->
   <div class="card">
-    <h3>Account</h3>
+    <h1>Account</h1>
     <ul class="info-list">
       <li><span class="label">Holder:</span>{{ account_holder }}</li>
       <li><span class="label">Account #:</span>{{ customer_account_number }}</li>
@@ -78,7 +79,7 @@
 
   <!-- Period card -->
   <div class="card">
-    <h3>Period</h3>
+    <h1>Period</h1>
     <ul class="info-list">
       <li>{{ statement_period }}</li>
       <li>Generated: {{ statement_date }}</li>
@@ -87,15 +88,24 @@
 
   <!-- Important Account Information card -->
   <div class="card important-info">
-    <h3>Important Account Information</h3>
+    <h1>Important Account Information</h1>
     <hr class="section-rule">
-    {{ important_account_info }}
+    {% if account_type == "Citi Access Checking" %}
+    <p>Effective July 1, 2025, the monthly account fee for Citi Access Checking accounts will increase to £10 unless you maintain a minimum daily balance of £1,500 or have qualifying direct deposits of £500 or more per month.</p>
+    <p>Starting June 30, 2025, Citibank will introduce real-time transaction alerts for Citi Access Checking accounts via the Citi Mobile UK app. Enable alerts at citibank.co.uk/alerts.</p>
+    <p>Effective July 15, 2025, Citibank will waive overdraft fees for transactions of £5 or less and cap daily overdraft fees at two per day for Citi Access Checking accounts.</p>
+    {% else %}
+    <p>Effective July 1, 2025, the monthly account fee for CitiBusiness Checking accounts will increase to £15 unless you maintain a minimum daily balance of £5,000 or have £2,000 in net purchases on a Citi Business Debit Card per month.</p>
+    <p>Starting June 30, 2025, Citibank will offer enhanced cash flow tools for CitiBusiness Checking accounts via Citi Online Banking, including automated invoice tracking and payment scheduling.</p>
+    <p>Effective July 15, 2025, Citibank will reduce domestic BACS transfer fees to £20 for CitiBusiness Checking accounts, down from £25.</p>
+    {% endif %}
+    <p>For questions, visit citibank.co.uk or contact our Client Contact Centre at 0800 005 555 (or +44 20 7500 5500 from abroad), available 24/7.</p>
     <hr class="section-rule">
   </div>
 
   <!-- Transactions card -->
   <div class="card">
-    <h3>Transactions</h3>
+    <h1>Transactions</h1>
 
     <!-- header row -->
     <div class="txn-head">
@@ -132,10 +142,10 @@
 </div>
 
 <footer>
-  <p>© 2021 Citibank UK Limited – Calls may be monitored or recorded for training and service quality purposes.</p>
-  {{ footnotes }}
-  {{ disclosures }}
-  {{ terms }}
+  <p style="font-size: 11px; font-weight: normal; color: #757575; margin-bottom: 8px;">Disclosures</p>
+  <p>Citibank UK Limited is authorised by the Prudential Regulation Authority and regulated by the Financial Conduct Authority and the Prudential Regulation Authority. Our firm’s Financial Services Register number is 805574. Citibank UK Limited is a company limited by shares registered in England and Wales with registered address at Citigroup Centre, Canada Square, Canary Wharf, London E14 5LB.</p>
+  <p>© 2025 Citibank UK Limited – Calls may be monitored or recorded for training and service quality purposes. CITI, the Arc Design & Citibank are registered service marks of Citigroup Inc.</p>
+  <p>Deposits are protected by the Financial Services Compensation Scheme (FSCS) up to £85,000 per depositor, subject to eligibility. For details on account terms or overdraft policies, visit citibank.co.uk or call 0800 005 555 (UK) or +44 20 7500 5500 (international).</p>
 </footer>
 </body>
 </html>

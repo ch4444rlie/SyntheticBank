@@ -1,6 +1,11 @@
 {
   "fields": [
     {
+      "name": "account_type",
+      "is_mutable": false,
+      "description": "Type of the account (e.g., checking, savings)"
+    },
+    {
       "name": "logo_path",
       "is_mutable": false,
       "description": "Path to the Chase bank logo"
@@ -8,12 +13,12 @@
     {
       "name": "statement_period",
       "is_mutable": true,
-      "description": "Time period covered by the statement"
+      "description": "The period covered by the statement (e.g., January 1 - February 28)"
     },
     {
       "name": "account_number",
       "is_mutable": false,
-      "description": "Account number associated with this statement"
+      "description": "Unique identifier for the Chase account"
     },
     {
       "name": "account_holder",
@@ -26,14 +31,9 @@
       "description": "Address of the account holder"
     },
     {
-      "name": "account_type",
-      "is_mutable": false,
-      "description": "Type of the account (e.g., checking, savings)"
-    },
-    {
       "name": "summary.beginning_balance",
       "is_mutable": false,
-      "description": "Balance at the beginning of the statement period"
+      "description": "Balance at the start of the statement period"
     },
     {
       "name": "summary.deposits_count",
@@ -42,7 +42,7 @@
     },
     {
       "name": "summary.deposits_total",
-      "is_mutable": false,
+      "is_mutable": true,
       "description": "Total amount deposited during the statement period"
     },
     {
@@ -52,13 +52,13 @@
     },
     {
       "name": "summary.withdrawals_total",
-      "is_mutable": false,
+      "is_mutable": true,
       "description": "Total amount withdrawn during the statement period"
     },
     {
       "name": "summary.transactions_count",
       "is_mutable": false,
-      "description": "Total number of transactions during the statement period"
+      "description": "Total number of transactions made during the statement period"
     },
     {
       "name": "summary.ending_balance",
@@ -66,64 +66,54 @@
       "description": "Balance at the end of the statement period"
     },
     {
-      "name": "important_account_info",
+      "name": "transaction.date",
       "is_mutable": false,
-      "description": "Additional account-specific information"
+      "description": "Date of each transaction"
     },
     {
-      "name": "deposit.date",
+      "name": "transaction.description",
+      "is_mutable": true,
+      "description": "Description or purpose of each transaction"
+    },
+    {
+      "name": "transaction.amount",
+      "is_mutable": true,
+      "description": "Amount of each transaction"
+    },
+    {
+      "name": "summary.deposits_total",
       "is_mutable": false,
-      "description": "Date of a specific deposit"
+      "description": "Total amount deposited during the statement period (duplicate)"
     },
     {
-      "name": "deposit.description",
-      "is_mutable": true,
-      "description": "Description of a specific deposit"
-    },
-    {
-      "name": "deposit.amount",
-      "is_mutable": true,
-      "description": "Amount of a specific deposit"
-    },
-    {
-      "name": "withdrawal.date",
+      "name": "transaction.date",
       "is_mutable": false,
-      "description": "Date of a specific withdrawal"
+      "description": "Date of each transaction (duplicate)"
     },
     {
-      "name": "withdrawal.description",
+      "name": "transaction.description",
       "is_mutable": true,
-      "description": "Description of a specific withdrawal"
+      "description": "Description or purpose of each transaction (duplicate)"
     },
     {
-      "name": "withdrawal.amount",
+      "name": "transaction.amount",
       "is_mutable": true,
-      "description": "Amount of a specific withdrawal"
+      "description": "Amount of each transaction (duplicate)"
+    },
+    {
+      "name": "summary.withdrawals_total",
+      "is_mutable": false,
+      "description": "Total amount withdrawn during the statement period (duplicate)"
     },
     {
       "name": "balance.date",
       "is_mutable": false,
-      "description": "Date of a specific balance update"
+      "description": "Date of the balance inquiry"
     },
     {
       "name": "balance.amount",
       "is_mutable": false,
-      "description": "Amount of a specific balance update"
-    },
-    {
-      "name": "footnotes",
-      "is_mutable": false,
-      "description": "Additional information about the statement"
-    },
-    {
-      "name": "disclosures",
-      "is_mutable": false,
-      "description": "Legal disclaimers and terms applicable to the account"
-    },
-    {
-      "name": "terms",
-      "is_mutable": false,
-      "description": "Terms and conditions associated with the account"
+      "description": "Balance at the time of the balance inquiry"
     }
   ]
 }

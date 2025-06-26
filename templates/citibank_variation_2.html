@@ -2,16 +2,32 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Citibank Statement – Web View</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ account_type }} Statement</title>
   <style>
     /* Reset & defaults */
     * { margin: 0; padding: 0; font-family: Arial, sans-serif; }
     body { background-color: #F0F4F8; color: #333; font-size: 12px; line-height: 1.5; padding: 20px; }
 
     /* Header */
-    .header { background-color: #26A69A; color: #fff; padding: 10px; display: flex; justify-content: center; align-items: center; position: relative; }
+    .header { 
+      background-color: #26A69A; 
+      color: #fff; 
+      padding: 10px; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      position: relative; 
+      width: 100%; 
+      max-width: 1200px; 
+      margin: 0 auto; 
+    }
     .header strong { font-size: 18px; font-weight: 600; }
-    .header img { height: 40px; position: absolute; right: 10px; top: 50%; transform: translateY(-50%); }
+    .header img { 
+      height: 40px; 
+      margin-left: auto; 
+      /* Removed absolute positioning to keep within the box */
+    }
 
     /* Content */
     .content { margin-top: 20px; background-color: #fff; border: 1px solid #ddd; padding: 15px; }
@@ -23,16 +39,16 @@
 
     /* Important Account Information */
     .important-info { margin-bottom: 15px; }
-    .important-info h2 { color: #26A69A; font-size: 16px; margin-bottom: 10px; }
+    .important-info h1 { color: #26A69A; font-size: 12px; font-weight: normal; text-align: center; margin-bottom: 10px; }
     .important-info p { font-size: 10px; line-height: 1.5; margin: 5px 0; word-wrap: break-word; }
     hr.section-rule { border: 0; height: 1px; background: #26A69A; margin: 10px 0; }
 
     /* Transactions */
-    h2 { color: #26A69A; margin-bottom: 10px; font-size: 16px; text-align: center; }
+    h1 { color: #26A69A; margin-bottom: 10px; font-size: 12px; font-weight: normal; text-align: center; }
     .meta { text-align: right; margin-bottom: 10px; font-weight: bold; }
     table { width: 100%; border-collapse: collapse; margin-top: 10px; table-layout: fixed; }
     th, td { padding: 8px; border: 1px solid #ddd; word-wrap: break-word; }
-    th { background-color: #E0F2F1; color: #26A69A; text-align: left; }
+    th { background-color: #E0F2F1; color: #26A69A; text-align: left; font-size: 12px; font-weight: bold; }
     .num { text-align: right; }
     .highlight { background-color: #E0F2F1; font-weight: bold; }
     tr:last-child td { border-bottom: none; }
@@ -45,36 +61,28 @@
     .footer hr { border: 0; height: 1px; background: #26A69A; margin: 10px 0; }
     .footer p { margin-bottom: 5px; }
     .footer p:last-child { text-align: right; }
-
-    /* Print-specific fallbacks */
-    @media print {
-        body { padding: 0; }
-        .header { padding: 5px; }
-        .content { margin-top: 10px; }
-        table { page-break-inside: avoid; }
-        tr { page-break-inside: avoid; page-break-after: auto; }
-        .footer { page-break-inside: avoid; }
-    }
   </style>
 </head>
 <body>
 
 <div class="header">
-  <strong>Citibank</strong>
+  <!-- Removed <strong>Citibank</strong> as requested -->
+  {% if logo_path %}
   <img src="{{ logo_path }}" alt="Citibank logo">
+  {% endif %}
 </div>
 
 <div class="content">
   <div class="info-section">
     <b>Bank Information</b>
     <span>Account Provider Name: Citibank UK Limited</span>
-    <span>Account Name: Transit account at Citibank in the UK</span>
-    <span>IBAN: GB29 NWBK 6016 1331 9268 19</span>
+    <span>Account Name: {{ account_type }}</span>
+    <span>IBAN: {{ customer_iban }}</span>
     <span>Country code: GB</span>
-    <span>Check Digits: 29</span>
-    <span>Bank code: NWBK</span>
-    <span>Sort code: 601613</span>
-    <span>Account number: 31926819</span>
+    <span>Check Digits: {{ customer_iban|slice(2,4) }}</span>
+    <span>Bank code: CITI</span>
+    <span>Sort code: {{ customer_iban|slice(8,14) }}</span>
+    <span>Account number: {{ customer_account_number }}</span>
   </div>
 
   <div class="info-section">
@@ -89,13 +97,22 @@
   </div>
 
   <div class="important-info">
-    <h2>Important Account Information</h2>
+    <h1>Important Account Information</h1>
     <hr class="section-rule">
-    {{ important_account_info }}
+    {% if account_type == "Citi Access Checking" %}
+    <p>Effective July 1, 2025, the monthly account fee for Citi Access Checking accounts will increase to £10 unless you maintain a minimum daily balance of £1,500 or have qualifying direct deposits of £500 or more per month.</p>
+    <p>Starting June 30, 2025, Citibank will introduce real-time transaction alerts for Citi Access Checking accounts via the Citi Mobile UK app. Enable alerts at citibank.co.uk/alerts.</p>
+    <p>Effective July 15, 2025, Citibank will waive overdraft fees for transactions of £5 or less and cap daily overdraft fees at two per day for Citi Access Checking accounts.</p>
+    {% else %}
+    <p>Effective July 1, 2025, the monthly account fee for CitiBusiness Checking accounts will increase to £15 unless you maintain a minimum daily balance of £5,000 or have £2,000 in net purchases on a Citi Business Debit Card per month.</p>
+    <p>Starting June 30, 2025, Citibank will offer enhanced cash flow tools for CitiBusiness Checking accounts via Citi Online Banking, including automated invoice tracking and payment scheduling.</p>
+    <p>Effective July 15, 2025, Citibank will reduce domestic BACS transfer fees to £20 for CitiBusiness Checking accounts, down from £25.</p>
+    {% endif %}
+    <p>For questions, visit citibank.co.uk or contact our Client Contact Centre at 0800 005 555 (or +44 20 7500 5500 from abroad), available 24/7.</p>
     <hr class="section-rule">
   </div>
 
-  <h2>Account Transactions</h2>
+  <h1>Account Transactions</h1>
   <div class="meta">
     <span>{{ statement_period }}</span>
     <span>Created on {{ statement_date }}</span>
@@ -114,8 +131,8 @@
     <tbody>
       <tr class="highlight">
         <td></td><td>Opening balance</td>
-        <td class="num">{{ opening_balance_debit }}</td>
-        <td class="num">{{ opening_balance_credit }}</td>
+        <td class="num"></td>
+        <td class="num"></td>
         <td class="num">{{ opening_balance }}</td>
       </tr>
       {% for transaction in transactions %}
@@ -143,11 +160,10 @@
 
 <div class="footer">
   <hr>
-  <p>Citigroup UK Limited is authorised by the Prudential Regulation Authority and regulated by the Financial Conduct Authority and the Prudential Regulation Authority. Our firm’s Financial Services Register number is 805574. Citibank UK Limited is a company limited by shares registered in England and Wales with registered address at Citigroup Centre, Canada Square, Canary Wharf, London E14 5LB.</p>
-  <p>© Citibank UK Limited 2021. CITI, the Arc Design & Citibank are registered service marks of Citigroup Inc. Calls may be monitored or recorded for training and service quality purposes.</p>
-  {{ footnotes }}
-  {{ disclosures }}
-  {{ terms }}
+  <p style="font-size: 10px; font-weight: normal; color: #666; margin-bottom: 8px;">Disclosures</p>
+  <p>Citibank UK Limited is authorised by the Prudential Regulation Authority and regulated by the Financial Conduct Authority and the Prudential Regulation Authority. Our firm’s Financial Services Register number is 805574. Citibank UK Limited is a company limited by shares registered in England and Wales with registered address at Citigroup Centre, Canada Square, Canary Wharf, London E14 5LB.</p>
+  <p>© 2025 Citibank UK Limited – Calls may be monitored or recorded for training and service quality purposes. CITI, the Arc Design & Citibank are registered service marks of Citigroup Inc.</p>
+  <p>Deposits are protected by the Financial Services Compensation Scheme (FSCS) up to £85,000 per depositor, subject to eligibility. For details on account terms or overdraft policies, visit citibank.co.uk or call 0800 005 555 (UK) or +44 20 7500 5500 (international).</p>
   <p>Citibank</p>
 </div>
 
