@@ -57,6 +57,7 @@ class Transaction(BaseModel):
     category: str
     amount: float
     account_type: str
+    type: str = Field(..., description="Transaction type (e.g., deposit, electronic, check, other)")
 
 # Predefined transaction categories and descriptions
 BUSINESS_CATEGORIES = {
@@ -106,28 +107,56 @@ def generate_transaction_description(amount: float, category: str, account_type:
     description_list = next((cat[1] for cat in (categories["loss"] + categories["gain"]) if cat[0] == category), [f"{category} Transaction"])
     description = random.choice(description_list)[:35]
     description = ' '.join(word.capitalize() for word in description.split())
-    transaction = Transaction(description=description, category=category, amount=amount, account_type=account_type)
+    # Assign transaction type based on amount and category
+    if amount > 0:
+        transaction_type = "deposit"
+    else:
+        transaction_type = random.choice(["electronic", "check", "other"])  # More specific types for withdrawals
+    transaction = Transaction(description=description, category=category, amount=amount, account_type=account_type, type=transaction_type)
     return transaction.model_dump()
 
 # Generate synthetic bank statement
 def generate_bank_statement(num_transactions: int, account_holder: str, account_type: str) -> pd.DataFrame:
     if account_type not in ["business", "personal"]:
         raise ValueError("Account type must be 'business' or 'personal'")
+    if not (3 <= num_transactions <= 25):
+        raise ValueError("Number of transactions must be between 3 and 25")
+    
     loss_categories, gain_categories = generate_category_lists(account_type)
     start_date = datetime.now() - timedelta(days=30)
     dates = [start_date + timedelta(days=random.randint(0, 30)) for _ in range(num_transactions)]
+    
+    # Ensure a mix of deposits and withdrawals
     transactions = []
+    min_deposits = max(1, num_transactions // 3)  # Ensure at least 1/3 are deposits
+    min_withdrawals = max(1, num_transactions // 3)  # Ensure at least 1/3 are withdrawals
+    deposit_count = 0
+    withdrawal_count = 0
+    
     for _ in range(num_transactions):
-        is_gain = random.choice([True, False])
+        if deposit_count < min_deposits:
+            is_gain = True
+        elif withdrawal_count < min_withdrawals:
+            is_gain = False
+        else:
+            is_gain = random.choice([True, False])
+        
         category = random.choice(gain_categories if is_gain else loss_categories)
         amount = round(random.uniform(50, 1000), 2) if is_gain else round(random.uniform(-500, -10), 2)
         transaction = generate_transaction_description(amount, category, account_type)
         transactions.append(transaction)
+        
+        if is_gain:
+            deposit_count += 1
+        else:
+            withdrawal_count += 1
+    
     data = {
         "Date": [d.strftime("%m/%d") for d in dates],
         "Description": [t["description"] for t in transactions],
         "Category": [t["category"] for t in transactions],
         "Amount": [t["amount"] for t in transactions],
+        "Type": [t["type"] for t in transactions],
         "Balance": [0.0] * num_transactions,
         "Account Holder": [account_holder] * num_transactions,
         "Account Type": [account_type.capitalize()] * num_transactions,
@@ -202,7 +231,6 @@ def generate_populated_html_and_pdf(df: pd.DataFrame, account_holder: str, bank:
         withdrawals_total += service_fee
         ending_balance -= service_fee
     
-    # Calculate statement period
     min_date = datetime.strptime(min(df['Date']), "%m/%d").replace(year=2025)
     max_date = datetime.strptime(max(df['Date']), "%m/%d").replace(year=2025)
     statement_date = datetime.now().strftime("%B %d, %Y at %I:%M %p %Z")
@@ -229,9 +257,33 @@ def generate_populated_html_and_pdf(df: pd.DataFrame, account_holder: str, bank:
             <p>Effective July 1, 2025, the monthly service fee for {account_type.capitalize()} {bank.capitalize()} Complete Checking accounts will increase to $20 unless you maintain a minimum daily balance of $2,000, have $2,000 in net purchases on a {bank.capitalize()} Business Debit Card, or maintain linked {bank.capitalize()} business accounts with a combined balance of $10,000.</p>
             <p>Starting June 30, 2025, {bank.capitalize()} will offer enhanced cash flow tools for {account_type.capitalize()} Complete Checking accounts via {bank.capitalize()} Online, including automated invoice tracking and payment scheduling.</p>
             <p>Effective July 15, 2025, {bank.capitalize()} will reduce wire transfer fees to $25 for domestic transfers for {account_type.capitalize()} Complete Checking accounts, down from $30.</p>
-            <p>For questions, visit your local {bank.capitalize()} Branch or call the {bank.capitalize()} Customer Care Center at <b>1-800-242-7338</b>, available 24/7.</ superfamily</p>
+            <p>For questions, visit your local {bank.capitalize()} Branch or call the {bank.capitalize()} Customer Care Center at <b>1-800-242-7338</b>, available 24/7.</p>
             """
-        # ... (rest of the important_info for other banks unchanged)
+        elif bank == "pnc":
+            important_info = f"""
+            <h3>Important Account Information</h3>
+            <p>Effective July 1, 2025, the monthly service fee for {account_type.capitalize()} Checking accounts will increase to $15 unless you maintain a minimum daily balance of $5,000, have $2,000 in net purchases on a PNC Business Debit Card, or maintain linked PNC business accounts with a combined balance of $10,000.</p>
+            <p>Starting June 30, 2025, PNC will offer enhanced cash flow tools for {account_type.capitalize()} Checking accounts via PNC Online Banking, including automated invoice tracking and payment scheduling.</p>
+            <p>Effective July 15, 2025, PNC Express Funds fees for {account_type.capitalize()} Checking accounts will increase from 2.00% to 2.50% of the check amount over $100; checks between $25 and $100 remain $2.00.</p>
+            <p>Effective July 15, 2025, PNC will reduce domestic wire transfer fees to $25 for {account_type.capitalize()} Checking accounts, down from $30.</p>
+            <p>For questions, visit your local PNC Branch or call the PNC Customer Care Center at <b>1-888-762-2265</b>, available 24/7.</p>
+            """
+        elif bank == "citibank":
+            important_info = f"""
+            <h3>Important Account Information</h3>
+            <p>Effective July 1, 2025, the monthly account fee for CitiBusiness Checking accounts will increase to £15 unless you maintain a minimum daily balance of £5,000 or have £2,000 in net purchases on a Citi Business Debit Card per month.</p>
+            <p>Starting June 30, 2025, Citibank will offer enhanced cash flow tools for CitiBusiness Checking accounts via Citi Online Banking, including automated invoice tracking and payment scheduling.</p>
+            <p>Effective July 15, 2025, Citibank will reduce domestic BACS transfer fees to £20 for CitiBusiness Checking accounts, down from £25.</p>
+            <p>For questions, visit citibank.co.uk or contact our Client Contact Centre at 0800 005 555 (or +44 20 7500 5500 from abroad), available 24/7.</p>
+            """
+        elif bank == "wellsfargo":
+            important_info = f"""
+            <h3>Important Account Information</h3>
+            <p>Effective July 1, 2025, the monthly service fee for Business Checking accounts will increase to $20 unless you maintain a minimum daily balance of $5,000, have $2,000 in net purchases on a Wells Fargo Business Debit Card, or maintain linked Wells Fargo business accounts with a combined balance of $10,000.</p>
+            <p>Starting June 30, 2025, Wells Fargo will offer enhanced cash flow tools for Business Checking accounts via Wells Fargo Online, including automated invoice tracking and payment scheduling.</p>
+            <p>Effective July 15, 2025, Wells Fargo will reduce wire transfer fees to $25 for domestic transfers for Business Checking accounts, down from $30.</p>
+            <p>For questions, visit your local Wells Fargo Branch or call the Wells Fargo Customer Service Center at <b>1-800-869-3557</b>, available 24/7.</p>
+            """
     else:  # Personal
         if bank == "chase":
             important_info = f"""
@@ -241,7 +293,31 @@ def generate_populated_html_and_pdf(df: pd.DataFrame, account_holder: str, bank:
             <p>Effective July 15, 2025, {bank.capitalize()} will waive overdraft fees for transactions of $5 or less and cap daily overdraft fees at two per day for {account_type.capitalize()} Total Checking accounts.</p>
             <p>For questions, visit your local {bank.capitalize()} Branch or call the {bank.capitalize()} Customer Care Center at <b>1-800-242-7338</b>, available 24/7.</p>
             """
-        # ... (rest of the important_info for other banks unchanged)
+        elif bank == "pnc":
+            important_info = f"""
+            <h3>Important Account Information</h3>
+            <p>Effective July 1, 2025, the monthly service fee for {account_type.capitalize()} Checking accounts will increase to $10 unless you maintain a minimum daily balance of $1,500, have $500 in qualifying direct deposits, or maintain a linked PNC savings account with a balance of $2,500 or more.</p>
+            <p>Starting June 30, 2025, PNC will introduce real-time transaction alerts for {account_type.capitalize()} Checking accounts via the PNC Mobile app to enhance account monitoring. Enable alerts at pnc.com/alerts.</p>
+            <p>Effective July 15, 2025, PNC will waive overdraft fees for transactions of $5 or less and cap daily overdraft fees at two per day for {account_type.capitalize()} Checking accounts.</p>
+            <p>Between May 1, 2025, and September 30, 2025, PNC will remove the option to print mini statements at PNC ATMs. Use Online Banking, Mobile Banking, or Branch Banking to access account information.</p>
+            <p>For questions, visit your local PNC Branch or call the PNC Customer Care Center at <b>1-888-762-2265</b>, available 24/7.</p>
+            """
+        elif bank == "citibank":
+            important_info = f"""
+            <h3>Important Account Information</h3>
+            <p>Effective July 1, 2025, the monthly account fee for Citi Access Checking accounts will increase to £10 unless you maintain a minimum daily balance of £1,500 or have qualifying direct deposits of £500 or more per month.</p>
+            <p>Starting June 30, 2025, Citibank will introduce real-time transaction alerts for Citi Access Checking accounts via the Citi Mobile UK app. Enable alerts at citibank.co.uk/alerts.</p>
+            <p>Effective July 15, 2025, Citibank will waive overdraft fees for transactions of £5 or less and cap daily overdraft fees at two per day for Citi Access Checking accounts.</p>
+            <p>For questions, visit citibank.co.uk or contact our Client Contact Centre at 0800 005 555 (or +44 20 7500 5500 from abroad), available 24/7.</p>
+            """
+        elif bank == "wellsfargo":
+            important_info = f"""
+            <h3>Important Account Information</h3>
+            <p>Effective July 1, 2025, the monthly service fee for {account_type.capitalize()} Checking accounts will increase to $10 unless you maintain a minimum daily balance of $1,500, have $500 in qualifying direct deposits, or maintain a linked Wells Fargo savings account with a balance of $2,500 or more.</p>
+            <p>Starting June 30, 2025, Wells Fargo will introduce real-time transaction alerts for {account_type.capitalize()} Checking accounts via the Wells Fargo Mobile app to enhance account monitoring. Enable alerts at wellsfargo.com/alerts.</p>
+            <p>Effective July 15, 2025, Wells Fargo will waive overdraft fees for transactions of $5 or less and cap daily overdraft fees at two per day for {account_type.capitalize()} Checking accounts.</p>
+            <p>For questions, visit your local Wells Fargo Branch or call the Wells Fargo Customer Service Center at <b>1-800-869-3557</b>, available 24/7.</p>
+            """
 
     if bank == "citibank":
         transactions = []
@@ -258,7 +334,8 @@ def generate_populated_html_and_pdf(df: pd.DataFrame, account_holder: str, bank:
                 "description": row["Description"],
                 "debit": debit,
                 "credit": credit,
-                "balance": f"£{running_balance:,.2f}"
+                "balance": f"£{running_balance:,.2f}",
+                "type": row["Type"]
             })
         template_data = {
             "account_holder": account_holder,
@@ -276,14 +353,16 @@ def generate_populated_html_and_pdf(df: pd.DataFrame, account_holder: str, bank:
             "total": f"£{ending_balance:,.2f}",
             "logo_path": logo_data,
             "important_info": important_info,
-            "account_type": account_type.capitalize()
+            "account_type": "Access Checking" if account_type == "personal" else "Business Checking"
         }
     elif bank in ["wellsfargo", "pnc"]:
         transactions = []
+        deposits = []
+        withdrawals = []
         running_balance = initial_balance
-        for _, row in df.iterrows():
+        for _, row in df.sort_values("Date").iterrows():  # Ensure sorted by date
             amount = row['Amount']
-            transaction_type = "deposit" if amount > 0 else "electronic" if random.choice([True, False]) else "other"
+            transaction_type = row['Type']
             deposits_credits = f"${amount:,.2f}" if amount > 0 else ""
             withdrawals_debits = f"${abs(amount):,.2f}" if amount < 0 else ""
             running_balance += amount
@@ -295,6 +374,29 @@ def generate_populated_html_and_pdf(df: pd.DataFrame, account_holder: str, bank:
                 "ending_balance": f"${running_balance:,.2f}",
                 "type": transaction_type
             })
+            if amount > 0:
+                deposits.append({
+                    "date": row["Date"],
+                    "description": row["Description"],
+                    "amount": f"${amount:,.2f}",
+                    "type": transaction_type
+                })
+            else:
+                withdrawals.append({
+                    "date": row["Date"],
+                    "description": row["Description"],
+                    "amount": f"${abs(amount):,.2f}",
+                    "type": transaction_type
+                })
+        # Add service fee to withdrawals if applicable
+        if service_fee:
+            withdrawals.append({
+                "date": max_date.strftime("%m/%d"),
+                "description": "Monthly Service Fee",
+                "amount": f"${service_fee:,.2f}",
+                "type": "other"
+            })
+            running_balance -= service_fee
         daily_balances = [
             {"date": row["Date"], "amount": f"${row['Balance']:,.2f}"}
             for _, row in df.drop_duplicates(subset="Date").iterrows()
@@ -302,22 +404,22 @@ def generate_populated_html_and_pdf(df: pd.DataFrame, account_holder: str, bank:
         summary = {
             "beginning_balance": f"${initial_balance:,.2f}",
             "deposits_total": f"${deposits_total:,.2f}",
-            "withdrawals_total": f"${withdrawals_total:,.2f}",
-            "ending_balance": f"${ending_balance:,.2f}",
-            "deposits_count": sum(1 for x in df['Amount'] if x > 0),
-            "withdrawals_count": sum(1 for x in df['Amount'] if x < 0) + (1 if service_fee else 0),
-            "transactions_count": len(df),
-            "average_balance": f"${round((initial_balance + ending_balance) / 2, 2):,.2f}",
+            "withdrawals_total": f"${withdrawals_total + (service_fee if service_fee else 0):,.2f}",
+            "ending_balance": f"${running_balance:,.2f}",
+            "deposits_count": len(deposits),
+            "withdrawals_count": len(withdrawals),
+            "transactions_count": len(df) + (1 if service_fee else 0),
+            "average_balance": f"${round((initial_balance + running_balance) / 2, 2):,.2f}",
             "fees": f"${service_fee:,.2f}",
-            "checks_written": random.randint(0, 5),
+            "checks_written": sum(1 for w in withdrawals if w["type"] == "check"),
             "pos_transactions": random.randint(0, 10),
             "pos_pin_transactions": random.randint(0, 5),
             "total_atm_transactions": random.randint(0, 8),
             "pnc_atm_transactions": random.randint(0, 5) if bank == "pnc" else 0,
             "other_atm_transactions": random.randint(0, 3),
             "apy_earned": f"{random.uniform(0.01, 0.5):.2f}%" if bank in ["wellsfargo", "pnc"] else "0.00%",
-            "days_in_period": random.randint(28, 31),
-            "average_collected_balance": f"${round(random.uniform(initial_balance, ending_balance), 2):,.2f}",
+            "days_in_period": (max_date - min_date).days + 1,
+            "average_collected_balance": f"${round(random.uniform(initial_balance, running_balance), 2):,.2f}",
             "interest_paid_period": f"${random.uniform(0.1, 10):,.2f}" if bank in ["wellsfargo", "pnc"] else "$0.00",
             "interest_paid_ytd": f"${random.uniform(1, 50):,.2f}" if bank in ["wellsfargo", "pnc"] else "$0.00",
             "overdraft_protection1": f"{bank.capitalize()} Savings Account XXXX1234" if random.choice([True, False]) else "",
@@ -334,38 +436,52 @@ def generate_populated_html_and_pdf(df: pd.DataFrame, account_holder: str, bank:
             "important_info": important_info,
             "summary": summary,
             "transactions": transactions,
+            "deposits": deposits,
+            "withdrawals": withdrawals,
             "daily_balances": daily_balances,
-            "account_type": account_type.capitalize()
+            "account_type": "Standard Checking" if account_type == "personal" else "Business Checking"
         }
     else:  # Chase
-        deposits = [
-            {"date": row["Date"], "description": row["Description"], "amount": f"${row['Amount']:,.2f}"}
-            for _, row in df.iterrows() if row['Amount'] > 0
-        ]
-        withdrawals = [
-            {"date": row["Date"], "description": row["Description"], "amount": f"${abs(row['Amount']):,.2f}"}
-            for _, row in df.iterrows() if row['Amount'] < 0
-        ]
-        # Generate daily balances for every day in the statement period
+        deposits = []
+        withdrawals = []
+        for _, row in df.sort_values("Date").iterrows():
+            amount = row['Amount']
+            if amount > 0:
+                deposits.append({
+                    "date": row["Date"],
+                    "description": row["Description"],
+                    "amount": f"${amount:,.2f}",
+                    "type": row["Type"]
+                })
+            else:
+                withdrawals.append({
+                    "date": row["Date"],
+                    "description": row["Description"],
+                    "amount": f"${abs(amount):,.2f}",
+                    "type": row["Type"]
+                })
+        # Add service fee to withdrawals if applicable
+        if service_fee:
+            withdrawals.append({
+                "date": max_date.strftime("%m/%d"),
+                "description": "Monthly Service Fee",
+                "amount": f"${service_fee:,.2f}",
+                "type": "other"
+            })
         statement_start = min_date
         statement_end = max_date
         day_delta = timedelta(days=1)
         balance_map = {}
         running_balance = initial_balance
         current_date = statement_start
-        df = df.sort_values("Date")  # Ensure DataFrame is sorted
-        transaction_index = 0
         while current_date <= statement_end:
             iso_date = current_date.isoformat()
-            # Check if there are transactions on this date
             daily_transactions = df[df["Date"] == current_date.strftime("%m/%d")]
             if not daily_transactions.empty:
-                # Sum all transactions for this date
                 daily_amount = daily_transactions["Amount"].sum()
                 running_balance += daily_amount
             balance_map[iso_date] = f"${running_balance:,.2f}"
             current_date += day_delta
-        
         daily_balances = [
             {"date": row["Date"], "amount": f"${row['Balance']:,.2f}"}
             for _, row in df.drop_duplicates(subset="Date").iterrows()
@@ -374,20 +490,20 @@ def generate_populated_html_and_pdf(df: pd.DataFrame, account_holder: str, bank:
             "beginning_balance": f"${initial_balance:,.2f}",
             "deposits_count": len(deposits),
             "deposits_total": f"${deposits_total:,.2f}",
-            "withdrawals_count": len(withdrawals) + (1 if service_fee else 0),
-            "withdrawals_total": f"${withdrawals_total:,.2f}",
-            "ending_balance": f"${ending_balance:,.2f}",
-            "average_balance": f"${round((initial_balance + ending_balance) / 2, 2):,.2f}",
+            "withdrawals_count": len(withdrawals),
+            "withdrawals_total": f"${withdrawals_total + (service_fee if service_fee else 0):,.2f}",
+            "ending_balance": f"${running_balance:,.2f}",
+            "average_balance": f"${round((initial_balance + running_balance) / 2, 2):,.2f}",
             "fees": f"${service_fee:,.2f}",
-            "checks_written": random.randint(0, 5),
+            "checks_written": sum(1 for w in withdrawals if w["type"] == "check"),
             "pos_transactions": random.randint(0, 10),
             "pos_pin_transactions": random.randint(0, 5),
             "total_atm_transactions": random.randint(0, 8),
             "pnc_atm_transactions": 0,
             "other_atm_transactions": random.randint(0, 3),
             "apy_earned": "0.00%",
-            "days_in_period": random.randint(28, 31),
-            "average_collected_balance": f"${round(random.uniform(initial_balance, ending_balance), 2):,.2f}",
+            "days_in_period": (max_date - min_date).days + 1,
+            "average_collected_balance": f"${round(random.uniform(initial_balance, running_balance), 2):,.2f}",
             "interest_paid_period": "$0.00",
             "interest_paid_ytd": "$0.00",
             "overdraft_protection1": "Chase Savings Account XXXX1234" if random.choice([True, False]) else "",
@@ -407,7 +523,7 @@ def generate_populated_html_and_pdf(df: pd.DataFrame, account_holder: str, bank:
             "withdrawals": withdrawals,
             "daily_balances": daily_balances,
             "show_fee_waiver": service_fee == 0,
-            "account_type": account_type.capitalize(),
+            "account_type": "Total Checking" if account_type == "personal" else "Business Complete Checking",
             "statement_start": statement_start,
             "statement_end": statement_end,
             "day_delta": day_delta,
