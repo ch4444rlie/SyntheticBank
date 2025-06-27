@@ -16,5 +16,6 @@ dependencies = [
     "pandas>=2.3.0",
     "pdfkit>=1.0.0",
     "pydantic>=2.11.5",
+    "streamlit-pdf-viewer>=0.0.26",
     "streamlit>=1.45.1",
 ]

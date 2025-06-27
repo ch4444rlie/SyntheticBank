@@ -11,6 +11,7 @@ from new_generator import (
     BANK_CONFIG
 )
 from faker import Faker
+from streamlit_pdf_viewer import pdf_viewer  # Add this import for streamlit-pdf-viewer
 
 fake = Faker()
 
@@ -49,7 +50,6 @@ TEMPLATE_DISPLAY_NAMES = {
     "pnc_classic.html": "Classic PNC Statement"
 }
 
-# Sidebar for user inputs
 # Sidebar for user inputs
 with st.sidebar:
     st.header("Statement Options")
@@ -167,12 +167,18 @@ if st.session_state["trigger_generate"]:
                 # Preview section
                 st.subheader(f"Preview: {selected_bank} {account_type.capitalize()} Statement")
                 preview_placeholder = st.empty()
-                pdf_base64 = base64.b64encode(st.session_state["pdf_content"]).decode('utf-8')
-                pdf_preview = f'<iframe src="data:application/pdf;base64,{pdf_base64}" width="100%" height="600px" style="border: none;"></iframe>'
+                # Use streamlit-pdf-viewer instead of iframe
+                pdf_viewer(
+                    input=st.session_state["pdf_content"],  # Binary PDF content
+                    width=700,  # Specify width for proper rendering
+                    height=600,  # Match original iframe height
+                    zoom_level=1.0,  # Default zoom (100%)
+                    viewer_align="center",  # Center the PDF viewer
+                    show_page_separator=True  # Show separators between pages
+                )
                 preview_placeholder.markdown("""
-                **Note**: If the PDF preview doesn't display (e.g., due to Chrome security settings), use the download button above to view the statement.
+                **Note**: If the PDF doesn't display, ensure JavaScript is enabled, disable ad blockers, or try Firefox/Edge. The PDF can still be downloaded using the button above.
                 """)
-                preview_placeholder.markdown(pdf_preview, unsafe_allow_html=True)
                 
                 # Details expander
                 with st.expander("View Details"):
