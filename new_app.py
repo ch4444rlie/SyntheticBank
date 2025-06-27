@@ -50,6 +50,7 @@ TEMPLATE_DISPLAY_NAMES = {
 }
 
 # Sidebar for user inputs
+# Sidebar for user inputs
 with st.sidebar:
     st.header("Statement Options")
     st.markdown("Configure your synthetic bank statement.")
@@ -72,10 +73,21 @@ with st.sidebar:
 
     # Account type selection
     st.subheader("Select Account Type")
-    account_type = st.radio("Account Type", ["Personal", "Business"], index=0)
-    account_type = account_type.lower()
+    if "account_type" not in st.session_state:
+        st.session_state["account_type"] = "personal"
+    
+    cols = st.columns(2)
+    with cols[0]:
+        if st.button("Personal", key="account_type_personal"):
+            st.session_state["account_type"] = "personal"
+    with cols[1]:
+        if st.button("Business", key="account_type_business"):
+            st.session_state["account_type"] = "business"
+    
+    account_type = st.session_state["account_type"]
 
     # Number of transactions
+    st.subheader("Number of Transactions")
     num_transactions = st.slider("Number of Transactions", min_value=3, max_value=12, value=5, step=1)
 
     # Template selection
@@ -88,6 +100,9 @@ with st.sidebar:
     else:
         selected_template = None
         st.markdown("Select a bank to choose a template style.")
+    
+    # Add spacing before Generate button
+    st.markdown("<br><br>", unsafe_allow_html=True)  # Adds two line breaks
     
     # Generate button
     if st.button("Generate Statement", key="sidebar_generate_button"):
@@ -102,7 +117,7 @@ st.markdown("""
 - Create your synthetic bank statement with the sidebar options.  
 - Select **Personal** or **Business** account type to customize transaction categories.  
 - Choose a **Classic** template for a realistic statement or a **Custom** template for variations.  
-- Download the generated PDF, which includes important account information.  
+- Download the generated PDF!
 """)
 
 # Initialize session state
