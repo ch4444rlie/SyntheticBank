@@ -113,11 +113,16 @@
       <tr>
         <td>{{ transaction.date }}</td>
         <td>{{ transaction.description }}</td>
-        <td class="num">{{ transaction.credit }}</td>
-        <td class="num">{{ transaction.debit }}</td>
-        <td class="num">{{ transaction.balance }}</td>
+        <td class="num">{{ transaction.deposits_credits }}</td>
+        <td class="num">{{ transaction.withdrawals_debits }}</td>
+        <td class="num">{{ transaction.ending_balance }}</td>
       </tr>
       {% endfor %}
+      {% if not transactions %}
+      <tr>
+        <td colspan="5">No transactions for this period.</td>
+      </tr>
+      {% endif %}
       <tr class="highlight">
         <td></td><td>Total</td>
         <td class="num">{{ summary.deposits_total }}</td>

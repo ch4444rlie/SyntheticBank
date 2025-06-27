@@ -1,78 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>{{ account_type }} Statement</title>
-  <style>
-    /* Reset & defaults */
-    * { margin: 0; padding: 0; font-family: 'Verdana', sans-serif; box-sizing: border-box; }
-    body { background-color: #F5EBE0; color: #2D1B1B; font-size: 12px; line-height: 1.6; padding: 15px; }
+<meta charset="UTF-8" />
+<title>{{ account_type }} Statement</title>
+<style>
+/* ─── RESET & BASE ───────────────────────────────────────────── */
+*{margin:0;padding:0;box-sizing:border-box;font-family:Verdana,Arial,sans-serif;}
+body{background:#F5EBE0;color:#2D1B1B;font-size:11px;line-height:1.55;padding:15px;}
 
-    /* Header */
-    .header { background-color: #800000; color: #FFFFFF; padding: 12px 20px; display: flex; align-items: center; }
-    .header img { height: 40px; margin-right: 15px; }
-    .header h1 { font-size: 20px; font-weight: 600; text-transform: uppercase; }
+/* ─── HEADER STRIP ───────────────────────────────────────────── */
+.header{background:#800000;color:#fff;padding:12px 20px;display:flex;align-items:center;}
+.header img{height:40px;margin-right:15px;}
+.header h1{font-size:18px;font-weight:600;text-transform:uppercase;}
 
-    /* Container */
-    .container { max-width: 1100px; margin: 20px auto; display: flex; gap: 20px; }
+/* ─── LAYOUT ─────────────────────────────────────────────────── */
+.container{max-width:1100px;margin:20px auto;display:flex;gap:20px;}
+.left-column{width:35%;background:#FFF5F0;border:2px solid #800000;padding:15px;border-radius:5px;}
+.right-column{width:65%;background:#fff;border:2px solid #800000;padding:15px;border-radius:5px;}
 
-    /* Left Column */
-    .left-column { width: 35%; background-color: #FFF5F0; border: 2px solid #800000; padding: 15px; border-radius: 5px; }
-    .account-details b { color: #800000; font-size: 14px; margin-bottom: 8px; display: block; }
-    .account-details span { display: block; margin-bottom: 6px; }
-    .important-info { margin-top: 20px; }
-    .important-info h1 { color: #800000; font-size: 16px; font-weight: 600; margin-bottom: 10px; text-align: center; }
-    .important-info p { font-size: 10px; line-height: 1.5; margin: 5px 0; word-wrap: break-word; }
-    hr.section-rule { border: 0; height: 2px; background: #800000; margin: 10px 0; }
+/* left-column blocks */
+.account-details b{color:#800000;font-size:13px;display:block;margin-bottom:8px;}
+.account-details span{display:block;margin-bottom:6px;}
+.important-info{margin-top:18px;}
+.important-info h1{color:#800000;font-size:15px;text-align:center;margin-bottom:8px;}
+.important-info p{font-size:10px;margin:4px 0;word-wrap:break-word;}
+hr.section-rule{border:0;height:2px;background:#800000;margin:8px 0;}
 
-    /* Right Column */
-    .right-column { width: 65%; background-color: #FFFFFF; border: 2px solid #800000; padding: 15px; border-radius: 5px; }
-    h1 { color: #800000; font-size: 16px; font-weight: 600; margin-bottom: 12px; text-transform: uppercase; text-align: center; }
-    .meta { text-align: right; color: #4A2C2C; font-weight: 500; margin-bottom: 10px; }
-    table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-    th, td { padding: 10px; border: 1px solid #E0C0C0; word-wrap: break-word; }
-    th { background-color: #F0E0E0; color: #800000; font-weight: 600; text-align: left; }
-    .num { text-align: right; }
-    .highlight { background-color: #F0E0E0; font-weight: 600; }
-    tr:last-child td { border-bottom: none; }
+/* right-column headings & meta */
+.right-column h1{color:#800000;font-size:15px;text-transform:uppercase;text-align:center;margin-bottom:10px;}
+.meta{text-align:right;color:#4A2C2C;font-weight:500;margin-bottom:10px;}
 
-    /* Summary */
-    .summary { margin-bottom: 20px; }
-    .summary-table { width: 100%; }
-    .summary-table td { border: none; padding: 5px 0; }
-    .summary-table td:first-child { font-weight: 600; }
+/* ─── TABLE BASICS ───────────────────────────────────────────── */
+table{width:100%;border-collapse:collapse;table-layout:auto;}
+th,td{padding:6px 5px;border:1px solid #E0C0C0;vertical-align:top;word-break:break-word;}
+th{background:#F0E0E0;color:#800000;font-weight:600;text-align:left;font-size:11px;}
+td.num,th.num{text-align:right;}
+.highlight{background:#F0E0E0;font-weight:600;}
+tr:last-child td{border-bottom:none;}
 
-    /* Notice */
-    .notice { text-align: center; color: #6B4E4E; font-size: 11px; margin: 15px 0; }
+/* SUMMARY table (no borders) */
+.summary-table td{border:none;padding:4px 0;}
+.summary-table td:first-child{font-weight:600;}
 
-    /* Footer */
-    .footer { margin-top: 20px; padding: 15px; background-color: #F5EBE0; border-top: 2px solid #800000; text-align: center; }
-    .footer hr { border: 0; height: 2px; background: #800000; margin: 10px 0; }
-    .footer p { margin-bottom: 5px; color: #6B4E4E; }
+/* FOOTER */
+.notice{text-align:center;color:#6B4E4E;font-size:10px;margin:12px 0;}
+.footer{margin-top:20px;padding:15px;background:#F5EBE0;border-top:2px solid #800000;text-align:center;}
+.footer p{color:#6B4E4E;margin-bottom:4px;font-size:9px;}
+.footer hr{border:0;height:2px;background:#800000;margin:8px 0;}
 
-    /* Print-specific fallbacks */
-    @media print {
-        body { padding: 0; }
-        .header { padding: 10px; }
-        .container { margin: 10px auto; width: 100%; }
-        .left-column, .right-column { width: 35% !important; float: left; margin-right: 2%; box-shadow: none; }
-        .right-column { width: 60% !important; }
-        table { page-break-inside: avoid; }
-        tr { page-break-inside: avoid; page-break-after: auto; }
-        .footer { page-break-inside: avoid; }
-    }
-  </style>
+/* PRINT TWEAKS */
+@media print{
+  body{padding:0;}
+  .header{padding:10px;}
+  .container{margin:10px auto;width:100%;}
+  .left-column,.right-column{width:35%!important;float:left;margin-right:2%;box-shadow:none;}
+  .right-column{width:60%!important;}
+  table{page-break-inside:avoid;}
+  tr{page-break-inside:avoid;page-break-after:auto;}
+  .footer{page-break-inside:avoid;}
+}
+</style>
 </head>
 <body>
 
+<!-- ─── HEADER ────────────────────────────────────────────────── -->
 <div class="header">
-  {% if logo_path %}
-  <img src="{{ logo_path }}" alt="Wells Fargo logo">
-  {% endif %}
+  {% if logo_path %}<img src="{{ logo_path }}" alt="Wells Fargo logo">{% endif %}
   <h1>WELLS FARGO ONLINE</h1>
 </div>
 
 <div class="container">
+  <!-- ─── LEFT COLUMN ────────────────────────────────────────── -->
   <div class="left-column">
     <div class="account-details">
       <b>Account Details</b>
@@ -83,74 +81,87 @@
     </div>
 
     <div class="important-info">
-      <h1>Important Account Information</h1>
-      <hr class="section-rule">
+      <h1>Important Account Information</h1><hr class="section-rule">
       {% if account_type == "Everyday Checking" %}
-      <p>Effective July 1, 2025, the monthly service fee for Everyday Checking accounts will increase to $12 unless you maintain a minimum daily balance of $500, have $500 in qualifying direct deposits, or maintain a linked Wells Fargo savings account with a balance of $300 or more.</p>
-      <p>Starting June 30, 2025, Wells Fargo will introduce real-time transaction alerts for Everyday Checking accounts via the Wells Fargo Mobile app. Enable alerts at wellsfargo.com/alerts.</p>
-      <p>Effective July 15, 2025, Wells Fargo will waive overdraft fees for transactions of $5 or less and cap daily overdraft fees at two per day for Everyday Checking accounts.</p>
+        <p>Effective July 1 2025 the monthly service fee will be $12 unless you maintain a $500 daily balance, receive $500 in direct deposits, or keep $300 in a linked Wells Fargo savings.</p>
+        <p>Real-time transaction alerts launch June 30 2025 in the Wells Fargo Mobile® app. Enroll at <b>wellsfargo.com/alerts</b>.</p>
+        <p>Overdraft fees will be waived on end-of-day overdrafts of $5 or less (max two per day) starting July 15 2025.</p>
       {% else %}
-      <p>Effective July 1, 2025, the monthly service fee for Business Checking accounts will increase to $14 unless you maintain a minimum daily balance of $2,500 or have $1,000 in net purchases on a Wells Fargo Business Debit Card per month.</p>
-      <p>Starting June 30, 2025, Wells Fargo will offer enhanced cash flow tools for Business Checking accounts via Wells Fargo Online Banking, including automated invoice tracking and payment scheduling.</p>
-      <p>Effective July 15, 2025, Wells Fargo will reduce domestic wire transfer fees to $25 for Business Checking accounts, down from $30.</p>
+        <p>Effective July 1 2025 the Business Checking service fee will be $14 unless you keep $2,500 daily or spend $1,000 on your Wells Fargo Business Debit Card each month.</p>
+        <p>Enhanced cash-flow tools arrive June 30 2025 in Wells Fargo Online Banking.</p>
+        <p>Domestic wire fees drop to $25 each on July 15 2025.</p>
       {% endif %}
-      <p>For questions, visit wellsfargo.com or contact our Customer Service at 1-800-225-5935, available 24/7.</p>
+      <p>Questions? Visit <b>wellsfargo.com</b> or call 1-800-225-5935 (24/7).</p>
       <hr class="section-rule">
     </div>
   </div>
 
+  <!-- ─── RIGHT COLUMN ───────────────────────────────────────── -->
   <div class="right-column">
+
+    <!-- CHECKING SUMMARY -->
     <div class="summary">
       <h1>Checking Summary</h1>
       <table class="summary-table">
         <tr><td>Beginning Balance</td><td class="num">{{ summary.beginning_balance }}</td></tr>
-        <tr><td>Deposits / Credits</td><td class="num">{{ summary.deposits_count }} instances | {{ summary.deposits_total }}</td></tr>
-        <tr><td>Withdrawals / Debits</td><td class="num">{{ summary.withdrawals_count }} instances | {{ summary.withdrawals_total }}</td></tr>
-        <tr><td class="highlight">Ending Balance</td><td class="num">{{ summary.transactions_count }} transactions | {{ summary.ending_balance }}</td></tr>
+        <tr><td>Deposits / Credits</td><td class="num">{{ summary.deposits_count }} | {{ summary.deposits_total }}</td></tr>
+        <tr><td>Withdrawals / Debits</td><td class="num">{{ summary.withdrawals_count }} | {{ summary.withdrawals_total }}</td></tr>
+        <tr class="highlight"><td>Ending Balance</td><td class="num">{{ summary.transactions_count }} | {{ summary.ending_balance }}</td></tr>
       </table>
-      <p style="font-size: 10px; margin-top: 10px;">
-        {% if show_fee_waiver %}
+      {% if show_fee_waiver %}
+      <p class="small">
         {% if account_type == "Everyday Checking" %}
-        Your monthly service fee was waived because you maintained an average checking balance of $1,500 or had qualifying direct deposits totaling $500 or more during the statement period.
+          Monthly service fee waived (qualifying balance/direct deposits met).
         {% else %}
-        Your monthly service fee was waived because you maintained an average checking balance of $10,000 or had $2,500 in qualifying direct deposits during the statement period.
+          Monthly service fee waived (qualifying business criteria met).
         {% endif %}
-        {% endif %}
-      </p>
+      </p>{% endif %}
     </div>
 
+    <!-- TRANSACTION HISTORY -->
     <div class="transactions">
       <h1>Transaction History</h1>
-      <div class="meta">
-        <span>{{ statement_period }}</span>
-        <span>Created on {{ statement_date }}</span>
-      </div>
+      <div class="meta">{{ statement_period }} &nbsp;•&nbsp; Generated {{ statement_date }}</div>
+
       <table>
+        <!-- define columns for width control -->
+        <colgroup>
+          <col style="width:12%;">
+          <col style="width:48%;">
+          <col style="width:13%;">
+          <col style="width:13%;">
+          <col style="width:14%;">
+        </colgroup>
         <thead>
           <tr>
-            <th style="width:15%;">Date</th>
-            <th style="width:40%;">Description</th>
-            <th style="width:15%;" class="num">Deposits</th>
-            <th style="width:15%;" class="num">Withdrawals</th>
-            <th style="width:15%;" class="num">Balance</th>
+            <th>Date</th>
+            <th>Description</th>
+            <th class="num">Deposits</th>
+            <th class="num">Withdrawals</th>
+            <th class="num">Balance</th>
           </tr>
         </thead>
         <tbody>
           <tr class="highlight">
             <td></td><td>Opening Balance</td>
-            <td class="num"></td>
-            <td class="num"></td>
+            <td class="num"></td><td class="num"></td>
             <td class="num">{{ summary.beginning_balance }}</td>
           </tr>
+
           {% for transaction in transactions %}
           <tr>
             <td>{{ transaction.date }}</td>
             <td>{{ transaction.description }}</td>
-            <td class="num">{{ transaction.credit }}</td>
-            <td class="num">{{ transaction.debit }}</td>
-            <td class="num">{{ transaction.balance }}</td>
+            <td class="num">{{ transaction.deposits_credits }}</td>
+            <td class="num">{{ transaction.withdrawals_debits }}</td>
+            <td class="num">{{ transaction.ending_balance }}</td>
           </tr>
           {% endfor %}
+
+          {% if not transactions %}
+          <tr><td colspan="5">No transactions for this period.</td></tr>
+          {% endif %}
+
           <tr class="highlight">
             <td></td><td>Total</td>
             <td class="num">{{ summary.deposits_total }}</td>
@@ -159,18 +170,20 @@
           </tr>
         </tbody>
       </table>
+
       <p class="notice">
         This statement is for informational purposes only. Refer to your official statement for legal records.
       </p>
     </div>
-  </div>
-</div>
+  </div><!-- right-column -->
+</div><!-- container -->
 
+<!-- ─── FOOTER ────────────────────────────────────────────────── -->
 <div class="footer">
   <hr>
-  <p style="font-size: 9px; font-weight: normal; color: #6B4E4E; margin-bottom: 8px;">Disclosures</p>
-  <p>All account transactions are subject to the Wells Fargo Deposit Account Agreement, available at wellsfargo.com. Interest rates and Annual Percentage Yields (APYs) may change without notice. For details on overdraft policies and fees, visit wellsfargo.com/overdraft or call 1-800-225-5935.</p>
-  <p>© 2025 Wells Fargo Bank, N.A. All rights reserved. Member FDIC.</p>
+  <p>Disclosures</p>
+  <p>All transactions are governed by the Wells Fargo Deposit Account Agreement (see wellsfargo.com). Rates and APYs may change without notice. For overdraft information visit wellsfargo.com/overdraft or call 1-800-225-5935.</p>
+  <p>© 2025 Wells Fargo Bank, N.A.  Member FDIC.</p>
 </div>
 
 </body>

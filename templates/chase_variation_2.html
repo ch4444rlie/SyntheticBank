@@ -20,6 +20,7 @@
     .transactions .green-text { color: #10b981; font-weight: bold; }
     .transactions .red-text { color: #ef4444; font-weight: bold; }
     .balance div { border-bottom: 1px solid #e5e7eb; padding: 10px 0; }
+    .balance p { display: grid; grid-template-columns: 1fr 2fr 1fr; gap: 10px; }
     .important-info p { margin: 5px 0; font-size: 10px; line-height: 1.45; }
     .footnotes p { margin: 5px 0; font-size: 10px; }
     hr.section-rule { border: none; border-top: 1px solid #e5e7eb; margin: 14px 0; }
@@ -55,8 +56,7 @@
 
     <!-- CHECKING SUMMARY -->
     <div class="card summary">
-      <h2>Checking Summary</h2>
-      <p style="text-align: center; font-size: 12px; margin-bottom: 10px;">{{ account_type }}</p>
+      <h2>Checking Summary - {{ account_type }}</h2>
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
         <div><p style="font-weight: bold;">Beginning Balance</p><p>{{ summary.beginning_balance }}</p></div>
         <div><p style="font-weight: bold;">Deposits and Additions</p><p>{{ summary.deposits_count }} instances | {{ summary.deposits_total }}</p></div>
@@ -92,28 +92,35 @@
     </div>
 
     <!-- TRANSACTIONS -->
-    {% if transactions %}
     <div class="card transactions">
       <h2>Transactions</h2>
       <div>
-        {% for transaction in transactions %}
-        {% if transaction.type == "deposit" %}
+        {% for deposit in deposits %}
         <div>
-          <p class="green-text">{{ transaction.date }} - Deposit</p>
-          <p>{{ transaction.description }} | {{ transaction.amount }}</p>
+          <p class="green-text">{{ deposit.date }} - Deposit</p>
+          <p>{{ deposit.description }} | {{ deposit.amount }}</p>
         </div>
-        {% elif transaction.type == "withdrawal" %}
+        {% endfor %}
+        {% if not deposits %}
         <div>
-          <p class="red-text">{{ transaction.date }} - Withdrawal</p>
-          <p>{{ transaction.description }} | {{ transaction.amount }}</p>
+          <p>No deposits for this period.</p>
         </div>
         {% endif %}
+        {% for withdrawal in withdrawals %}
+        <div>
+          <p class="red-text">{{ withdrawal.date }} - Withdrawal</p>
+          <p>{{ withdrawal.description }} | {{ withdrawal.amount }}</p>
+        </div>
         {% endfor %}
+        {% if not withdrawals %}
+        <div>
+          <p>No withdrawals for this period.</p>
+        </div>
+        {% endif %}
       </div>
       <p style="font-weight: bold; margin-top: 10px;">Total Deposits: {{ summary.deposits_total }}</p>
       <p style="font-weight: bold;">Total Withdrawals: {{ summary.withdrawals_total }}</p>
     </div>
-    {% endif %}
 
     <!-- DAILY BALANCE -->
     <div class="card balance">
@@ -121,7 +128,7 @@
       <div>
         {% for balance in daily_balances %}
         <div>
-          <p>{{ balance.date }} | {{ balance.amount }}</p>
+          <p>{{ balance.date }} | {{ balance.description | default('Balance') }} | {{ balance.amount }}</p>
         </div>
         {% endfor %}
       </div>
@@ -130,7 +137,7 @@
     <!-- FOOTNOTES -->
     <div class="card footnotes">
       <p style="color: #1f2937; font-size: 10px; font-weight: normal; margin-bottom: 6px;">Disclosures</p>
-      <p>All account transactions are subject to the Chase Deposit Account Agreement, available at chase.com. Interest rates and Annual Percentage Yields (APYs) may change without notice. For details on overdraft policies and fees, visit chase.com/overdraft or call 1-800-242-7338.</p>
+      <p>All account transactions are subject to the Chase Deposit Account Agreement, available at chase.com. Interest rates and Annual Percentage Yields (APYs) are subject to change without notice. For details on overdraft policies and fees, visit chase.com/overdraft or call 1-800-242-7338.</p>
       <p>JPMorgan Chase Bank, N.A. is a Member FDIC. Equal Housing Lender.</p>
     </div>
   </div>

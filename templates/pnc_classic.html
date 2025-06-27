@@ -9,45 +9,42 @@
 body{font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.45;color:#000;}
 h1{font-size:22px;margin-bottom:4px;}
 h2{font-size:15px;margin:14px 0 6px;}
-h2.important-info,
-h2.disclosures{font-family:Arial,Helvetica,sans-serif;font-size:11px;font-weight:bold;margin:14px 0 6px;}
+h2.important-info, h2.disclosures{font-size:11px;font-weight:bold;margin:14px 0 6px;}
 h3{font-size:13px;margin:10px 0 4px;}
 .small{font-size:10.5px;}
 hr.rule{border:none;border-top:1px solid #000;margin:14px 0;}
 .section{padding:0 6%;position:relative;}
 .logo{height:42px;position:absolute;top:24px;right:6%;}
 
-/* ─── FLEX CONTAINER (HEADER ROW) ────────────────────────────── */
-.flex{
-  display:flex;
-  justify-content:space-between;   /* space-out blocks */
-  align-items:flex-start;
-  gap:20px;                        /* breathing room */
-}
-.section.flex{flex-wrap:nowrap;}   /* keep columns on one line */
+/* ─── FLEX HEADER ROW ────────────────────────────────────────── */
+.flex{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;}
+.section.flex{flex-wrap:nowrap;}
+.info-left{flex:1 1 auto;max-width:60%;}
+.info-right{flex:0 0 280px;text-align:left;}
 
-/* ─── COLUMN WIDTH CONTROL ───────────────────────────────────── */
-.info-left{
-  flex:1 1 auto;                   /* expands / shrinks */
-  max-width:60%;                   /* never hogs full width */
-  box-sizing:border-box;
-}
-.info-right{
-  flex:0 0 280px;                  /* fixed width → holds shape */
-  max-width:280px;
-  margin-left:auto;                /* pushes to far right edge */
-  text-align:left;
-  box-sizing:border-box;
-}
-
-/* ─── TABLE STYLES ───────────────────────────────────────────── */
+/* ─── TABLE BASICS ───────────────────────────────────────────── */
 table{width:100%;border-collapse:collapse;font-size:11.5px;}
-th{background:#d9d9d9;text-align:left;font-weight:700;padding:4px;}
+th{background:#d9d9d9;font-weight:700;padding:4px;text-align:left;}
 td{padding:4px 6px;vertical-align:top;}
 td.num{text-align:right;}
 td.center{text-align:center;}
 tbody tr:last-child td{border-bottom:none;}
 th,td{border-bottom:1px solid #666;}
+
+/* ─── CONSISTENT COLUMN WIDTHS  ──────────────────────────────── */
+.summary-block table col:first-child{width:70%;}
+.summary-block table col:last-child {width:30%;}
+/* columns: Date  | Amount (right) | Description */
+.data-table col:nth-child(1){width:15%;}
+.data-table col:nth-child(2){width:20%;}
+.data-table col:nth-child(3){width:65%;}
+.balance-table   col:nth-child(1){width:60%;}
+.balance-table   col:nth-child(2){width:40%;}
+
+/* ─── RIGHT-ALIGN HEADER & VALUES in “Amount” column ─────────── */
+.data-table th.num,
+.data-table td.num{ text-align:right; }   /* ← add these two lines */
+
 
 /* ─── SUMMARY BLOCKS (STACKED) ───────────────────────────────── */
 .summary-block{margin-bottom:20px;}
@@ -57,11 +54,10 @@ th,td{border-bottom:1px solid #666;}
 .info-right ul{margin-left:14px;list-style:disc;}
 .info-right li{margin-bottom:3px;}
 
-/* ─── PRINT-SPECIFIC TWEAKS FOR WKHTMLTOPDF ──────────────────── */
+/* ─── PRINT TWEAKS ───────────────────────────────────────────── */
 @media print{
   .section.flex{flex-wrap:nowrap;}
   .info-right{position:relative;width:280px;margin-left:auto;}
-  .info-left{max-width:60%;}
 }
 </style>
 </head>
@@ -70,39 +66,33 @@ th,td{border-bottom:1px solid #666;}
 <!-- ─── PAGE HEADER ──────────────────────────────────────────── -->
 <section class="section" style="padding-top:24px;">
   <div>
-      <h1>{{ account_type }} Statement</h1>
-      <span class="small">PNC Bank</span>
+    <h1>{{ account_type }} Statement</h1>
+    <span class="small">PNC Bank</span>
   </div>
-  {% if logo_path %}
-  <img src="{{ logo_path }}" alt="PNC Bank" class="logo">
-  {% endif %}
+  {% if logo_path %}<img src="{{ logo_path }}" alt="PNC Bank" class="logo">{% endif %}
 </section>
 
 <hr class="rule">
 
 <!-- ─── CUSTOMER & CONTACT ROW ───────────────────────────────── -->
 <section class="section flex" style="margin-bottom:8px;">
-  <!-- customer / period -->
   <div class="info-left">
-      <b>{{ statement_period }}</b><br><br>
-      {{ account_holder }}<br>{{ account_holder_address }}
+    <b>{{ statement_period }}</b><br><br>
+    {{ account_holder }}<br>{{ account_holder_address }}
   </div>
 
-  <!-- bank contact / service info -->
   <div class="info-right small">
-      <p><b>Primary account number:</b> {{ account_number }}</p>
-      <p>Page&nbsp;1&nbsp;of&nbsp;1</p>
-      <p>Number of enclosures:&nbsp;0</p>
-      <ul>
-          <li>For 24-hour banking or transaction / interest-rate information, sign on to PNC Bank Online Banking at&nbsp;pnc.com</li>
-          <li>Customer service: <b>1-888-PNC-BANK</b></li>
-          <li>Monday-Friday 7&nbsp;AM&nbsp;–&nbsp;10&nbsp;PM&nbsp;ET<br>Saturday&nbsp;&amp; Sunday 8&nbsp;AM&nbsp;–&nbsp;5&nbsp;PM&nbsp;ET</li>
-          <li>Spanish: <b>1-866-HOLA-PNC</b></li>
-          <li>Moving? Contact us: <b>1-888-PNC-BANK</b></li>
-          <li>Write: Customer Service<br>PO Box 609<br>Pittsburgh, PA 15230-9738</li>
-          <li>TTY (hearing-impaired): <b>1-800-531-1648</b></li>
-          <li>Visit us at <b>pnc.com</b></li>
-      </ul>
+    <p><b>Primary account number:</b> {{ account_number }}</p>
+    <p>Page 1 of 1</p>
+    <p>Number of enclosures: 0</p>
+    <ul>
+      <li>24-hour Online & Mobile Banking at <b>pnc.com</b></li>
+      <li>Customer service: <b>1-888-PNC-BANK</b></li>
+      <li>Mon-Fri 7 AM–10 PM ET • Sat-Sun 8 AM–5 PM ET</li>
+      <li>Spanish: <b>1-866-HOLA-PNC</b></li>
+      <li>Write: PO Box 609, Pittsburgh PA 15230-9738</li>
+      <li>TTY: <b>1-800-531-1648</b></li>
+    </ul>
   </div>
 </section>
 
@@ -112,118 +102,119 @@ th,td{border-bottom:1px solid #666;}
 <section class="section small">
   <h2 class="important-info">Important Account Information</h2>
   {% if account_type == "Standard Checking" %}
-  <p>Effective July 1, 2025, the monthly service fee for Standard Checking accounts will increase to $10 unless you maintain a minimum daily balance of $1,500, have $500 in qualifying direct deposits, or maintain a linked PNC savings account with a balance of $2,500 or more.</p>
-  <p>Starting June 30, 2025, PNC will introduce real-time transaction alerts for Standard Checking accounts via the PNC Mobile app to enhance account monitoring. Enable alerts at pnc.com/alerts.</p>
-  <p>Effective July 15, 2025, PNC will waive overdraft fees for transactions of $5 or less and cap daily overdraft fees at two per day for Standard Checking accounts.</p>
-  <p>Between May 1, 2025, and September 30, 2025, PNC will remove the option to print mini statements at PNC ATMs. Use Online Banking, Mobile Banking, or Branch Banking to access account information.</p>
+    <p>Effective July 1 2025, the monthly service fee will be $10 unless you keep a $1,500 daily balance, receive $500 in direct deposits, or keep $2,500 in a linked PNC savings.</p>
+    <p>Real-time transaction alerts launch June 30 2025 in the PNC Mobile® app. Enroll at <b>pnc.com/alerts</b>.</p>
+    <p>Overdraft fees will be waived on end-of-day overdrafts of $5 or less (max two per day) starting July 15 2025.</p>
   {% else %}
-  <p>Effective July 1, 2025, the monthly service fee for Business Checking accounts will increase to $15 unless you maintain a minimum daily balance of $5,000, have $2,000 in net purchases on a PNC Business Debit Card, or maintain linked PNC business accounts with a combined balance of $10,000.</p>
-  <p>Starting June 30, 2025, PNC will offer enhanced cash-flow tools for Business Checking accounts via PNC Online Banking, including automated invoice tracking and payment scheduling.</p>
-  <p>Effective July 15, 2025, PNC Express Funds fees for Business Checking accounts will increase from 2.00 % to 2.50 % of the check amount over $100; checks between $25 and $100 remain $2.00.</p>
-  <p>Effective July 15, 2025, PNC will reduce domestic wire transfer fees to $25 for Business Checking accounts, down from $30.</p>
+    <p>Effective July 1 2025, the Business Checking service fee will be $15 unless you keep $5,000 daily, spend $2,000 on a PNC Business Debit Card, or hold $10,000 in combined balances.</p>
+    <p>Enhanced cash-flow tools—invoice tracking & payment scheduling—arrive June 30 2025 in PNC Online Banking.</p>
+    <p>Outgoing domestic wires drop to $25 each on July 15 2025.</p>
   {% endif %}
-  <p>For questions, visit your local PNC Branch or call the PNC Customer Care Center at <b>1-888-762-2265</b>, available 24/7.</p>
+  <p>Questions? Visit any PNC branch or call <b>1-888-762-2265</b> (24/7).</p>
 </section>
 
 <hr class="rule">
 
-<!-- ─── ACCOUNT SUMMARY ────────────────────────────────────────── -->
+<!-- ─── ACCOUNT SUMMARY TABLE ─────────────────────────────────── -->
 <section class="section">
   <h2>{{ account_type }} Summary</h2>
   <table>
-      <tr><td><b>Account number:</b></td><td>{{ account_number }}</td></tr>
-      <tr><td><b>Overdraft Protection Provided By:</b></td><td>{{ summary.overdraft_protection1 }}</td></tr>
-      <tr><td><b>Overdraft Coverage</b></td><td>Your account is currently <b>{{ summary.overdraft_status }}</b>.</td></tr>
-      <tr><td colspan="2">{{ account_holder }}<br>{{ account_holder_address }}</td></tr>
+    <colgroup><col><col></colgroup>
+    <tr><td><b>Account number:</b></td><td>{{ account_number }}</td></tr>
+    <tr><td><b>Overdraft Protection Provided By:</b></td><td>{{ summary.overdraft_protection1 }}</td></tr>
+    <tr><td><b>Overdraft Coverage:</b></td><td>Your account is <b>{{ summary.overdraft_status }}</b>.</td></tr>
+    <tr><td colspan="2">{{ account_holder }}<br>{{ account_holder_address }}</td></tr>
   </table>
 </section>
 
 <hr class="rule">
 
-<!-- ─── BALANCE, TRANSACTION & INTEREST SUMMARIES ──────────────── -->
+<!-- ─── BALANCE / TRANSACTION / INTEREST SUMMARIES ────────────── -->
 <section class="section summary-container">
 
-  <!-- Balance summary -->
   <div class="summary-block">
-      <h3>Balance Summary</h3>
-      <table>
-          <tr><td>Beginning balance</td><td class="num">{{ summary.beginning_balance }}</td></tr>
-          <tr><td>Deposits and other additions</td><td class="num">{{ summary.deposits_total }}</td></tr>
-          <tr><td>Checks and other deductions</td><td class="num">{{ summary.withdrawals_total }}</td></tr>
-          <tr><td>Ending balance</td><td class="num">{{ summary.ending_balance }}</td></tr>
-          <tr><td>Average monthly balance</td><td class="num">{{ summary.average_balance }}</td></tr>
-          <tr><td>Charges and fees</td><td class="num">{{ summary.fees }}</td></tr>
-      </table>
+    <h3>Balance Summary</h3>
+    <table>
+      <colgroup><col><col></colgroup>
+      <tr><td>Beginning balance</td><td class="num">{{ summary.beginning_balance }}</td></tr>
+      <tr><td>Deposits & other additions</td><td class="num">{{ summary.deposits_total }}</td></tr>
+      <tr><td>Checks & other deductions</td><td class="num">{{ summary.withdrawals_total }}</td></tr>
+      <tr><td>Ending balance</td><td class="num">{{ summary.ending_balance }}</td></tr>
+      <tr><td>Average monthly balance</td><td class="num">{{ summary.average_balance }}</td></tr>
+      <tr><td>Charges & fees</td><td class="num">{{ summary.fees }}</td></tr>
+    </table>
   </div>
 
-  <!-- Transaction summary -->
   <div class="summary-block">
-      <h3>Transaction Summary</h3>
-      <table>
-          <tr><td>Checks paid/written</td><td class="center">{{ summary.checks_written }}</td></tr>
-          <tr><td>Check card POS transactions</td><td class="center">{{ summary.pos_transactions }}</td></tr>
-          <tr><td>Check card/virtual POS PIN txn</td><td class="center">{{ summary.pos_pin_transactions }}</td></tr>
-          <tr><td>Total ATM transactions</td><td class="center">{{ summary.total_atm_transactions }}</td></tr>
-          <tr><td>PNC Bank ATM transactions</td><td class="center">{{ summary.pnc_atm_transactions }}</td></tr>
-          <tr><td>Other Bank ATM transactions</td><td class="center">{{ summary.other_atm_transactions }}</td></tr>
-      </table>
+    <h3>Transaction Summary</h3>
+    <table>
+      <colgroup><col><col></colgroup>
+      <tr><td>Checks paid/written</td><td class="center">{{ summary.checks_written }}</td></tr>
+      <tr><td>Check-card POS transactions</td><td class="center">{{ summary.pos_transactions }}</td></tr>
+      <tr><td>Check-card/virtual POS PIN txn</td><td class="center">{{ summary.pos_pin_transactions }}</td></tr>
+      <tr><td>Total ATM transactions</td><td class="center">{{ summary.total_atm_transactions }}</td></tr>
+      <tr><td>PNC Bank ATM transactions</td><td class="center">{{ summary.pnc_atm_transactions }}</td></tr>
+      <tr><td>Other Bank ATM transactions</td><td class="center">{{ summary.other_atm_transactions }}</td></tr>
+    </table>
   </div>
 
-  <!-- Interest summary -->
   <div class="summary-block">
-      <h3>Interest Summary</h3>
-      <table>
-          <tr><td>Annual Percentage Yield Earned (APYE)</td><td class="num">{{ summary.apy_earned }}</td></tr>
-          <tr><td>Number of days in statement period</td><td class="num">{{ summary.days_in_period }}</td></tr>
-          <tr><td>Average collected balance for APYE</td><td class="num">{{ summary.average_collected_balance }}</td></tr>
-          <tr><td>Interest paid this period</td><td class="num">{{ summary.interest_paid_period }}</td></tr>
-      </table>
-      <p class="small" style="margin-top:6px;">
-          As of {{ statement_period }}, a total of {{ summary.interest_paid_ytd }} in interest was paid this year.
-      </p>
+    <h3>Interest Summary</h3>
+    <table>
+      <colgroup><col><col></colgroup>
+      <tr><td>APY earned</td><td class="num">{{ summary.apy_earned }}</td></tr>
+      <tr><td>Days in period</td><td class="num">{{ summary.days_in_period }}</td></tr>
+      <tr><td>Avg collected balance</td><td class="num">{{ summary.average_collected_balance }}</td></tr>
+      <tr><td>Interest paid this period</td><td class="num">{{ summary.interest_paid_period }}</td></tr>
+    </table>
+    <p class="small" style="margin-top:6px;">
+      YTD interest paid: {{ summary.interest_paid_ytd }}
+    </p>
   </div>
 </section>
 
 <hr class="rule">
 
-<!-- ─── ACTIVITY DETAIL ─────────────────────────────────────────── -->
+<!-- ─── ACTIVITY DETAIL – DEPOSITS ─────────────────────────────── -->
 <section class="section">
   <h2>Activity Detail</h2>
 
-  <!-- Deposits & other additions -->
-  <h3>Deposits and Other Additions</h3>
-  <table>
-      <thead>
-          <tr>
-              <th style="width:12%;">Date</th>
-              <th style="width:18%;" class="num">Amount</th>
-              <th>Description</th>
-          </tr>
-      </thead>
-      <tbody>
-          {% for transaction in transactions %}
-          {% if transaction.type == "deposit" %}
-          <tr>
-              <td>{{ transaction.date }}</td>
-              <td class="num">{{ transaction.amount }}</td>
-              <td>{{ transaction.description }}</td>
-          </tr>
-          {% endif %}
-          {% endfor %}
-      </tbody>
-  </table>
-  <p class="small" style="margin-top:4px;">
-      There are {{ summary.deposits_count }} deposits totaling {{ summary.deposits_total }}.
-  </p>
-</section>
+  <!-- Deposits & Other Additions -->
+<h3>Deposits &amp; Other Additions</h3>
+<table class="data-table">
+  <colgroup><col><col><col></colgroup>
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th class="num">Amount</th>   <!-- right-aligned header -->
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for deposit in deposits %}
+    <tr>
+      <td>{{ deposit.date }}</td>
+      <td class="num">{{ deposit.amount }}</td>
+      <td>{{ deposit.description }}</td>
+    </tr>
+    {% endfor %}
+    {% if not deposits %}
+    <tr><td colspan="3">No deposits for this period.</td></tr>
+    {% endif %}
+  </tbody>
+</table>
+<p class="small">
+  There are {{ summary.deposits_count }} deposits totaling {{ summary.deposits_total }}.
+</p>
+
 
 <hr class="rule">
 
-<!-- ─── FOOTER / DISCLOSURES ───────────────────────────────────── -->
+<!-- ─── FOOTER / DISCLOSURES ──────────────────────────────────── -->
 <footer class="section small">
   <h2 class="disclosures">Disclosures</h2>
-  <p>All account transactions are subject to the PNC Consumer Funds Availability Policy and Account Agreement, available at pnc.com. Interest rates and Annual Percentage Yields (APYs) may change without notice. For details on overdraft policies and fees, visit pnc.com/overdraft or call 1-888-762-2265.</p>
-  <p>PNC Bank, National Association, is a Member FDIC. Equal Housing Lender.</p>
+  <p>All account transactions are subject to the PNC Consumer Funds Availability Policy and Account Agreement, available at pnc.com. Interest rates and Annual Percentage Yields (APYs) may change without notice. For overdraft information, visit pnc.com/overdraft or call 1-888-762-2265.</p>
+  <p>PNC Bank, National Association, Member FDIC • Equal Housing Lender.</p>
 </footer>
 
 </body>

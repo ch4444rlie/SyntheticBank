@@ -1,6 +1,26 @@
 {
   "fields": [
     {
+      "name": "account_type",
+      "is_mutable": false,
+      "description": "Type of the account (e.g., checking, savings)"
+    },
+    {
+      "name": "logo_path",
+      "is_mutable": false,
+      "description": "URL of Chase bank logo on the statement"
+    },
+    {
+      "name": "statement_period",
+      "is_mutable": true,
+      "description": "Time period covered by the statement (e.g., January 2023)"
+    },
+    {
+      "name": "account_number",
+      "is_mutable": false,
+      "description": "Unique identifier for the account at Chase bank"
+    },
+    {
       "name": "account_holder",
       "is_mutable": true,
       "description": "Name of the account holder"
@@ -11,79 +31,79 @@
       "description": "Address of the account holder"
     },
     {
-      "name": "account_number",
+      "name": "summary.beginning_balance",
+      "is_mutable": false,
+      "description": "Initial balance at the start of the statement period"
+    },
+    {
+      "name": "summary.deposits_count",
+      "is_mutable": false,
+      "description": "Number of deposits made during the statement period"
+    },
+    {
+      "name": "summary.deposits_total",
+      "is_mutable": false,
+      "description": "Total amount deposited during the statement period"
+    },
+    {
+      "name": "summary.withdrawals_count",
+      "is_mutable": false,
+      "description": "Number of withdrawals made during the statement period"
+    },
+    {
+      "name": "summary.withdrawals_total",
+      "is_mutable": false,
+      "description": "Total amount withdrawn during the statement period"
+    },
+    {
+      "name": "summary.transactions_count",
+      "is_mutable": false,
+      "description": "Total number of transactions made during the statement period"
+    },
+    {
+      "name": "summary.ending_balance",
+      "is_mutable": false,
+      "description": "Final balance at the end of the statement period"
+    },
+    {
+      "name": "deposit.date",
       "is_mutable": true,
-      "description": "Account number"
+      "description": "Date when a deposit was made"
     },
     {
-      "name": "statement_period",
+      "name": "deposit.description",
       "is_mutable": true,
-      "description": "Statement date range"
+      "description": "Description or purpose of the deposit"
     },
     {
-      "name": "summary",
+      "name": "deposit.amount",
       "is_mutable": true,
-      "description": "Checking summary data (beginning balance, counts, totals)"
+      "description": "Amount deposited"
     },
     {
-      "name": "deposits",
+      "name": "withdrawal.date",
       "is_mutable": true,
-      "description": "List of deposit transactions"
+      "description": "Date when a withdrawal was made"
     },
     {
-      "name": "withdrawals",
+      "name": "withdrawal.description",
       "is_mutable": true,
-      "description": "List of withdrawal transactions"
+      "description": "Description or purpose of the withdrawal"
     },
     {
-      "name": "daily_balances",
+      "name": "withdrawal.amount",
       "is_mutable": true,
-      "description": "Daily ending balances"
+      "description": "Amount withdrawn"
     },
     {
-      "name": "logo_path",
-      "is_mutable": true,
-      "description": "Path to the bank logo"
-    },
-    {
-      "name": "bank_name",
+      "name": "balance.date",
       "is_mutable": false,
-      "description": "Name of the bank (Chase)"
+      "description": "Date when the balance was checked or provided"
     },
     {
-      "name": "bank_address",
+      "name": "balance.amount",
       "is_mutable": false,
-      "description": "Bank address"
-    },
-    {
-      "name": "checking_summary_header",
-      "is_mutable": false,
-      "description": "Header for checking summary"
-    },
-    {
-      "name": "deposits_header",
-      "is_mutable": false,
-      "description": "Header for deposits section"
-    },
-    {
-      "name": "withdrawals_header",
-      "is_mutable": false,
-      "description": "Header for withdrawals section"
-    },
-    {
-      "name": "daily_balance_header",
-      "is_mutable": false,
-      "description": "Header for daily balance section"
-    },
-    {
-      "name": "customer_service",
-      "is_mutable": false,
-      "description": "Customer service contact information"
-    },
-    {
-      "name": "footnotes",
-      "is_mutable": false,
-      "description": "Footnotes and disclosures"
+      "description": "Current balance of the account"
     }
   ]
 }
