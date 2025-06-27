@@ -88,7 +88,7 @@ with st.sidebar:
 
     # Number of transactions
     st.subheader("Number of Transactions")
-    num_transactions = st.slider("Number of Transactions", min_value=3, max_value=12, value=5, step=1)
+    num_transactions = st.slider("Number of Transactions", min_value=3, max_value=25, value=5, step=1)
 
     # Template selection
     if selected_bank_key:
