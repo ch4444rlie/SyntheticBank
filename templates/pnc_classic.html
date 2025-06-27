@@ -34,17 +34,16 @@ th,td{border-bottom:1px solid #666;}
 /* ─── CONSISTENT COLUMN WIDTHS  ──────────────────────────────── */
 .summary-block table col:first-child{width:70%;}
 .summary-block table col:last-child {width:30%;}
-/* columns: Date  | Amount (right) | Description */
+/* columns: Date | Amount (right) | Description */
 .data-table col:nth-child(1){width:15%;}
 .data-table col:nth-child(2){width:20%;}
 .data-table col:nth-child(3){width:65%;}
-.balance-table   col:nth-child(1){width:60%;}
-.balance-table   col:nth-child(2){width:40%;}
+.balance-table col:nth-child(1){width:60%;}
+.balance-table col:nth-child(2){width:40%;}
 
 /* ─── RIGHT-ALIGN HEADER & VALUES in “Amount” column ─────────── */
 .data-table th.num,
-.data-table td.num{ text-align:right; }   /* ← add these two lines */
-
+.data-table td.num { text-align:right; }
 
 /* ─── SUMMARY BLOCKS (STACKED) ───────────────────────────────── */
 .summary-block{margin-bottom:20px;}
@@ -149,12 +148,12 @@ th,td{border-bottom:1px solid #666;}
     <h3>Transaction Summary</h3>
     <table>
       <colgroup><col><col></colgroup>
-      <tr><td>Checks paid/written</td><td class="center">{{ summary.checks_written }}</td></tr>
-      <tr><td>Check-card POS transactions</td><td class="center">{{ summary.pos_transactions }}</td></tr>
-      <tr><td>Check-card/virtual POS PIN txn</td><td class="center">{{ summary.pos_pin_transactions }}</td></tr>
-      <tr><td>Total ATM transactions</td><td class="center">{{ summary.total_atm_transactions }}</td></tr>
-      <tr><td>PNC Bank ATM transactions</td><td class="center">{{ summary.pnc_atm_transactions }}</td></tr>
-      <tr><td>Other Bank ATM transactions</td><td class="center">{{ summary.other_atm_transactions }}</td></tr>
+      <tr><td>Checks paid/written</td><td class="num">{{ summary.checks_written }}</td></tr>
+      <tr><td>Check-card POS transactions</td><td class="num">{{ summary.pos_transactions }}</td></tr>
+      <tr><td>Check-card/virtual POS PIN txn</td><td class="num">{{ summary.pos_pin_transactions }}</td></tr>
+      <tr><td>Total ATM transactions</td><td class="num">{{ summary.total_atm_transactions }}</td></tr>
+      <tr><td>PNC Bank ATM transactions</td><td class="num">{{ summary.pnc_atm_transactions }}</td></tr>
+      <tr><td>Other Bank ATM transactions</td><td class="num">{{ summary.other_atm_transactions }}</td></tr>
     </table>
   </div>
 
@@ -175,38 +174,66 @@ th,td{border-bottom:1px solid #666;}
 
 <hr class="rule">
 
-<!-- ─── ACTIVITY DETAIL – DEPOSITS ─────────────────────────────── -->
+<!-- ─── ACTIVITY DETAIL – DEPOSITS & WITHDRAWALS ──────────────── -->
 <section class="section">
   <h2>Activity Detail</h2>
 
   <!-- Deposits & Other Additions -->
-<h3>Deposits &amp; Other Additions</h3>
-<table class="data-table">
-  <colgroup><col><col><col></colgroup>
-  <thead>
-    <tr>
-      <th>Date</th>
-      <th class="num">Amount</th>   <!-- right-aligned header -->
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for deposit in deposits %}
-    <tr>
-      <td>{{ deposit.date }}</td>
-      <td class="num">{{ deposit.amount }}</td>
-      <td>{{ deposit.description }}</td>
-    </tr>
-    {% endfor %}
-    {% if not deposits %}
-    <tr><td colspan="3">No deposits for this period.</td></tr>
-    {% endif %}
-  </tbody>
-</table>
-<p class="small">
-  There are {{ summary.deposits_count }} deposits totaling {{ summary.deposits_total }}.
-</p>
+  <h3>Deposits & Other Additions</h3>
+  <table class="data-table">
+    <colgroup><col><col><col></colgroup>
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th class="num">Amount</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for deposit in deposits %}
+      <tr>
+        <td>{{ deposit.date }}</td>
+        <td class="num">{{ deposit.amount }}</td>
+        <td>{{ deposit.description }}</td>
+      </tr>
+      {% endfor %}
+      {% if not deposits %}
+      <tr><td colspan="3">No deposits for this period.</td></tr>
+      {% endif %}
+    </tbody>
+  </table>
+  <p class="small">
+    There are {{ summary.deposits_count }} deposits totaling {{ summary.deposits_total }}.
+  </p>
 
+  <!-- Checks & Other Deductions -->
+  <h3>Checks & Other Deductions</h3>
+  <table class="data-table">
+    <colgroup><col><col><col></colgroup>
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th class="num">Amount</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for withdrawal in withdrawals %}
+      <tr>
+        <td>{{ withdrawal.date }}</td>
+        <td class="num">{{ withdrawal.amount }}</td>
+        <td>{{ withdrawal.description }}</td>
+      </tr>
+      {% endfor %}
+      {% if not withdrawals %}
+      <tr><td colspan="3">No withdrawals for this period.</td></tr>
+      {% endif %}
+    </tbody>
+  </table>
+  <p class="small">
+    There are {{ summary.withdrawals_count }} withdrawals totaling {{ summary.withdrawals_total }}.
+  </p>
+</section>
 
 <hr class="rule">
 
