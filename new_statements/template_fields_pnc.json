@@ -21,24 +21,14 @@
       "description": "Statement date range"
     },
     {
-      "name": "summary",
+      "name": "transactions",
       "is_mutable": true,
-      "description": "Checking summary data (beginning balance, counts, totals)"
+      "description": "List of transaction details"
     },
     {
-      "name": "deposits",
+      "name": "total",
       "is_mutable": true,
-      "description": "List of deposit transactions"
-    },
-    {
-      "name": "withdrawals",
-      "is_mutable": true,
-      "description": "List of withdrawal transactions"
-    },
-    {
-      "name": "daily_balances",
-      "is_mutable": true,
-      "description": "Daily ending balances"
+      "description": "Total balance"
     },
     {
       "name": "logo_path",
@@ -46,44 +36,19 @@
       "description": "Path to the bank logo"
     },
     {
-      "name": "bank_name",
-      "is_mutable": false,
-      "description": "Name of the bank (Pnc)"
+      "name": "summary",
+      "is_mutable": true,
+      "description": "Summary of account details (e.g., balances, transactions)"
     },
     {
-      "name": "bank_address",
-      "is_mutable": false,
-      "description": "Bank address"
+      "name": "deposits",
+      "is_mutable": true,
+      "description": "Deposit transactions"
     },
     {
-      "name": "checking_summary_header",
-      "is_mutable": false,
-      "description": "Header for checking summary"
-    },
-    {
-      "name": "deposits_header",
-      "is_mutable": false,
-      "description": "Header for deposits section"
-    },
-    {
-      "name": "withdrawals_header",
-      "is_mutable": false,
-      "description": "Header for withdrawals section"
-    },
-    {
-      "name": "daily_balance_header",
-      "is_mutable": false,
-      "description": "Header for daily balance section"
-    },
-    {
-      "name": "customer_service",
-      "is_mutable": false,
-      "description": "Customer service contact information"
-    },
-    {
-      "name": "footnotes",
-      "is_mutable": false,
-      "description": "Footnotes and disclosures"
+      "name": "withdrawals",
+      "is_mutable": true,
+      "description": "Withdrawal transactions"
     }
   ]
 }

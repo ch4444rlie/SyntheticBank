@@ -3,107 +3,117 @@
     {
       "name": "account_type",
       "is_mutable": false,
-      "description": "Type of the account (e.g., checking, savings)"
+      "description": "Type of account (e.g., checking, savings)"
     },
     {
       "name": "logo_path",
       "is_mutable": false,
-      "description": "URL of Chase bank logo on the statement"
+      "description": "Path to the bank's logo on the statement"
     },
     {
       "name": "statement_period",
       "is_mutable": true,
-      "description": "Time period covered by the statement (e.g., January 2023)"
+      "description": "Period covered by the bank statement (e.g., Month YYYY)"
     },
     {
       "name": "account_number",
       "is_mutable": false,
-      "description": "Unique identifier for the account at Chase bank"
+      "description": "Unique identifier for the account at Chase Bank"
     },
     {
       "name": "account_holder",
       "is_mutable": true,
-      "description": "Name of the account holder"
+      "description": "Name of the account holder on this Chase account"
     },
     {
       "name": "account_holder_address",
       "is_mutable": true,
-      "description": "Address of the account holder"
+      "description": "Address of the account holder as it appears in the Chase Bank records"
     },
     {
       "name": "summary.beginning_balance",
       "is_mutable": false,
-      "description": "Initial balance at the start of the statement period"
+      "description": "The starting balance of the account for this statement period"
     },
     {
       "name": "summary.deposits_count",
       "is_mutable": false,
-      "description": "Number of deposits made during the statement period"
+      "description": "Number of deposits made to this account during the statement period"
     },
     {
       "name": "summary.deposits_total",
       "is_mutable": false,
-      "description": "Total amount deposited during the statement period"
+      "description": "Total amount of all deposits made to this account during the statement period"
     },
     {
       "name": "summary.withdrawals_count",
       "is_mutable": false,
-      "description": "Number of withdrawals made during the statement period"
+      "description": "Number of withdrawals made from this account during the statement period"
     },
     {
       "name": "summary.withdrawals_total",
       "is_mutable": false,
-      "description": "Total amount withdrawn during the statement period"
+      "description": "Total amount of all withdrawals made from this account during the statement period"
     },
     {
       "name": "summary.transactions_count",
       "is_mutable": false,
-      "description": "Total number of transactions made during the statement period"
+      "description": "Number of transactions (both deposits and withdrawals) made on this account during the statement period"
     },
     {
       "name": "summary.ending_balance",
       "is_mutable": false,
-      "description": "Final balance at the end of the statement period"
+      "description": "The final balance of the account at the end of the statement period"
     },
     {
       "name": "deposit.date",
       "is_mutable": true,
-      "description": "Date when a deposit was made"
+      "description": "Date when a deposit was made to this Chase account"
     },
     {
       "name": "deposit.description",
       "is_mutable": true,
-      "description": "Description or purpose of the deposit"
+      "description": "Description or purpose of the deposit made to this Chase account"
     },
     {
       "name": "deposit.amount",
       "is_mutable": true,
-      "description": "Amount deposited"
+      "description": "Amount of money deposited into this Chase account"
     },
     {
       "name": "withdrawal.date",
       "is_mutable": true,
-      "description": "Date when a withdrawal was made"
+      "description": "Date when a withdrawal was made from this Chase account"
     },
     {
       "name": "withdrawal.description",
       "is_mutable": true,
-      "description": "Description or purpose of the withdrawal"
+      "description": "Description or purpose of the withdrawal made from this Chase account"
     },
     {
       "name": "withdrawal.amount",
       "is_mutable": true,
-      "description": "Amount withdrawn"
+      "description": "Amount of money withdrawn from this Chase account"
     },
     {
-      "name": "balance.date",
+      "name": "summary.deposits_total",
       "is_mutable": false,
-      "description": "Date when the balance was checked or provided"
+      "description": "Total amount of all deposits made to this account during the statement period"
     },
     {
-      "name": "balance.amount",
+      "name": "summary.withdrawals_total",
       "is_mutable": false,
-      "description": "Current balance of the account"
+      "description": "Total amount of all withdrawals made from this account during the statement period"
+    },
+    {
+      "name": "this_day",
+      "is_mutable": true,
+      "description": "The current day in the bank statement (e.g., Today: Monday, January 17th)"
+    },
+    {
+      "name": "bal",
+      "is_mutable": false,
+      "description": "Abbreviation for balance, as it appears on the Chase Bank statement"
     }
   ]
 }

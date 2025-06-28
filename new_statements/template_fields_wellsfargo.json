@@ -1,89 +1,54 @@
 {
   "fields": [
     {
-      "name": "account_type",
+      "name": "account_holder",
       "is_mutable": true,
-      "description": "Type of account (e.g., checking, savings)"
+      "description": "Name of the account holder"
+    },
+    {
+      "name": "account_holder_address",
+      "is_mutable": true,
+      "description": "Address of the account holder"
     },
     {
       "name": "account_number",
       "is_mutable": true,
-      "description": "Unique identification number for the specific account"
+      "description": "Account number"
     },
     {
       "name": "statement_period",
       "is_mutable": true,
-      "description": "Date range covered by the bank statement"
+      "description": "Statement date range"
+    },
+    {
+      "name": "transactions",
+      "is_mutable": true,
+      "description": "List of transaction details"
+    },
+    {
+      "name": "total",
+      "is_mutable": true,
+      "description": "Total balance"
     },
     {
       "name": "logo_path",
-      "is_mutable": false,
-      "description": "Path to the Wells Fargo logo in the HTML template"
-    },
-    {
-      "name": "account_holder_address",
-      "is_mutable": false,
-      "description": "Address of the account holder as per bank records"
-    },
-    {
-      "name": "summary.beginning_balance",
-      "is_mutable": false,
-      "description": "The balance at the start of the statement period"
-    },
-    {
-      "name": "summary.deposits_total",
-      "is_mutable": false,
-      "description": "Total deposits made during the statement period"
-    },
-    {
-      "name": "summary.withdrawals_total",
-      "is_mutable": false,
-      "description": "Total withdrawals made during the statement period"
-    },
-    {
-      "name": "summary.ending_balance",
-      "is_mutable": false,
-      "description": "The balance at the end of the statement period"
-    },
-    {
-      "name": "transaction.date",
       "is_mutable": true,
-      "description": "Date each transaction was processed"
+      "description": "Path to the bank logo"
     },
     {
-      "name": "transaction.description",
+      "name": "summary",
       "is_mutable": true,
-      "description": "A brief explanation of the purpose behind each transaction"
+      "description": "Summary of account details (e.g., balances, transactions)"
     },
     {
-      "name": "transaction.deposits_credits",
+      "name": "deposits",
       "is_mutable": true,
-      "description": "Amount credited in each deposit transaction"
+      "description": "Deposit transactions"
     },
     {
-      "name": "transaction.withdrawals_debits",
+      "name": "withdrawals",
       "is_mutable": true,
-      "description": "Amount debited in each withdrawal transaction"
-    },
-    {
-      "name": "transaction.ending_balance",
-      "is_mutable": false,
-      "description": "The balance after the transaction was processed"
-    },
-    {
-      "name": "summary.deposits_total",
-      "is_mutable": false,
-      "description": "Total deposits made during the statement period"
-    },
-    {
-      "name": "summary.withdrawals_total",
-      "is_mutable": false,
-      "description": "Total withdrawals made during the statement period"
-    },
-    {
-      "name": "summary.ending_balance",
-      "is_mutable": false,
-      "description": "The balance at the end of the statement period"
+      "description": "Withdrawal transactions"
     }
   ]
 }
